@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SpriteAtlas_WheelIcons
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 2
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: 9d37c50aed575c34db561d869bfc7ae7, type: 3}
+    - {fileID: 2800000, guid: a49c4d7e81ef2e04a947c837f5b8db79, type: 3}
+    - {fileID: 2800000, guid: 532766356004a3e4d9f07dede7f810ef, type: 3}
+    - {fileID: 2800000, guid: dc6b27b4f0aca0a4f91f3b04d3d4f501, type: 3}
+    - {fileID: 2800000, guid: b545e82bd8f06fe48a70b73305c4a210, type: 3}
+    - {fileID: 2800000, guid: 3a86bd11ad7cc4447b635c4540e109c1, type: 3}
+    - {fileID: 2800000, guid: d0d2abd9969854a45aea3d1ad550132b, type: 3}
+    - {fileID: 2800000, guid: f1973be4b4ef17e44902145a0d560fce, type: 3}
+    - {fileID: 2800000, guid: f45b1aad9a9112a4fb9fe631f7520dfb, type: 3}
+    - {fileID: 2800000, guid: ac763b145fdd8fd42823ef26b42d34be, type: 3}
+    - {fileID: 2800000, guid: 1016d96ae7bdfa84d99c411b58d83394, type: 3}
+    - {fileID: 2800000, guid: e8307cd78eb573e45b946ee9355c3087, type: 3}
+    - {fileID: 2800000, guid: 08cbc31258ec572478c4dbde293f4bed, type: 3}
+    - {fileID: 2800000, guid: 80c9fc47c50b00d49b84fe0c164695c9, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 3a86bd11ad7cc4447b635c4540e109c1, type: 3}
+  - {fileID: 21300000, guid: 08cbc31258ec572478c4dbde293f4bed, type: 3}
+  - {fileID: 21300000, guid: ac763b145fdd8fd42823ef26b42d34be, type: 3}
+  - {fileID: 21300000, guid: dc6b27b4f0aca0a4f91f3b04d3d4f501, type: 3}
+  - {fileID: 21300000, guid: f1973be4b4ef17e44902145a0d560fce, type: 3}
+  - {fileID: 21300000, guid: 532766356004a3e4d9f07dede7f810ef, type: 3}
+  - {fileID: 21300000, guid: 80c9fc47c50b00d49b84fe0c164695c9, type: 3}
+  - {fileID: 21300000, guid: e8307cd78eb573e45b946ee9355c3087, type: 3}
+  - {fileID: 21300000, guid: d0d2abd9969854a45aea3d1ad550132b, type: 3}
+  - {fileID: 21300000, guid: 9d37c50aed575c34db561d869bfc7ae7, type: 3}
+  - {fileID: 21300000, guid: 1016d96ae7bdfa84d99c411b58d83394, type: 3}
+  - {fileID: 21300000, guid: b545e82bd8f06fe48a70b73305c4a210, type: 3}
+  - {fileID: 21300000, guid: f45b1aad9a9112a4fb9fe631f7520dfb, type: 3}
+  - {fileID: 21300000, guid: a49c4d7e81ef2e04a947c837f5b8db79, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - ui_spin_silver_base
+  - UI_button_grey_standard
+  - ui_card_icon_death
+  - ui_spin_golden_base
+  - UI_icon_gold
+  - ui_spin_generic_button
+  - UI_button_orange_standard
+  - ui_card_frame_gardient
+  - ui_spin_silver_indicator
+  - ui_spin_bronze_base
+  - star_flash_alpha
+  - ui_spin_golden_indicator
+  - UI_icon_cash
+  - ui_spin_bronze_indicator
+  m_RenderDataMap: {}
+  m_Tag: SpriteAtlas_WheelIcons
+  m_IsVariant: 0
