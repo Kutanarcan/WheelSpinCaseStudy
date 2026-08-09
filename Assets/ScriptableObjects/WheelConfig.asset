@@ -15,3 +15,5 @@ MonoBehaviour:
   _goldEvery: 30
   _silverEvery: 5
   _sliceCount: 8
+  _penaltyWeight: 1
+  _zoneSet: {fileID: 11400000, guid: f67f460e49193b940b8386a9152ee5c1, type: 2}

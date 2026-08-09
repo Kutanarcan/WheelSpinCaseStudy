@@ -41,7 +41,11 @@ namespace CaseStudy.WheelSpin
             Random random = _useFixedSeed ? new Random(_seed) : new Random();
 
             WheelTierRuleProvider tierRules = _config.CreateTierRuleProvider();
-            var zoneProvider = new HardcodedZoneProvider(tierRules);
+            //var zoneProvider = new HardcodedZoneProvider(tierRules);
+            
+            var zoneSet = _config.ZoneSet;
+            var zoneProvider = new ScriptableObjectZoneProvider(zoneSet.Zones, tierRules, _config.PenaltyWeight);
+
             var calculator = new RandomWeightedResultCalculator(random, _config.SliceCount);
             var spinner = new WheelSpinner(calculator, random);
 
