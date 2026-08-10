@@ -1,21 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 namespace CaseStudy.WheelSpin
 {
-    public class ItemViewSettings : MonoBehaviour
+    [Serializable]
+    public struct ItemViewSettings
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-        
-        }
+        public Vector2 Size;
+        public float Rotation;
+        public Vector2 Offset;
 
-        // Update is called once per frame
-        void Update()
+        public static readonly Vector2 DefaultSize = new Vector2(100f, 100f);
+
+        public static ItemViewSettings Default => new ItemViewSettings
         {
-        
-        }
+            Size = DefaultSize,
+            Rotation = 0f,
+            Offset = Vector2.zero
+        };
     }
 }

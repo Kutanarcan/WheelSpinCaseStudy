@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 using Random = System.Random;
 
@@ -8,243 +6,176 @@ namespace CaseStudy.WheelSpin
     [DisallowMultipleComponent]
     public class WheelController : MonoBehaviour
     {
-        private const int MaxLogLines = 8;
-
         [SerializeField] private WheelConfigAsset _config;
-        [SerializeField] private bool _drawDebugGui = true;
+        [SerializeField] private WheelSceneView _sceneView;
 
         [Header("Determinism")]
-        [SerializeField] private bool _useFixedSeed = true;
+        [SerializeField] private bool _useFixedSeed;
         [SerializeField] private int _seed = 1337;
 
-        [Header("Input")]
-        [SerializeField] private KeyCode _spinKey = KeyCode.Space;
-        [SerializeField] private KeyCode _cashOutKey = KeyCode.C;
-        [SerializeField] private KeyCode _restartKey = KeyCode.R;
-
         private WheelSession _session;
-        private readonly Queue<string> _log = new Queue<string>(MaxLogLines);
-        private int _lastSliceIndex = -1;
+        private WheelPresenter _presenter;
+
+        public bool IsInitialized => _session != null;
 
         private void Awake()
         {
             Initialize();
+            StartNewRun();
         }
 
-        private void OnDestroy()
-        {
-            Deinitialize();
-        }
+        private void OnDestroy() => Deinitialize();
 
         public void Initialize()
         {
             Random random = _useFixedSeed ? new Random(_seed) : new Random();
 
             WheelTierRuleProvider tierRules = _config.CreateTierRuleProvider();
-            //var zoneProvider = new HardcodedZoneProvider(tierRules);
-            
-            var zoneSet = _config.ZoneSet;
-            var zoneProvider = new ScriptableObjectZoneProvider(zoneSet.Zones, tierRules, _config.PenaltyWeight);
+            ItemRegistry registry = _config.ItemDatabase.CreateRegistry();
+
+            var zoneProvider = new ScriptableObjectZoneProvider(
+                _config.ZoneSet.Zones, tierRules, _config.PenaltyWeight);
+
+            if (!zoneProvider.TryValidate(out string error))
+            {
+                Debug.LogError($"[{nameof(WheelController)}] {error}", this);
+                return;
+            }
 
             var calculator = new RandomWeightedResultCalculator(random, _config.SliceCount);
             var spinner = new WheelSpinner(calculator, random);
 
-            _lastSliceIndex = -1;
-            _log.Clear();
+            _presenter = new WheelPresenter(_sceneView, registry, tierRules, _config.SliceCount);
+            _presenter.BusyChanged += HandleBusyChanged;
+            _presenter.Initialize(zoneProvider.ZoneCount);
 
             _session = new WheelSession(zoneProvider, spinner);
-            Subscribe(_session);
-            _session.StartRun();
+            _presenter.Subscribe(_session);
+
+            BindButtons();
         }
 
         public void Deinitialize()
         {
-            if (_session == null) return;
+            UnbindButtons();
 
-            Unsubscribe(_session);
+            if (_presenter != null)
+            {
+                if (_session != null) _presenter.Unsubscribe(_session);
+                _presenter.BusyChanged -= HandleBusyChanged;
+                _presenter.Deinitialize();
+                _presenter = null;
+            }
+
+            if (_session == null)
+                return;
+
             _session.ClearListeners();
             _session = null;
         }
+        public void StartNewRun()
+        {
+            if (_session == null)
+                return;
 
-        public void Restart()
+            _presenter.ResetForNewRun();
+            _session.StartRun();
+            _presenter.PlayInitial();
+        }
+        public void Reload()
         {
             Deinitialize();
             Initialize();
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(_restartKey))
-            {
-                Restart();
-                return;
-            }
-
-            if (_session == null || !_session.IsRunActive) return;
-
-            if (Input.GetKeyDown(_spinKey))
-            {
-                Spin();
-            }
-            else if (Input.GetKeyDown(_cashOutKey))
-            {
-                CashOut();
-            }
+            StartNewRun();
         }
 
         public void Spin()
         {
-            if (_session == null) return;
+            if (!CanAct()) 
+                return;
 
-            if (!_session.TrySpin(out _))
-                Append("Spin rejected.");
+            if (!_session.TrySpin(out _)) 
+                return;
+
+            _presenter.Play();
         }
 
         public void CashOut()
         {
-            if (_session == null) return;
+            if (!CanAct()) return;
+
             _session.CashOut();
+            _presenter.Play();
         }
 
-        private void Subscribe(WheelSession session)
+        private bool CanAct()
         {
-            session.ZoneStarted += HandleZoneStarted;
-            session.SpinResolved += HandleSpinResolved;
-            session.RunFailed += HandleRunFailed;
-            session.RunCashedOut += HandleRunCashedOut;
-            session.RunCompleted += HandleRunCompleted;
+            return _session != null
+                    && _session.IsRunActive
+                    && _presenter != null
+                    && !_presenter.IsBusy;
         }
 
-        private void Unsubscribe(WheelSession session)
+        private void HandleBusyChanged(bool busy)
         {
-            session.ZoneStarted -= HandleZoneStarted;
-            session.SpinResolved -= HandleSpinResolved;
-            session.RunFailed -= HandleRunFailed;
-            session.RunCashedOut -= HandleRunCashedOut;
-            session.RunCompleted -= HandleRunCompleted;
+            SetButtonsInteractable(!busy);
         }
 
-        private void HandleZoneStarted(Zone zone)
+        private void SetButtonsInteractable(bool interactable)
         {
-            _lastSliceIndex = -1;
-            Append($"Zone {zone.Index} [{zone.Tier}] ready.");
+            ActionButtonView spin = GetSpinButton();
+
+            if (spin != null) 
+                spin.Interactable = interactable;
+
+            ActionButtonView cashOut = GetCashOutButton();
+
+            if (cashOut != null) 
+                cashOut.Interactable = interactable;
         }
 
-        private void HandleSpinResolved(SpinResult result)
+        private void BindButtons()
         {
-            _lastSliceIndex = result.SliceIndex;
+            ActionButtonView spin = GetSpinButton();
 
-            string outcome = result.IsPenalty
-                ? "PENALTY"
-                : $"{result.ItemId} x{result.Amount}";
+            if (spin != null) 
+                spin.Click += Spin;
 
-            Append($"Slice {result.SliceIndex} -> {outcome}");
+            ActionButtonView cashOut = GetCashOutButton();
+
+            if (cashOut != null) 
+                cashOut.Click += CashOut;
         }
 
-        private void HandleRunFailed(int zone, long lost)
-            => Append($"FAILED at zone {zone}. Lost {lost}.");
-
-        private void HandleRunCashedOut(int zone, long banked)
-            => Append($"CASHED OUT at zone {zone} with {banked}.");
-
-        private void HandleRunCompleted(int lastZone, long banked)
-            => Append($"COMPLETED after zone {lastZone}. Banked {banked}.");
-
-        private void Append(string line)
+        private void UnbindButtons()
         {
-            if (_log.Count == MaxLogLines) _log.Dequeue();
-            _log.Enqueue(line);
-            Debug.Log(line, this);
+            ActionButtonView spin = GetSpinButton();
+
+            if (spin != null)
+                spin.Click -= Spin;
+
+            ActionButtonView cashOut = GetCashOutButton();
+
+            if (cashOut != null)
+                cashOut.Click -= CashOut;
         }
 
-        private void OnGUI()
+        private ActionButtonView GetSpinButton()
         {
-            if (!_drawDebugGui) return;
+            if (_sceneView == null || _sceneView.WheelView == null) 
+                return null;
 
-            GUILayout.BeginArea(new Rect(12f, 12f, 460f, Screen.height - 24f), GUI.skin.box);
+            SpinButtonView spinButton = _sceneView.WheelView.SpinButtonView;
 
-            if (_session == null)
-            {
-                GUILayout.Label("Session not initialized.");
-                if (GUILayout.Button("Initialize")) Initialize();
-                GUILayout.EndArea();
-                return;
-            }
-
-            DrawState();
-            GUILayout.Space(8f);
-            DrawSlices();
-            GUILayout.Space(8f);
-            DrawLog();
-            GUILayout.Space(8f);
-            DrawButtons();
-
-            GUILayout.EndArea();
+            return spinButton != null ? spinButton.ActionButton : null;
         }
 
-        private void DrawState()
+        private ActionButtonView GetCashOutButton()
         {
-            Zone zone = _session.CurrentZone;
+            if (_sceneView == null || _sceneView.RewardHolderView == null) 
+                return null;
 
-            GUILayout.Label($"Zone        : {_session.ZoneIndex}");
-            GUILayout.Label($"Tier        : {(zone != null ? zone.Tier.ToString() : "-")}");
-            GUILayout.Label($"Accumulated : {_session.Accumulated}");
-            GUILayout.Label($"Run active  : {_session.IsRunActive}");
-        }
-
-        private void DrawSlices()
-        {
-            Zone zone = _session.CurrentZone;
-
-            if (zone == null)
-            {
-                GUILayout.Label("No active zone.");
-                return;
-            }
-
-            Wheel wheel = zone.Wheel;
-
-            int total = 0;
-            for (int i = 0; i < wheel.Length; i++)
-                total += wheel[i].Weight;
-
-            GUILayout.Label("Slices:");
-
-            for (int i = 0; i < wheel.Length; i++)
-            {
-                WheelSlice slice = wheel[i];
-
-                string marker = i == _lastSliceIndex ? ">" : " ";
-                string content = slice.Type == SliceType.Penalty
-                    ? "PENALTY"
-                    : $"{slice.ItemId} x{slice.Amount}";
-                float percent = total > 0 ? slice.Weight * 100f / total : 0f;
-
-                GUILayout.Label($"{marker} [{i}] {content,-18} w:{slice.Weight,3}  {percent,5:0.0}%");
-            }
-        }
-
-        private void DrawLog()
-        {
-            var builder = new StringBuilder();
-            foreach (string line in _log) builder.AppendLine(line);
-
-            GUILayout.Label("Log:");
-            GUILayout.Label(builder.ToString());
-        }
-
-        private void DrawButtons()
-        {
-            GUILayout.BeginHorizontal();
-
-            GUI.enabled = _session.IsRunActive;
-            if (GUILayout.Button($"Spin ({_spinKey})")) Spin();
-            if (GUILayout.Button($"Cash Out ({_cashOutKey})")) CashOut();
-            GUI.enabled = true;
-
-            if (GUILayout.Button($"Restart ({_restartKey})")) Restart();
-
-            GUILayout.EndHorizontal();
+            return _sceneView.RewardHolderView.CashOutButtonView;
         }
     }
 }

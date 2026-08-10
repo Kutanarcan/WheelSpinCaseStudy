@@ -14,3 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _itemId: item_gold
   _icon: {fileID: 21300000, guid: f1973be4b4ef17e44902145a0d560fce, type: 3}
+  _wheelSettings:
+    Size: {x: 100, y: 50}
+    Rotation: 0
+    Offset: {x: 0, y: 0}
+  _rewardSettings:
+    Size: {x: 70, y: 35}
+    Rotation: 0
+    Offset: {x: 0, y: 0}

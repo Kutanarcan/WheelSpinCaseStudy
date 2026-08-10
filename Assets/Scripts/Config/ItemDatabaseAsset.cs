@@ -1,21 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace CaseStudy.WheelSpin
 {
-    public class ItemDatabaseAsset : MonoBehaviour
+    [CreateAssetMenu(menuName ="CaseStudy/Item Database", fileName = "ItemDatabase")]
+    public class ItemDatabaseAsset : ScriptableObject
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-        
-        }
+        [SerializeField] private ItemAsset[] _items = Array.Empty<ItemAsset>();
 
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
+        public IReadOnlyList<ItemAsset> Items => _items;
+
+        public ItemRegistry CreateRegistry() => new ItemRegistry(_items);
+
     }
 }

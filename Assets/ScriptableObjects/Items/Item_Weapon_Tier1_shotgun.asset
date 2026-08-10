@@ -10,7 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42f3ee22c34bc17469b1c1f3a8661069, type: 3}
-  m_Name: Item_Weapon_Knife_Tier1_shotgun
+  m_Name: Item_Weapon_Tier1_shotgun
   m_EditorClassIdentifier: 
-  _itemId: weapon_knife_tier1_shotgun
+  _itemId: weapon_tier1_shotgun
   _icon: {fileID: 21300000, guid: 63c075c9df22a8c45bee97517a5b995c, type: 3}
+  _wheelSettings:
+    Size: {x: 100, y: 35}
+    Rotation: 0
+    Offset: {x: 0, y: 0}
+  _rewardSettings:
+    Size: {x: 100, y: 35}
+    Rotation: 0
+    Offset: {x: 0, y: 0}

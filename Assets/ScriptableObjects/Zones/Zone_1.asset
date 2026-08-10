@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rewards:
   - _item: {fileID: 11400000, guid: a48b6eb41acc9304f9863460ea4c38d1, type: 2}
-    _amount: 100
+    _amount: 1
     _weight: 14
   - _item: {fileID: 11400000, guid: ea93adb6b6bae1b41a732f854cb2e44a, type: 2}
-    _amount: 100
+    _amount: 1
     _weight: 7
   - _item: {fileID: 11400000, guid: a48b6eb41acc9304f9863460ea4c38d1, type: 2}
     _amount: 1
@@ -26,15 +26,15 @@ MonoBehaviour:
     _amount: 1
     _weight: 12
   - _item: {fileID: 11400000, guid: c882bc1b384dac7478e128f24505c976, type: 2}
-    _amount: 100
+    _amount: 1
     _weight: 6
   - _item: {fileID: 11400000, guid: dd4c95144bdce12499e10c91a5dcb015, type: 2}
-    _amount: 100
+    _amount: 1
     _weight: 10
   - _item: {fileID: 11400000, guid: dd4c95144bdce12499e10c91a5dcb015, type: 2}
-    _amount: 100
+    _amount: 1
     _weight: 14
   - _item: {fileID: 11400000, guid: 29c4b74bf280cf4428d51a3e8af3f81c, type: 2}
-    _amount: 100
+    _amount: 1
     _weight: 8
   _penaltySlotIndex: 1

@@ -454,7 +454,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 216024107}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -537,10 +537,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1211a9e53b26444d998b1889ad597af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RewardViewPrefab: {fileID: 0}
-  RewardViewArray: []
   CashOutButtonView: {fileID: 2383583492237769355}
-  RewardContentParent: {fileID: 1667920147}
+  _prewarmCount: 12
+  _rewardContentParent: {fileID: 1667920147}
+  _rewardViewPrefab: {fileID: 8437377521701089039, guid: 3695d7c6d3a2f8f4592b9f781dfb3b2c, type: 3}
 --- !u!1 &271036655
 GameObject:
   m_ObjectHideFlags: 0
@@ -924,7 +924,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 383811053}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -967,6 +967,7 @@ GameObject:
   - component: {fileID: 397903178}
   - component: {fileID: 397903177}
   - component: {fileID: 397903176}
+  - component: {fileID: 397903180}
   m_Layer: 5
   m_Name: WheelSectionCanvas
   m_TagString: Untagged
@@ -1057,6 +1058,43 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &397903180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 397903175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4bda4bb4e0979a44ab2d35d9bf60bbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WheelView: {fileID: 908922423}
+  ZoneCountView: {fileID: 2015526615}
+  ZoneSelectorView: {fileID: 984009780}
+  RewardHolderView: {fileID: 247908567}
+  PenaltySprite: {fileID: 21300000, guid: 4fc928b46b63b024b8e1e4a4cdf46f38, type: 3}
+  PenaltyViewSettings:
+    Size: {x: 100, y: 100}
+    Rotation: 0
+    Offset: {x: 0, y: 0}
+  ZonePalette:
+    Current: {r: 0, g: 0, b: 0, a: 1}
+    Bronze: {r: 1, g: 1, b: 1, a: 1}
+    Silver: {r: 0.35, g: 0.85, b: 0.45, a: 1}
+    Gold: {r: 1, g: 0.82, b: 0.25, a: 1}
+  SpinSettings:
+    Duration: 2.5
+    MinTurns: 3
+    MaxTurns: 5
+    Ease: 12
+    SelectorStepDuration: 0.25
+    SelectorStepEase: 27
+    ScrollDuration: 0.35
+    ScrollEase: 9
+    IndicatorAngle: 0
+    SlicesClockwise: 1
 --- !u!1 &432694762
 GameObject:
   m_ObjectHideFlags: 0
@@ -1580,9 +1618,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c99b233c42914c48b1975d9ffccfecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Icon: {fileID: 1341056288}
-  IconRect: {fileID: 1341056287}
-  AmountText: {fileID: 432694764}
+  _icon: {fileID: 1341056288}
+  _iconRect: {fileID: 1341056287}
+  _amountText: {fileID: 432694764}
 --- !u!1 &908922421
 GameObject:
   m_ObjectHideFlags: 0
@@ -1644,6 +1682,7 @@ MonoBehaviour:
   - {fileID: 1565653287}
   - {fileID: 1660336752}
   - {fileID: 715399359}
+  WheelRect: {fileID: 2038278943}
   SpinButtonView: {fileID: 115511064346082529}
   SpinIndicatorImage: {fileID: 2035842092}
 --- !u!1 &922071900
@@ -2047,9 +2086,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c99b233c42914c48b1975d9ffccfecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Icon: {fileID: 1596772505}
-  IconRect: {fileID: 1596772504}
-  AmountText: {fileID: 302909771}
+  _icon: {fileID: 1596772505}
+  _iconRect: {fileID: 1596772504}
+  _amountText: {fileID: 302909771}
 --- !u!1 &1101995189
 GameObject:
   m_ObjectHideFlags: 0
@@ -2125,7 +2164,7 @@ MonoBehaviour:
   m_Inertia: 1
   m_DecelerationRate: 0.135
   m_ScrollSensitivity: 1
-  m_Viewport: {fileID: 0}
+  m_Viewport: {fileID: 1101995190}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 0}
   m_HorizontalScrollbarVisibility: 0
@@ -2453,9 +2492,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c99b233c42914c48b1975d9ffccfecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Icon: {fileID: 84598223}
-  IconRect: {fileID: 84598222}
-  AmountText: {fileID: 170069293}
+  _icon: {fileID: 84598223}
+  _iconRect: {fileID: 84598222}
+  _amountText: {fileID: 170069293}
 --- !u!1 &1323715040
 GameObject:
   m_ObjectHideFlags: 0
@@ -2735,9 +2774,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c99b233c42914c48b1975d9ffccfecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Icon: {fileID: 1323715042}
-  IconRect: {fileID: 1323715041}
-  AmountText: {fileID: 1592933811}
+  _icon: {fileID: 1323715042}
+  _iconRect: {fileID: 1323715041}
+  _amountText: {fileID: 1592933811}
 --- !u!1 &1518887476
 GameObject:
   m_ObjectHideFlags: 0
@@ -2865,9 +2904,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c99b233c42914c48b1975d9ffccfecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Icon: {fileID: 1154595403}
-  IconRect: {fileID: 1154595402}
-  AmountText: {fileID: 1767690055}
+  _icon: {fileID: 1154595403}
+  _iconRect: {fileID: 1154595402}
+  _amountText: {fileID: 1767690055}
 --- !u!1 &1592933809
 GameObject:
   m_ObjectHideFlags: 0
@@ -3130,9 +3169,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c99b233c42914c48b1975d9ffccfecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Icon: {fileID: 206725126}
-  IconRect: {fileID: 206725125}
-  AmountText: {fileID: 512388269}
+  _icon: {fileID: 206725126}
+  _iconRect: {fileID: 206725125}
+  _amountText: {fileID: 512388269}
 --- !u!1 &1660336750
 GameObject:
   m_ObjectHideFlags: 0
@@ -3184,9 +3223,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c99b233c42914c48b1975d9ffccfecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Icon: {fileID: 1518887478}
-  IconRect: {fileID: 1518887477}
-  AmountText: {fileID: 271036657}
+  _icon: {fileID: 1518887478}
+  _iconRect: {fileID: 1518887477}
+  _amountText: {fileID: 271036657}
 --- !u!1 &1667920146
 GameObject:
   m_ObjectHideFlags: 0
@@ -3243,7 +3282,7 @@ MonoBehaviour:
     m_Top: 20
     m_Bottom: 20
   m_ChildAlignment: 1
-  m_Spacing: 0
+  m_Spacing: 5
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -3527,9 +3566,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c99b233c42914c48b1975d9ffccfecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Icon: {fileID: 1423155340}
-  IconRect: {fileID: 1423155339}
-  AmountText: {fileID: 922071902}
+  _icon: {fileID: 1423155340}
+  _iconRect: {fileID: 1423155339}
+  _amountText: {fileID: 922071902}
 --- !u!1 &1885220561
 GameObject:
   m_ObjectHideFlags: 0
@@ -3706,9 +3745,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba640edaaf1274742aec8efe161ac729, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ZoneNumberViewPrefab: {fileID: 2849602665681166552, guid: 520b96484999c2647820245e103f5de1, type: 3}
-  ZoneNumberViewArray: []
-  ZoneNumberContentParent: {fileID: 539140999}
+  _zoneNumberViewPrefab: {fileID: 2849602665681166552, guid: 520b96484999c2647820245e103f5de1, type: 3}
+  _content: {fileID: 539140999}
+  _viewport: {fileID: 1225189508}
+  _scrollRect: {fileID: 1885220564}
 --- !u!1 &2035842090
 GameObject:
   m_ObjectHideFlags: 0
@@ -3961,7 +4001,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2136550816
 Transform:
   m_ObjectHideFlags: 0
@@ -3990,12 +4030,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _config: {fileID: 11400000, guid: 4004ac473a016034f8d02bfb56c9186e, type: 2}
-  _drawDebugGui: 1
+  _sceneView: {fileID: 397903180}
   _useFixedSeed: 0
   _seed: 1337
-  _spinKey: 32
-  _cashOutKey: 99
-  _restartKey: 114
 --- !u!1001 &115511064346082528
 PrefabInstance:
   m_ObjectHideFlags: 0

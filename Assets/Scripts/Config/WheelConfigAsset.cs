@@ -15,10 +15,12 @@ namespace CaseStudy.WheelSpin
 
         [Header("Content")]
         [SerializeField] private ZoneSetAsset _zoneSet;
+        [SerializeField] private ItemDatabaseAsset _itemDatabase;
 
         public int SliceCount => _sliceCount;
         public int PenaltyWeight => _penaltyWeight;
         public ZoneSetAsset ZoneSet => _zoneSet;
+        public ItemDatabaseAsset ItemDatabase => _itemDatabase;
 
         public WheelTierRuleProvider CreateTierRuleProvider()
             => new WheelTierRuleProvider(_goldEvery, _silverEvery);

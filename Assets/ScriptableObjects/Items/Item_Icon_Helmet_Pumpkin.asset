@@ -14,3 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _itemId: icon_helmet_pumpkin
   _icon: {fileID: 21300000, guid: 1a280415028559143a274d73f0ee726a, type: 3}
+  _wheelSettings:
+    Size: {x: 100, y: 100}
+    Rotation: 0
+    Offset: {x: 0, y: 0}
+  _rewardSettings:
+    Size: {x: 70, y: 70}
+    Rotation: 0
+    Offset: {x: 0, y: 0}

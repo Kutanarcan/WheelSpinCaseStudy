@@ -12,19 +12,10 @@ namespace CaseStudy.WheelSpin
         public Zone CurrentZone { get; private set; }
         public bool IsRunActive { get; private set; }
 
-        /// <summary>Yeni zone hazir. Carki cizmek icin bunu dinle.</summary>
         public event Action<Zone> ZoneStarted;
-
-        /// <summary>Spin cozuldu. SliceIndex animasyonun duracagi dilim.</summary>
         public event Action<SpinResult> SpinResolved;
-
-        /// <summary>Ceza geldi. (ulasilan zone, kaybedilen birikim)</summary>
         public event Action<int, long> RunFailed;
-
-        /// <summary>Oyuncu cikti. (ulasilan zone, cebe giren birikim)</summary>
         public event Action<int, long> RunCashedOut;
-
-        /// <summary>Zone kalmadi. (son zone, cebe giren birikim)</summary>
         public event Action<int, long> RunCompleted;
 
         public WheelSession(IZoneProvider zoneProvider, WheelSpinner spinner)
@@ -53,6 +44,8 @@ namespace CaseStudy.WheelSpin
             result = _spinner.Spin(CurrentZone.Wheel);
 
             SpinResolved?.Invoke(result);
+
+            UnityEngine.Debug.Log($"Spin Logic Result Index: {result.SliceIndex}");
 
             if (result.IsPenalty)
             {

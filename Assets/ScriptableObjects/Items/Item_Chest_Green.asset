@@ -14,3 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _itemId: chest_green
   _icon: {fileID: 21300000, guid: f05ecd37194d92843a95d9899b77c5db, type: 3}
+  _wheelSettings:
+    Size: {x: 100, y: 50}
+    Rotation: 0
+    Offset: {x: 0, y: 0}
+  _rewardSettings:
+    Size: {x: 70, y: 35}
+    Rotation: 0
+    Offset: {x: 0, y: 0}
