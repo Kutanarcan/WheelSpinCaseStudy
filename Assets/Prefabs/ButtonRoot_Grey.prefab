@@ -185,7 +185,8 @@ GameObject:
   - component: {fileID: 8737499646525693561}
   - component: {fileID: 9037720254908158921}
   - component: {fileID: 7655126551892247074}
-  - component: {fileID: 7322977613475296933}
+  - component: {fileID: 3288416363552321981}
+  - component: {fileID: 8233816661540646811}
   m_Layer: 5
   m_Name: InputRaycastBox
   m_TagString: Untagged
@@ -251,7 +252,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7322977613475296933
+--- !u!114 &3288416363552321981
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -260,10 +261,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 5621176333928325469}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e6f4cf0a9d241a45b85e5643451c5f4, type: 3}
+  m_Script: {fileID: 11500000, guid: 2e033fec828b0b644909c0de90d0efa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   <Interactable>k__BackingField: 1
+--- !u!114 &8233816661540646811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5621176333928325469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b15690ba60015c442ac11da1ff60513a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetGraphic: {fileID: 2602697773024638889}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  pressedColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
+  disabledColor: {r: 0.6, g: 0.6, b: 0.6, a: 0.5}
+  duration: 0.1
+  ease: 6
+  ignoreTimeScale: 1
 --- !u!1 &6099724921872340677
 GameObject:
   m_ObjectHideFlags: 0

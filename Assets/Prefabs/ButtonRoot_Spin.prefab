@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1454173064677946009}
+  - component: {fileID: 517992359083823809}
   m_Layer: 5
   m_Name: ButtonRoot_Spin
   m_TagString: Untagged
@@ -38,6 +39,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &517992359083823809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2625116787529969656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14fe43e7cfc784e4ea43f2e7952cbee5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ActionButton: {fileID: 0}
 --- !u!1 &2917880997708096577
 GameObject:
   m_ObjectHideFlags: 0
@@ -49,7 +63,8 @@ GameObject:
   - component: {fileID: 2251200560632060773}
   - component: {fileID: 1950170691056096981}
   - component: {fileID: 882831229698918206}
-  - component: {fileID: 278231477868868537}
+  - component: {fileID: 8376349562573776111}
+  - component: {fileID: 4130485907969052361}
   m_Layer: 5
   m_Name: InputRaycastBox
   m_TagString: Untagged
@@ -74,8 +89,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00074387, y: -0.0000085831}
-  m_SizeDelta: {x: 166.48, y: 50.076}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1950170691056096981
 CanvasRenderer:
@@ -115,7 +130,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &278231477868868537
+--- !u!114 &8376349562573776111
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -124,10 +139,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 2917880997708096577}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e6f4cf0a9d241a45b85e5643451c5f4, type: 3}
+  m_Script: {fileID: 11500000, guid: 2e033fec828b0b644909c0de90d0efa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   <Interactable>k__BackingField: 1
+--- !u!114 &4130485907969052361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2917880997708096577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b15690ba60015c442ac11da1ff60513a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetGraphic: {fileID: 4783571076090491573}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  pressedColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
+  disabledColor: {r: 0.6, g: 0.6, b: 0.6, a: 0.5}
+  duration: 0.1
+  ease: 6
+  ignoreTimeScale: 1
 --- !u!1 &3664408538164089817
 GameObject:
   m_ObjectHideFlags: 0
@@ -164,7 +198,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 134, y: 134}
+  m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5357877524996394562
 CanvasRenderer:
