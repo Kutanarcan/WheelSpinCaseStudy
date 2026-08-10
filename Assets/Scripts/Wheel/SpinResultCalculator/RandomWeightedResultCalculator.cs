@@ -5,19 +5,17 @@ namespace CaseStudy.WheelSpin
     public class RandomWeightedResultCalculator : IWheelSpinResultCalculator
     {
         private readonly Random _random;
-        private readonly int _sliceCount;
 
-        public RandomWeightedResultCalculator(Random random, int sliceCount = 8)
+        public RandomWeightedResultCalculator(Random random)
         {
             _random = random;
-            _sliceCount = sliceCount;
         }
 
         public int Calculate(Wheel wheel)
         {
             int total = 0;
 
-            for (int i = 0; i < _sliceCount; i++)
+            for (int i = 0; i < wheel.Length; i++)
             {
                 total += wheel[i].Weight;
             }
@@ -28,7 +26,7 @@ namespace CaseStudy.WheelSpin
             int roll = _random.Next(total);
             int cursor = 0;
 
-            for (int i = 0; i < _sliceCount; i++)
+            for (int i = 0; i < wheel.Length; i++)
             {
                 cursor += wheel[i].Weight;
 
@@ -36,7 +34,7 @@ namespace CaseStudy.WheelSpin
                     return i;
             }
 
-            return _sliceCount - 1;
+            return wheel.Length - 1;
         }
     }
 }

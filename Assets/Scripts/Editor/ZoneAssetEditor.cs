@@ -6,17 +6,17 @@ namespace CaseStudy.WheelSpin.EditorTools
     [CustomEditor(typeof(ZoneAsset))]
     public class ZoneAssetEditor : Editor
     {
-        private const string PreviewKey = "CaseStudy.WheelSpin.PreviewPenalty";
-
         private SerializedProperty _rewards;
         private SerializedProperty _penaltySlotIndex;
-        private float _previewPenalty;
+        private SerializedProperty _overridePenaltyChance;
+        private SerializedProperty _penaltyChanceOverride;
 
         private void OnEnable()
         {
             _rewards = serializedObject.FindProperty("_rewards");
             _penaltySlotIndex = serializedObject.FindProperty("_penaltySlotIndex");
-            _previewPenalty = EditorPrefs.GetFloat(PreviewKey, 0.10f);
+            _overridePenaltyChance = serializedObject.FindProperty("_overridePenaltyChance");
+            _penaltyChanceOverride = serializedObject.FindProperty("_penaltyChanceOverride");
         }
 
         public override void OnInspectorGUI()
@@ -25,12 +25,10 @@ namespace CaseStudy.WheelSpin.EditorTools
 
             EditorGUILayout.PropertyField(_penaltySlotIndex, new GUIContent("Penalty Slot"));
 
-            EditorGUI.BeginChangeCheck();
-            _previewPenalty = EditorGUILayout.Slider("Preview Penalty", _previewPenalty, 0f, 0.5f);
-            if (EditorGUI.EndChangeCheck()) EditorPrefs.SetFloat(PreviewKey, _previewPenalty);
+            DrawPenaltyChance(out float resolvedChance);
 
             EditorGUILayout.Space();
-            DrawTable();
+            DrawTable(resolvedChance);
             EditorGUILayout.Space();
             DrawWarnings();
             EditorGUILayout.Space();
@@ -39,7 +37,30 @@ namespace CaseStudy.WheelSpin.EditorTools
             serializedObject.ApplyModifiedProperties();
         }
 
-        private void DrawTable()
+        private void DrawPenaltyChance(out float resolvedChance)
+        {
+            float global = WheelConfigLocator.GlobalPenaltyChance();
+
+            EditorGUILayout.PropertyField(_overridePenaltyChance, new GUIContent("Override Penalty Chance"));
+
+            using (new EditorGUI.DisabledScope(!_overridePenaltyChance.boolValue))
+                EditorGUILayout.PropertyField(_penaltyChanceOverride, new GUIContent("Penalty Chance"));
+
+            resolvedChance = _overridePenaltyChance.boolValue ? _penaltyChanceOverride.floatValue : global;
+
+            int otherSum = OtherWeightSum();
+            int penaltyWeight = PenaltyOdds.WeightFor(otherSum, resolvedChance);
+            float actual = PenaltyOdds.ChanceFor(otherSum, penaltyWeight);
+
+            string source = _overridePenaltyChance.boolValue ? "bu zone" : "global";
+
+            EditorGUILayout.HelpBox(
+                $"Bronze penalty: {Percent(actual)} ({source})\n" +
+                $"Turetilen agirlik: {penaltyWeight}   Diger dilimlerin toplami: {otherSum}",
+                MessageType.None);
+        }
+
+        private void DrawTable(float resolvedChance)
         {
             int penaltyIndex = _penaltySlotIndex.intValue;
 
@@ -47,7 +68,11 @@ namespace CaseStudy.WheelSpin.EditorTools
             for (int i = 0; i < _rewards.arraySize; i++)
                 total += WeightAt(i);
 
-            int totalWithoutPenaltySlot = total - WeightAt(penaltyIndex);
+            int otherSum = OtherWeightSum();
+            int penaltyWeight = PenaltyOdds.WeightFor(otherSum, resolvedChance);
+
+            // Runtime ile birebir ayni sayi: yuvarlanmis agirliktan geri hesaplanan olasilik.
+            float actualPenalty = PenaltyOdds.ChanceFor(otherSum, penaltyWeight);
 
             EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
             GUILayout.Label("#", GUILayout.Width(20f));
@@ -75,11 +100,13 @@ namespace CaseStudy.WheelSpin.EditorTools
 
                 EditorGUILayout.PropertyField(item, GUIContent.none, GUILayout.Width(150f));
                 EditorGUILayout.PropertyField(amount, GUIContent.none, GUILayout.Width(60f));
+
+                // Penalty slotunun weight'i Bronze'da kullanilmaz; sadece Silver+ icin anlamli.
                 EditorGUILayout.PropertyField(weight, GUIContent.none, GUILayout.Width(55f));
 
                 string bronze = isPenalty
-                    ? "PENALTY"
-                    : Percent((1f - _previewPenalty) * weight.intValue / Mathf.Max(1, totalWithoutPenaltySlot));
+                    ? Percent(actualPenalty)
+                    : Percent((1f - actualPenalty) * weight.intValue / Mathf.Max(1, otherSum));
 
                 string silver = Percent((float)weight.intValue / Mathf.Max(1, total));
 
@@ -90,7 +117,7 @@ namespace CaseStudy.WheelSpin.EditorTools
             }
 
             EditorGUILayout.LabelField(
-                $"Bronze penalty share: {Percent(_previewPenalty)}    Total weight: {total}",
+                $"Total weight: {total}    Bronze havuzu: {otherSum} + {penaltyWeight} (penalty)",
                 EditorStyles.miniLabel);
         }
 
@@ -116,7 +143,8 @@ namespace CaseStudy.WheelSpin.EditorTools
             {
                 EditorGUILayout.HelpBox(
                     $"Slot {penaltyIndex} holds a reward that is unreachable on Bronze zones. " +
-                    "It only appears on Silver and Gold.",
+                    "It only appears on Silver and Gold. Its weight is ignored on Bronze - " +
+                    "the penalty weight is derived from Penalty Chance instead.",
                     MessageType.Info);
             }
         }
@@ -151,6 +179,20 @@ namespace CaseStudy.WheelSpin.EditorTools
                 element.FindPropertyRelative("_item").objectReferenceValue = pool[Random.Range(0, pool.Length)];
                 element.FindPropertyRelative("_weight").intValue = Random.Range(5, 21);
             }
+        }
+
+        private int OtherWeightSum()
+        {
+            int penaltyIndex = _penaltySlotIndex.intValue;
+            int sum = 0;
+
+            for (int i = 0; i < _rewards.arraySize; i++)
+            {
+                if (i == penaltyIndex) continue;
+                sum += WeightAt(i);
+            }
+
+            return sum;
         }
 
         private int WeightAt(int index)

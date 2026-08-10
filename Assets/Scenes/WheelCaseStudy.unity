@@ -1766,9 +1766,9 @@ RectTransform:
   m_Father: {fileID: 539986597}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 802, y: 8}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1250, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &551975293
@@ -1783,7 +1783,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf74ccd555cea2142822b64a75118e43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RewardViewPrefab: {fileID: 8437377521701089039, guid: 3695d7c6d3a2f8f4592b9f781dfb3b2c, type: 3}
+  RewardViewPrefab: {fileID: 5019937051797307541, guid: e6769da9f61f0e5479c139bd576d118d, type: 3}
   ClaimButton: {fileID: 834382492}
   Content: {fileID: 1257466965}
   PanelRoot: {fileID: 449625557}
@@ -2185,7 +2185,6 @@ MonoBehaviour:
   ReviveButtonView: {fileID: 4235036633403794099}
   GiveUpButtonView: {fileID: 1265271754}
   PanelRoot: {fileID: 1959512621}
-  _reviveCost: 25
 --- !u!1 &908922421
 GameObject:
   m_ObjectHideFlags: 0
@@ -6206,7 +6205,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80749d297fe84cb479df83fe23085719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ReviveAmountText: {fileID: 1905228587}
   ActionButtonView: {fileID: 7292836087274333322}
 --- !u!114 &4238997944221465260
 MonoBehaviour:

@@ -6,7 +6,7 @@ namespace CaseStudy.WheelSpin
     {
         private readonly IReadOnlyList<ZoneAsset> _assets;
         private readonly WheelTierRuleProvider _tierRules;
-        private readonly int _penaltyWeight;
+        private readonly float _penaltyChance;
 
         private readonly Dictionary<int, Zone> _cache = new Dictionary<int, Zone>();
 
@@ -15,11 +15,11 @@ namespace CaseStudy.WheelSpin
         public ScriptableObjectZoneProvider(
             IReadOnlyList<ZoneAsset> assets,
             WheelTierRuleProvider tierRules,
-            int penaltyWeight)
+            float penaltyChance)
         {
             _assets = assets;
             _tierRules = tierRules;
-            _penaltyWeight = penaltyWeight;
+            _penaltyChance = penaltyChance;
         }
 
         public Zone GetZone(int index)
@@ -32,20 +32,19 @@ namespace CaseStudy.WheelSpin
             if (asset == null)
                 return null;
 
-            Zone zone = asset.ToZone(index, _tierRules, _penaltyWeight);
+            Zone zone = asset.ToZone(index, _tierRules, _penaltyChance);
 
             _cache[index] = zone;
 
             return zone;
         }
 
-        /// <summary>Cache'e yazmaz: revive tek bir run'a ozgudur, sonraki run'lara sizmamali.</summary>
         public Zone GetZoneWithPenaltyDisabled(int index)
         {
             ZoneAsset asset = GetAsset(index);
 
             return asset != null
-                ? asset.ToZone(index, _tierRules, _penaltyWeight, penaltyDisabled: true)
+                ? asset.ToZone(index, _tierRules, _penaltyChance, penaltyDisabled: true)
                 : null;
         }
 

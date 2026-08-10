@@ -8,6 +8,9 @@ namespace CaseStudy.WheelSpin
         public int Amount;
         public int Weight;
 
+        /// <summary>Revive sonrasi devre disi kalan penalty. Sunum bunu soluk cizer.</summary>
+        public bool IsDisabled;
+
         public static WheelSlice CreateReward(string itemId, int amount, int weight)
         {
             return new WheelSlice
@@ -19,14 +22,15 @@ namespace CaseStudy.WheelSpin
             };
         }
 
-        public static WheelSlice CreatePenalty(int weight)
+        public static WheelSlice CreatePenalty(int weight, bool disabled = false)
         {
             return new WheelSlice
             {
                 Type = SliceType.Penalty,
                 ItemId = null,
                 Amount = 0,
-                Weight = weight
+                Weight = weight,
+                IsDisabled = disabled
             };
         }
     }

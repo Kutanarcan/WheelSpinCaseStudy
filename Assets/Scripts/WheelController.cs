@@ -36,7 +36,7 @@ namespace CaseStudy.WheelSpin
             ItemRegistry registry = _config.ItemDatabase.CreateRegistry();
 
             var zoneProvider = new ScriptableObjectZoneProvider(
-                _config.ZoneSet.Zones, tierRules, _config.PenaltyWeight);
+                _config.ZoneSet.Zones, tierRules, _config.PenaltyChance);
 
             if (!zoneProvider.TryValidate(out string error))
             {
@@ -44,13 +44,13 @@ namespace CaseStudy.WheelSpin
                 return;
             }
 
-            var calculator = new RandomWeightedResultCalculator(random, _config.SliceCount);
+            var calculator = new RandomWeightedResultCalculator(random);
             var spinner = new WheelSpinner(calculator, random);
 
             _rewards = new RewardLedger();
 
             _presenter = new WheelPresenter(
-                _sceneView, registry, tierRules, _config.SliceCount, _config.WheelTierViewDatabase, _rewards);
+                _sceneView, registry, tierRules, _config.WheelTierViewDatabase, _rewards);
             _presenter.BusyChanged += HandleBusyChanged;
             _presenter.Initialize(zoneProvider.ZoneCount);
 

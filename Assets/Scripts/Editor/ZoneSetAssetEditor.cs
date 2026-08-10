@@ -7,8 +7,6 @@ namespace CaseStudy.WheelSpin.EditorTools
     [CustomEditor(typeof(ZoneSetAsset))]
     public class ZoneSetAssetEditor : Editor
     {
-        private const string PreviewKey = "CaseStudy.WheelSpin.PreviewPenalty";
-
         private SerializedProperty _zones;
         private ReorderableList _list;
         private WheelTierRuleProvider _rules;
@@ -16,7 +14,7 @@ namespace CaseStudy.WheelSpin.EditorTools
         private void OnEnable()
         {
             _zones = serializedObject.FindProperty("_zones");
-            _rules = ResolveRules();
+            _rules = WheelConfigLocator.Rules();
 
             _list = new ReorderableList(serializedObject, _zones, true, true, true, true)
             {
@@ -32,14 +30,15 @@ namespace CaseStudy.WheelSpin.EditorTools
             _list.DoLayoutList();
 
             EditorGUILayout.LabelField(
-                $"Gold every {_rules.GoldEvery}, Silver every {_rules.SilverEvery}",
+                $"Gold every {_rules.GoldEvery}, Silver every {_rules.SilverEvery}    " +
+                $"Global penalty {WheelConfigLocator.GlobalPenaltyChance() * 100f:0.0}%   (* = zone override)",
                 EditorStyles.miniLabel);
 
             serializedObject.ApplyModifiedProperties();
         }
 
         private void DrawHeader(Rect rect)
-            => EditorGUI.LabelField(rect, "Zone   Tier      Penalty   Expected");
+            => EditorGUI.LabelField(rect, "Zone   Tier      Penalty        Expected");
 
         private void DrawElement(Rect rect, int index, bool active, bool focused)
         {
@@ -54,10 +53,10 @@ namespace CaseStudy.WheelSpin.EditorTools
             rect.height = EditorGUIUtility.singleLineHeight;
 
             var numberRect = new Rect(rect.x, rect.y, 30f, rect.height);
-            var fieldRect = new Rect(rect.x + 32f, rect.y, rect.width * 0.40f, rect.height);
-            var tierRect = new Rect(fieldRect.xMax + 6f, rect.y, 60f, rect.height);
-            var penRect = new Rect(tierRect.xMax + 6f, rect.y, 60f, rect.height);
-            var expRect = new Rect(penRect.xMax + 6f, rect.y, rect.xMax - penRect.xMax - 6f, rect.height);
+            var fieldRect = new Rect(rect.x + 32f, rect.y, rect.width * 0.34f, rect.height);
+            var tierRect = new Rect(fieldRect.xMax + 6f, rect.y, 55f, rect.height);
+            var penRect = new Rect(tierRect.xMax + 6f, rect.y, 110f, rect.height);
+            var expRect = new Rect(penRect.xMax + 6f, rect.y, Mathf.Max(30f, rect.xMax - penRect.xMax - 6f), rect.height);
 
             EditorGUI.LabelField(numberRect, zoneIndex.ToString());
             EditorGUI.PropertyField(fieldRect, element, GUIContent.none);
@@ -67,8 +66,22 @@ namespace CaseStudy.WheelSpin.EditorTools
             EditorGUI.LabelField(tierRect, tier.ToString());
             GUI.color = previous;
 
-            EditorGUI.LabelField(penRect, asset == null ? "-" : hasPenalty ? $"slot {asset.PenaltySlotIndex}" : "none");
-            EditorGUI.LabelField(expRect, asset == null ? "-" : ExpectedReward(asset, hasPenalty).ToString("0"));
+            EditorGUI.LabelField(penRect, PenaltyLabel(asset, hasPenalty));
+            EditorGUI.LabelField(expRect, asset == null ? "-" : ExpectedReward(asset, hasPenalty).ToString("0.0"));
+        }
+
+        private static string PenaltyLabel(ZoneAsset asset, bool hasPenalty)
+        {
+            if (asset == null) return "-";
+            if (!hasPenalty) return "none";
+
+            float chance = ResolvedChance(asset);
+            int weight = PenaltyOdds.WeightFor(asset.OtherWeightSum(), chance);
+            float actual = PenaltyOdds.ChanceFor(asset.OtherWeightSum(), weight);
+
+            string mark = asset.OverridesPenaltyChance ? "*" : string.Empty;
+
+            return $"slot {asset.PenaltySlotIndex} · {actual * 100f:0.0}%{mark}";
         }
 
         private static Color TierColor(WheelTier tier)
@@ -81,10 +94,11 @@ namespace CaseStudy.WheelSpin.EditorTools
             }
         }
 
+        private static float ResolvedChance(ZoneAsset asset)
+            => asset.ResolvePenaltyChance(WheelConfigLocator.GlobalPenaltyChance());
+
         private static float ExpectedReward(ZoneAsset asset, bool hasPenalty)
         {
-            float q = EditorPrefs.GetFloat(PreviewKey, 0.10f);
-
             int total = 0;
             for (int i = 0; i < asset.Rewards.Count; i++)
                 total += asset.Rewards[i].Weight;
@@ -100,32 +114,22 @@ namespace CaseStudy.WheelSpin.EditorTools
                 return sum;
             }
 
-            int penaltyIndex = asset.PenaltySlotIndex;
-            int totalWithout = total - asset.Rewards[penaltyIndex].Weight;
-            if (totalWithout <= 0) return 0f;
+            int otherSum = asset.OtherWeightSum();
+            if (otherSum <= 0) return 0f;
 
+            int penaltyWeight = PenaltyOdds.WeightFor(otherSum, ResolvedChance(asset));
+            float penaltyChance = PenaltyOdds.ChanceFor(otherSum, penaltyWeight);
+
+            int penaltyIndex = asset.PenaltySlotIndex;
             float expected = 0f;
+
             for (int i = 0; i < asset.Rewards.Count; i++)
             {
                 if (i == penaltyIndex) continue;
-                expected += asset.Rewards[i].Amount * (1f - q) * asset.Rewards[i].Weight / totalWithout;
+                expected += asset.Rewards[i].Amount * (1f - penaltyChance) * asset.Rewards[i].Weight / otherSum;
             }
 
             return expected;
-        }
-
-        private static WheelTierRuleProvider ResolveRules()
-        {
-            string[] guids = AssetDatabase.FindAssets($"t:{nameof(WheelConfigAsset)}");
-
-            if (guids.Length > 0)
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guids[0]);
-                var config = AssetDatabase.LoadAssetAtPath<WheelConfigAsset>(path);
-                if (config != null) return config.CreateTierRuleProvider();
-            }
-
-            return new WheelTierRuleProvider();
         }
     }
 }

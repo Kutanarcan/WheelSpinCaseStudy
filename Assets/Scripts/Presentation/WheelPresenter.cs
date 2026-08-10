@@ -32,7 +32,6 @@ namespace CaseStudy.WheelSpin
             WheelSceneView view,
             ItemRegistry registry,
             WheelTierRuleProvider tierRules,
-            int sliceCount,
             WheelTierViewDatabase wheelTierViewDatabase,
             RewardLedger rewards)
         {
@@ -40,7 +39,7 @@ namespace CaseStudy.WheelSpin
 
             _slicePresenter = new WheelSlicePresenter(
                 view.WheelView, registry, view.PenaltySprite, view.PenaltyViewSettings,
-                view.SpinSettings, sliceCount,
+                view.SpinSettings,
                 wheelTierViewDatabase);
 
             _zonePresenter = new ZonePresenter(

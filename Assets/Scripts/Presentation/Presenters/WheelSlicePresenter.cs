@@ -33,7 +33,6 @@ namespace CaseStudy.WheelSpin
             Sprite penaltySprite,
             ItemViewSettings penaltySettings,
             WheelSpinSettings settings,
-            int sliceCount,
             WheelTierViewDatabase wheelTierViewDatabase)
         {
             _view = view;
@@ -43,7 +42,8 @@ namespace CaseStudy.WheelSpin
             _settings = settings;
             _wheelTierViewDatabase = wheelTierViewDatabase;
 
-            _animator = new WheelSpinAnimator(view.WheelRect, settings, sliceCount);
+            // Dilim sayisinin tek kaynagi sahnedeki view dizisi.
+            _animator = new WheelSpinAnimator(view.WheelRect, settings, view.SliceViewArray.Length);
 
             _holder = view.HolderRect != null && view.HolderRect != view.WheelRect
                 ? view.HolderRect
@@ -79,7 +79,7 @@ namespace CaseStudy.WheelSpin
 
                 if (slice.Type == SliceType.Penalty)
                 {
-                    views[i].BindPenalty(_penaltySprite, _penaltySettings, disabled: slice.Weight <= 0);
+                    views[i].BindPenalty(_penaltySprite, _penaltySettings, disabled: slice.IsDisabled);
                     continue;
                 }
 
