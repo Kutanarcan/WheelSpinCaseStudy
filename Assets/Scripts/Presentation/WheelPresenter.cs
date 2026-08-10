@@ -149,10 +149,7 @@ namespace CaseStudy.WheelSpin
                 return;
             }
 
-            // Finish -> ClearCaptured alani null'ladigi icin referansi simdi yakala.
             Zone next = _nextZone;
-
-            // Sayaci HER IKI cagridan once kur: biri callback'ini senkron cagirabilir.
             _pendingParts = 2;
 
             _zonePresenter.Show(next.Index, instant: false, _onPartComplete);
