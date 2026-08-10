@@ -13,6 +13,7 @@ namespace CaseStudy.WheelSpin
         private readonly ItemViewSettings _penaltySettings;
         private readonly WheelSpinSettings _settings;
         private readonly WheelSpinAnimator _animator;
+        private readonly WheelTierViewDatabase _wheelTierViewDatabase;
         private readonly RectTransform _holder;  
         private readonly float _restAnchoredY;
 
@@ -32,13 +33,15 @@ namespace CaseStudy.WheelSpin
             Sprite penaltySprite,
             ItemViewSettings penaltySettings,
             WheelSpinSettings settings,
-            int sliceCount)
+            int sliceCount,
+            WheelTierViewDatabase wheelTierViewDatabase)
         {
             _view = view;
             _registry = registry;
             _penaltySprite = penaltySprite;
             _penaltySettings = penaltySettings;
             _settings = settings;
+            _wheelTierViewDatabase = wheelTierViewDatabase;
 
             _animator = new WheelSpinAnimator(view.WheelRect, settings, sliceCount);
 
@@ -85,6 +88,11 @@ namespace CaseStudy.WheelSpin
                     views[i].Bind(item.Icon, slice.Amount, item.WheelSettings);
                 }
             }
+
+            var spritePack = _wheelTierViewDatabase.GetSprite(zone.Tier);
+            
+            _view.WheelImage.sprite = spritePack.Wheel;
+            _view.SpinIndicatorImage.sprite = spritePack.WheelIndicator;
         }
 
         public void PlaySpin(int sliceIndex, Action onComplete) => _animator.Play(sliceIndex, onComplete);

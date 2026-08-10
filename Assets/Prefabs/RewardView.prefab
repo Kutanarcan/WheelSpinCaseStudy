@@ -186,9 +186,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93c2a15e3525d9444993394273ffddfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Icon: {fileID: 413097693531838167}
-  IconRect: {fileID: 413097693531838166}
-  AmountText: {fileID: 413097692385865251}
+  _icon: {fileID: 413097693531838167}
+  _iconRect: {fileID: 413097693531838166}
+  _amountText: {fileID: 413097692385865251}
+  _punchScale: 0.35
+  _punchDuration: 0.44
 --- !u!1 &413097693531838165
 GameObject:
   m_ObjectHideFlags: 0

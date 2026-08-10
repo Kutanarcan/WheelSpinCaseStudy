@@ -20,6 +20,7 @@ namespace CaseStudy.WheelSpin
 
         private void Awake()
         {
+            Application.targetFrameRate = 60;
             Initialize();
             StartNewRun();
         }
@@ -45,7 +46,7 @@ namespace CaseStudy.WheelSpin
             var calculator = new RandomWeightedResultCalculator(random, _config.SliceCount);
             var spinner = new WheelSpinner(calculator, random);
 
-            _presenter = new WheelPresenter(_sceneView, registry, tierRules, _config.SliceCount);
+            _presenter = new WheelPresenter(_sceneView, registry, tierRules, _config.SliceCount, _config.WheelTierViewDatabase);
             _presenter.BusyChanged += HandleBusyChanged;
             _presenter.Initialize(zoneProvider.ZoneCount);
 
@@ -91,10 +92,10 @@ namespace CaseStudy.WheelSpin
 
         public void Spin()
         {
-            if (!CanAct()) 
+            if (!CanAct())
                 return;
 
-            if (!_session.TrySpin(out _)) 
+            if (!_session.TrySpin(out _))
                 return;
 
             _presenter.Play();
@@ -125,12 +126,12 @@ namespace CaseStudy.WheelSpin
         {
             ActionButtonView spin = GetSpinButton();
 
-            if (spin != null) 
+            if (spin != null)
                 spin.Interactable = interactable;
 
             ActionButtonView cashOut = GetCashOutButton();
 
-            if (cashOut != null) 
+            if (cashOut != null)
                 cashOut.Interactable = interactable;
         }
 
@@ -138,12 +139,12 @@ namespace CaseStudy.WheelSpin
         {
             ActionButtonView spin = GetSpinButton();
 
-            if (spin != null) 
+            if (spin != null)
                 spin.Click += Spin;
 
             ActionButtonView cashOut = GetCashOutButton();
 
-            if (cashOut != null) 
+            if (cashOut != null)
                 cashOut.Click += CashOut;
         }
 
@@ -162,7 +163,7 @@ namespace CaseStudy.WheelSpin
 
         private ActionButtonView GetSpinButton()
         {
-            if (_sceneView == null || _sceneView.WheelView == null) 
+            if (_sceneView == null || _sceneView.WheelView == null)
                 return null;
 
             SpinButtonView spinButton = _sceneView.WheelView.SpinButtonView;
@@ -172,7 +173,7 @@ namespace CaseStudy.WheelSpin
 
         private ActionButtonView GetCashOutButton()
         {
-            if (_sceneView == null || _sceneView.RewardHolderView == null) 
+            if (_sceneView == null || _sceneView.RewardHolderView == null)
                 return null;
 
             return _sceneView.RewardHolderView.CashOutButtonView;

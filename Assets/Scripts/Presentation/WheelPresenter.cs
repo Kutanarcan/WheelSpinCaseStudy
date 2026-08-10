@@ -7,7 +7,6 @@ namespace CaseStudy.WheelSpin
         private readonly WheelSlicePresenter _slicePresenter;
         private readonly ZonePresenter _zonePresenter;
         private readonly RewardPresenter _rewardPresenter;
-
         private readonly Action _continueAfterSpin;
         private readonly Action _onPartComplete;
 
@@ -27,13 +26,15 @@ namespace CaseStudy.WheelSpin
             WheelSceneView view,
             ItemRegistry registry,
             WheelTierRuleProvider tierRules,
-            int sliceCount)
+            int sliceCount,
+            WheelTierViewDatabase wheelTierViewDatabase)
         {
             if (view == null) throw new ArgumentNullException(nameof(view));
 
             _slicePresenter = new WheelSlicePresenter(
                 view.WheelView, registry, view.PenaltySprite, view.PenaltyViewSettings,
-                view.SpinSettings, sliceCount);
+                view.SpinSettings, sliceCount,
+                wheelTierViewDatabase);
 
             _zonePresenter = new ZonePresenter(
                 view.ZoneCountView, view.ZoneSelectorView, view.ZonePalette, view.SpinSettings, tierRules);

@@ -11,6 +11,8 @@ namespace CaseStudy.WheelSpin
         public RectTransform WheelRect;
         public SpinButtonView SpinButtonView;
         public Image SpinIndicatorImage;
+        public Image WheelImage;
+
 
         private void OnValidate()
         {

@@ -2246,6 +2246,7 @@ MonoBehaviour:
   WheelRect: {fileID: 2038278943}
   SpinButtonView: {fileID: 115511064346082529}
   SpinIndicatorImage: {fileID: 2035842092}
+  WheelImage: {fileID: 2038278944}
 --- !u!1 &922071900
 GameObject:
   m_ObjectHideFlags: 0
