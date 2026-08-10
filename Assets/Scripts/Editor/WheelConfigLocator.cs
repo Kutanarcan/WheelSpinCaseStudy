@@ -2,7 +2,6 @@ using UnityEditor;
 
 namespace CaseStudy.WheelSpin.EditorTools
 {
-    /// <summary>Editor araclarinin projedeki WheelConfigAsset'e ortak erisimi.</summary>
     internal static class WheelConfigLocator
     {
         private const float FallbackPenaltyChance = 0.25f;

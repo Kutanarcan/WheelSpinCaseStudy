@@ -20,19 +20,25 @@ namespace CaseStudy.WheelSpin
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (!Interactable) return;
+            if (!Interactable) 
+                return;
+
             PointerDown?.Invoke(eventData);
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (!Interactable) return;
+            if (!Interactable)
+                return;
+
             PointerUp?.Invoke(eventData);
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (!Interactable) return;
+            if (!Interactable)
+                return;
+
             Clicked?.Invoke(eventData);
             Click?.Invoke();
         }

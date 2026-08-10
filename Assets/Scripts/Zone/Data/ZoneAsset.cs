@@ -11,8 +11,6 @@ namespace CaseStudy.WheelSpin
 
         [SerializeField] private WheelSliceData[] _rewards = new WheelSliceData[SliceCount];
         [SerializeField, Range(0, SliceCount - 1)] private int _penaltySlotIndex;
-
-        [Tooltip("Kapaliyken WheelConfig'teki global penalty olasiligi kullanilir.")]
         [SerializeField] private bool _overridePenaltyChance;
         [SerializeField, Range(0f, PenaltyOdds.MaxChance)] private float _penaltyChanceOverride = 0.25f;
 
@@ -20,11 +18,9 @@ namespace CaseStudy.WheelSpin
         public int PenaltySlotIndex => _penaltySlotIndex;
         public bool OverridesPenaltyChance => _overridePenaltyChance;
 
-        /// <summary>Bu zone icin gecerli olasilik: override acikca ayarlandiysa o, yoksa global.</summary>
         public float ResolvePenaltyChance(float globalChance)
             => _overridePenaltyChance ? _penaltyChanceOverride : globalChance;
 
-        /// <summary>Penalty slotu haric kalan dilimlerin agirlik toplami.</summary>
         public int OtherWeightSum()
         {
             int sum = 0;
@@ -41,7 +37,6 @@ namespace CaseStudy.WheelSpin
             return sum;
         }
 
-        /// <param name="penaltyDisabled">Revive sonrasi: penalty dilimi kalir ama agirligi 0 olur.</param>
         public Zone ToZone(int index, WheelTierRuleProvider tierRules, float globalPenaltyChance, bool penaltyDisabled = false)
         {
             bool hasPenalty = tierRules.HasPenalty(index);

@@ -35,10 +35,10 @@ namespace CaseStudy.WheelSpin
             WheelSpinSettings settings,
             WheelTierRuleProvider tierRules)
         {
-            _countView = countView != null ? countView : throw new ArgumentNullException(nameof(countView));
-            _palette = palette ?? throw new ArgumentNullException(nameof(palette));
-            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            _tierRules = tierRules ?? throw new ArgumentNullException(nameof(tierRules));
+            _countView = countView;
+            _palette = palette;
+            _settings = settings;
+            _tierRules = tierRules;
 
             _selectorRect = selectorView != null ? selectorView.transform as RectTransform : null;
 

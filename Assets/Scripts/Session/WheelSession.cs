@@ -12,8 +12,6 @@ namespace CaseStudy.WheelSpin
         public long Accumulated { get; private set; }
         public Zone CurrentZone { get; private set; }
         public bool IsRunActive { get; private set; }
-
-        /// <summary>Penalty geldi, oyuncu revive/give up karari verene kadar run askida.</summary>
         public bool IsAwaitingRevive { get; private set; }
 
         public RewardLedger Rewards => _rewards;
@@ -58,8 +56,6 @@ namespace CaseStudy.WheelSpin
 
             if (result.IsPenalty)
             {
-                // Run'i yok etmiyoruz: revive kaldigi yerden devam edebilsin diye
-                // Accumulated, CurrentZone ve Rewards korunuyor.
                 IsRunActive = false;
                 IsAwaitingRevive = true;
 
@@ -74,7 +70,6 @@ namespace CaseStudy.WheelSpin
             return true;
         }
 
-        /// <summary>Ayni zone'da, penalty agirligi 0'a dusurulmus halde devam eder.</summary>
         public bool TryRevive()
         {
             if (!IsAwaitingRevive || CurrentZone == null)
@@ -113,8 +108,6 @@ namespace CaseStudy.WheelSpin
 
             long banked = Accumulated;
 
-            // Accumulated ve Rewards burada temizlenmiyor: popup bunlari okuyacak.
-            // Temizlik StartRun()'da yapiliyor.
             CurrentZone = null;
             IsRunActive = false;
 

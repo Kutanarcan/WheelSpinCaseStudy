@@ -10,7 +10,6 @@ namespace CaseStudy.WheelSpin
         [SerializeField] private RectTransform _iconRect;
         [SerializeField] private TextMeshProUGUI _amountText;
 
-        [Tooltip("Revive sonrasi secilemez hale gelen penalty dilimi bu renkle cizilir.")]
         [SerializeField] private Color _disabledIconColor = new Color(1f, 1f, 1f, 0.35f);
 
         private void OnValidate()

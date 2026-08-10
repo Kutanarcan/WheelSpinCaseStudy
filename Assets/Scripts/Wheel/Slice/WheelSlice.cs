@@ -8,7 +8,6 @@ namespace CaseStudy.WheelSpin
         public int Amount;
         public int Weight;
 
-        /// <summary>Revive sonrasi devre disi kalan penalty. Sunum bunu soluk cizer.</summary>
         public bool IsDisabled;
 
         public static WheelSlice CreateReward(string itemId, int amount, int weight)

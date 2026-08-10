@@ -17,8 +17,8 @@ namespace CaseStudy.WheelSpin
 
         public RewardPresenter(RewardHolderView view, ItemRegistry registry)
         {
-            _view = view != null ? view : throw new ArgumentNullException(nameof(view));
-            _registry = registry ?? throw new ArgumentNullException(nameof(registry));
+            _view = view;
+            _registry = registry;
         }
 
         public void Initialize()

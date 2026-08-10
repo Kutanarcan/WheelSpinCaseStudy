@@ -7,7 +7,7 @@ namespace CaseStudy.WheelSpin
 {
     public class ZoneSelectorView : MonoBehaviour
     {
-        public Image SelectorBackground; // Image component turned off
-        public Image SelectorBackgroundBorder; // Image component turned off
+        public Image SelectorBackground;
+        public Image SelectorBackgroundBorder;
     }
 }

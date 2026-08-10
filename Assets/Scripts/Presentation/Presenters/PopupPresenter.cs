@@ -23,8 +23,8 @@ namespace CaseStudy.WheelSpin
         {
             _cashoutPopup = cashoutPopup;
             _revivePopup = revivePopup;
-            _registry = registry ?? throw new ArgumentNullException(nameof(registry));
-            _rewards = rewards ?? throw new ArgumentNullException(nameof(rewards));
+            _registry = registry;
+            _rewards = rewards;
         }
 
         public void Initialize()

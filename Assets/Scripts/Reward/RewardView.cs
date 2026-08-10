@@ -53,7 +53,6 @@ namespace CaseStudy.WheelSpin
                 _amountText.text = ViewFormat.FormatSliceAmount(amount);
         }
 
-        /// <summary>Miktar artinca oyuncunun fark etmesi icin kucuk bir punch.</summary>
         public void PlayStackFeedback()
         {
             if (Rect == null || _punchScale <= 0f || _punchDuration <= 0f)

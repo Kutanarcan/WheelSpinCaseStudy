@@ -42,7 +42,6 @@ namespace CaseStudy.WheelSpin
             _settings = settings;
             _wheelTierViewDatabase = wheelTierViewDatabase;
 
-            // Dilim sayisinin tek kaynagi sahnedeki view dizisi.
             _animator = new WheelSpinAnimator(view.WheelRect, settings, view.SliceViewArray.Length);
 
             _holder = view.HolderRect != null && view.HolderRect != view.WheelRect

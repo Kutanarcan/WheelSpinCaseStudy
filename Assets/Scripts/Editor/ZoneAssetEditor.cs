@@ -71,7 +71,6 @@ namespace CaseStudy.WheelSpin.EditorTools
             int otherSum = OtherWeightSum();
             int penaltyWeight = PenaltyOdds.WeightFor(otherSum, resolvedChance);
 
-            // Runtime ile birebir ayni sayi: yuvarlanmis agirliktan geri hesaplanan olasilik.
             float actualPenalty = PenaltyOdds.ChanceFor(otherSum, penaltyWeight);
 
             EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
@@ -101,7 +100,6 @@ namespace CaseStudy.WheelSpin.EditorTools
                 EditorGUILayout.PropertyField(item, GUIContent.none, GUILayout.Width(150f));
                 EditorGUILayout.PropertyField(amount, GUIContent.none, GUILayout.Width(60f));
 
-                // Penalty slotunun weight'i Bronze'da kullanilmaz; sadece Silver+ icin anlamli.
                 EditorGUILayout.PropertyField(weight, GUIContent.none, GUILayout.Width(55f));
 
                 string bronze = isPenalty

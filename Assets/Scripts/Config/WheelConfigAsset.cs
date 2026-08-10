@@ -10,7 +10,6 @@ namespace CaseStudy.WheelSpin
         [SerializeField, Min(1)] private int _silverEvery = 5;
 
         [Header("Penalty")]
-        [Tooltip("Bronze zone'larda bombaya dusme olasiligi. Zone bazinda override edilebilir.")]
         [SerializeField, Range(0f, PenaltyOdds.MaxChance)] private float _penaltyChance = 0.25f;
 
         [Header("Content")]

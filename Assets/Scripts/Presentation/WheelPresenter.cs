@@ -35,8 +35,6 @@ namespace CaseStudy.WheelSpin
             WheelTierViewDatabase wheelTierViewDatabase,
             RewardLedger rewards)
         {
-            if (view == null) throw new ArgumentNullException(nameof(view));
-
             _slicePresenter = new WheelSlicePresenter(
                 view.WheelView, registry, view.PenaltySprite, view.PenaltyViewSettings,
                 view.SpinSettings,
