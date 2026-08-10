@@ -10,8 +10,7 @@ namespace CaseStudy.WheelSpin
         private readonly WheelSpinSettings _settings;
         private readonly int _sliceCount;
         private readonly TweenCallback _onTweenComplete;
-
-        private float _currentAngle;      // tek dogruluk kaynagi
+        private float _currentAngle;    
         private float _fromAngle;
         private Tween _tween;
         private Action _onComplete;
@@ -42,7 +41,7 @@ namespace CaseStudy.WheelSpin
 
             _fromAngle = _currentAngle;
             float to = TargetAngle(sliceIndex);
-            
+
             float delta = Mathf.Repeat(_fromAngle - to, 360f);
             int turns = UnityEngine.Random.Range(_settings.MinTurns, _settings.MaxTurns + 1);
             float total = delta + 360f * turns;
@@ -56,6 +55,12 @@ namespace CaseStudy.WheelSpin
         }
 
         public void Snap(int sliceIndex) { Kill(); Apply(TargetAngle(sliceIndex)); }
+
+        public void ResetAngle()
+        {
+            Kill();
+            Apply(0f);
+        }
 
         public void Kill()
         {
@@ -75,7 +80,6 @@ namespace CaseStudy.WheelSpin
         private void HandleTweenComplete()
         {
             _tween = null;
-            Apply(_currentAngle);            // tam hedefe otur
 
             Action callback = _onComplete;
             _onComplete = null;

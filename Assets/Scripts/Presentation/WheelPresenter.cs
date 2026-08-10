@@ -9,13 +9,14 @@ namespace CaseStudy.WheelSpin
         private readonly RewardPresenter _rewardPresenter;
 
         private readonly Action _continueAfterSpin;
+        private readonly Action _onPartComplete;
 
-        private readonly Action _bindNextZoneAndFinish;
-        private readonly Action _finish;
         private bool _hasResult;
         private SpinResult _result;
         private Zone _nextZone;
         private bool _runFailed;
+
+        private int _pendingParts;
 
         private bool _isBusy;
         public event Action<bool> BusyChanged;
@@ -40,7 +41,7 @@ namespace CaseStudy.WheelSpin
             _rewardPresenter = new RewardPresenter(view.RewardHolderView, registry);
 
             _continueAfterSpin = ContinueAfterSpin;
-            _bindNextZoneAndFinish = BindNextZoneAndFinish;
+            _onPartComplete = HandlePartComplete;
         }
 
         public void Initialize(int zoneCount)
@@ -49,6 +50,7 @@ namespace CaseStudy.WheelSpin
             _rewardPresenter.Initialize();
 
             ClearCaptured();
+            _pendingParts = 0;
             _isBusy = false;
         }
 
@@ -59,9 +61,11 @@ namespace CaseStudy.WheelSpin
             _rewardPresenter.Deinitialize();
 
             ClearCaptured();
+            _pendingParts = 0;
             _isBusy = false;
             BusyChanged = null;
         }
+
         public void ResetForNewRun()
         {
             _slicePresenter.ResetForNewRun();
@@ -69,6 +73,7 @@ namespace CaseStudy.WheelSpin
             _rewardPresenter.ResetForNewRun();
 
             ClearCaptured();
+            _pendingParts = 0;
             SetBusy(false);
         }
 
@@ -85,6 +90,7 @@ namespace CaseStudy.WheelSpin
             session.SpinResolved -= CaptureSpinResolved;
             session.RunFailed -= CaptureRunFailed;
         }
+
         private void CaptureSpinResolved(SpinResult result)
         {
             _result = result;
@@ -102,6 +108,7 @@ namespace CaseStudy.WheelSpin
             _nextZone = null;
             _runFailed = false;
         }
+
         public void PlayInitial()
         {
             if (_nextZone != null)
@@ -111,17 +118,16 @@ namespace CaseStudy.WheelSpin
             }
 
             ClearCaptured();
+            _pendingParts = 0;
             SetBusy(false);
         }
-        
+
         public void Play()
         {
             SetBusy(true);
 
             if (_hasResult)
             {
-                UnityEngine.Debug.Log($"Spin Presenter Result Index: {_result.SliceIndex}");
-
                 _slicePresenter.PlaySpin(_result.SliceIndex, _continueAfterSpin);
                 return;
             }
@@ -137,24 +143,36 @@ namespace CaseStudy.WheelSpin
             if (_runFailed)
                 _rewardPresenter.Clear();
 
-            if (_nextZone != null)
+            if (_nextZone == null)
             {
-                _zonePresenter.Show(_nextZone.Index, instant: false, _bindNextZoneAndFinish);
+                Finish();
                 return;
             }
 
-            Finish();
+            // Finish -> ClearCaptured alani null'ladigi icin referansi simdi yakala.
+            Zone next = _nextZone;
+
+            // Sayaci HER IKI cagridan once kur: biri callback'ini senkron cagirabilir.
+            _pendingParts = 2;
+
+            _zonePresenter.Show(next.Index, instant: false, _onPartComplete);
+            _slicePresenter.PlayZoneChange(next, _onPartComplete);
         }
 
-
-        private void BindNextZoneAndFinish()
+        private void HandlePartComplete()
         {
-            _slicePresenter.Bind(_nextZone);   // ClearCaptured'dan ONCE
+            _pendingParts--;
+
+            if (_pendingParts > 0)
+                return;
+
             Finish();
         }
 
         private void Finish()
         {
+            _pendingParts = 0;
+
             ClearCaptured();
             SetBusy(false);
         }

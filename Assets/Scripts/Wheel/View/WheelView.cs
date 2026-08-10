@@ -7,6 +7,7 @@ namespace CaseStudy.WheelSpin
     public class WheelView : MonoBehaviour
     {
         public WheelSliceView[] SliceViewArray = new WheelSliceView[8];
+        public RectTransform HolderRect;
         public RectTransform WheelRect;
         public SpinButtonView SpinButtonView;
         public Image SpinIndicatorImage;
@@ -14,6 +15,9 @@ namespace CaseStudy.WheelSpin
         private void OnValidate()
         {
             if (WheelRect == null) WheelRect = transform as RectTransform;
+
+            if (HolderRect == null && WheelRect != null)
+                HolderRect = WheelRect.parent as RectTransform;
 
             if (SliceViewArray == null || SliceViewArray.Length == 0 || SliceViewArray.Any(s => s == null))
             {
