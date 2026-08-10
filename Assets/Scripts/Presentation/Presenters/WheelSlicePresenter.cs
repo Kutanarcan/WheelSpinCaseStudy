@@ -57,7 +57,7 @@ namespace CaseStudy.WheelSpin
 
         public void ResetForNewRun()
         {
-            _animator.Kill();
+            _animator.ResetAngle();
             KillSequence();
             SnapHolderToRest();
         }
@@ -79,7 +79,7 @@ namespace CaseStudy.WheelSpin
 
                 if (slice.Type == SliceType.Penalty)
                 {
-                    views[i].BindPenalty(_penaltySprite, _penaltySettings);
+                    views[i].BindPenalty(_penaltySprite, _penaltySettings, disabled: slice.Weight <= 0);
                     continue;
                 }
 

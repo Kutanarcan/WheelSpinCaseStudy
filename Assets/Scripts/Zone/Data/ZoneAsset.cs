@@ -15,7 +15,8 @@ namespace CaseStudy.WheelSpin
         public IReadOnlyList<WheelSliceData> Rewards => _rewards;
         public int PenaltySlotIndex => _penaltySlotIndex;
 
-        public Zone ToZone(int index, WheelTierRuleProvider tierRules, int penaltyWeight)
+        /// <param name="penaltyDisabled">Revive sonrasi: penalty dilimi kalir ama agirligi 0 olur.</param>
+        public Zone ToZone(int index, WheelTierRuleProvider tierRules, int penaltyWeight, bool penaltyDisabled = false)
         {
             bool hasPenalty = tierRules.HasPenalty(index);
             var slices = new WheelSlice[SliceCount];
@@ -23,7 +24,7 @@ namespace CaseStudy.WheelSpin
             for (int i = 0; i < SliceCount; i++)
             {
                 slices[i] = hasPenalty && i == _penaltySlotIndex
-                    ? WheelSlice.CreatePenalty(penaltyWeight)
+                    ? WheelSlice.CreatePenalty(penaltyDisabled ? 0 : penaltyWeight)
                     : _rewards[i].ToRewardSlice();
             }
 

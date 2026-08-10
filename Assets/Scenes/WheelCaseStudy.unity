@@ -1190,6 +1190,8 @@ MonoBehaviour:
   ZoneCountView: {fileID: 2015526615}
   ZoneSelectorView: {fileID: 984009780}
   RewardHolderView: {fileID: 247908567}
+  CashoutPopup: {fileID: 551975293}
+  RevivePopup: {fileID: 866108207}
   PenaltySprite: {fileID: 21300000, guid: 4fc928b46b63b024b8e1e4a4cdf46f38, type: 3}
   PenaltyViewSettings:
     Size: {x: 100, y: 100}
@@ -1877,6 +1879,7 @@ MonoBehaviour:
   _icon: {fileID: 1341056288}
   _iconRect: {fileID: 1341056287}
   _amountText: {fileID: 432694764}
+  _disabledIconColor: {r: 1, g: 1, b: 1, a: 0.35}
 --- !u!1 &757705063
 GameObject:
   m_ObjectHideFlags: 0
@@ -2182,6 +2185,7 @@ MonoBehaviour:
   ReviveButtonView: {fileID: 4235036633403794099}
   GiveUpButtonView: {fileID: 1265271754}
   PanelRoot: {fileID: 1959512621}
+  _reviveCost: 25
 --- !u!1 &908922421
 GameObject:
   m_ObjectHideFlags: 0
@@ -2585,8 +2589,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Content: {fileID: 1257466965}
-  m_Horizontal: 0
-  m_Vertical: 1
+  m_Horizontal: 1
+  m_Vertical: 0
   m_MovementType: 1
   m_Elasticity: 0.1
   m_Inertia: 1
@@ -3061,6 +3065,7 @@ MonoBehaviour:
   _icon: {fileID: 1596772505}
   _iconRect: {fileID: 1596772504}
   _amountText: {fileID: 302909771}
+  _disabledIconColor: {r: 1, g: 1, b: 1, a: 0.35}
 --- !u!1 &1101995189
 GameObject:
   m_ObjectHideFlags: 0
@@ -3738,6 +3743,7 @@ MonoBehaviour:
   _icon: {fileID: 84598223}
   _iconRect: {fileID: 84598222}
   _amountText: {fileID: 170069293}
+  _disabledIconColor: {r: 1, g: 1, b: 1, a: 0.35}
 --- !u!1 &1289730658
 GameObject:
   m_ObjectHideFlags: 0
@@ -4173,6 +4179,7 @@ MonoBehaviour:
   _icon: {fileID: 1323715042}
   _iconRect: {fileID: 1323715041}
   _amountText: {fileID: 1592933811}
+  _disabledIconColor: {r: 1, g: 1, b: 1, a: 0.35}
 --- !u!1 &1510290357
 GameObject:
   m_ObjectHideFlags: 0
@@ -4341,6 +4348,7 @@ MonoBehaviour:
   _icon: {fileID: 1154595403}
   _iconRect: {fileID: 1154595402}
   _amountText: {fileID: 1767690055}
+  _disabledIconColor: {r: 1, g: 1, b: 1, a: 0.35}
 --- !u!1 &1592933809
 GameObject:
   m_ObjectHideFlags: 0
@@ -4606,6 +4614,7 @@ MonoBehaviour:
   _icon: {fileID: 206725126}
   _iconRect: {fileID: 206725125}
   _amountText: {fileID: 512388269}
+  _disabledIconColor: {r: 1, g: 1, b: 1, a: 0.35}
 --- !u!1 &1660336750
 GameObject:
   m_ObjectHideFlags: 0
@@ -4660,6 +4669,7 @@ MonoBehaviour:
   _icon: {fileID: 1518887478}
   _iconRect: {fileID: 1518887477}
   _amountText: {fileID: 271036657}
+  _disabledIconColor: {r: 1, g: 1, b: 1, a: 0.35}
 --- !u!1 &1667920146
 GameObject:
   m_ObjectHideFlags: 0
@@ -5003,6 +5013,7 @@ MonoBehaviour:
   _icon: {fileID: 1423155340}
   _iconRect: {fileID: 1423155339}
   _amountText: {fileID: 922071902}
+  _disabledIconColor: {r: 1, g: 1, b: 1, a: 0.35}
 --- !u!1 &1885220561
 GameObject:
   m_ObjectHideFlags: 0

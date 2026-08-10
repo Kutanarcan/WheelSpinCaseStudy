@@ -10,6 +10,9 @@ namespace CaseStudy.WheelSpin
         [SerializeField] private RectTransform _iconRect;
         [SerializeField] private TextMeshProUGUI _amountText;
 
+        [Tooltip("Revive sonrasi secilemez hale gelen penalty dilimi bu renkle cizilir.")]
+        [SerializeField] private Color _disabledIconColor = new Color(1f, 1f, 1f, 0.35f);
+
         private void OnValidate()
         {
             if (_icon == null)
@@ -33,9 +36,12 @@ namespace CaseStudy.WheelSpin
             }
         }
 
-        public void BindPenalty(Sprite penaltyIcon, ItemViewSettings settings)
+        public void BindPenalty(Sprite penaltyIcon, ItemViewSettings settings, bool disabled)
         {
             ApplyIcon(penaltyIcon, settings);
+
+            if (_icon != null && disabled)
+                _icon.color = _disabledIconColor;
 
             if (_amountText != null)
                 _amountText.enabled = false;
@@ -48,6 +54,7 @@ namespace CaseStudy.WheelSpin
                 _icon.sprite = icon;
                 _icon.preserveAspect = false;
                 _icon.enabled = icon != null;
+                _icon.color = Color.white;
             }
 
             if (_iconRect == null) return;

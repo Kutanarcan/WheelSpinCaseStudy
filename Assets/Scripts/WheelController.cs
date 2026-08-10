@@ -15,6 +15,7 @@ namespace CaseStudy.WheelSpin
 
         private WheelSession _session;
         private WheelPresenter _presenter;
+        private RewardLedger _rewards;
 
         public bool IsInitialized => _session != null;
 
@@ -46,11 +47,14 @@ namespace CaseStudy.WheelSpin
             var calculator = new RandomWeightedResultCalculator(random, _config.SliceCount);
             var spinner = new WheelSpinner(calculator, random);
 
-            _presenter = new WheelPresenter(_sceneView, registry, tierRules, _config.SliceCount, _config.WheelTierViewDatabase);
+            _rewards = new RewardLedger();
+
+            _presenter = new WheelPresenter(
+                _sceneView, registry, tierRules, _config.SliceCount, _config.WheelTierViewDatabase, _rewards);
             _presenter.BusyChanged += HandleBusyChanged;
             _presenter.Initialize(zoneProvider.ZoneCount);
 
-            _session = new WheelSession(zoneProvider, spinner);
+            _session = new WheelSession(zoneProvider, spinner, _rewards);
             _presenter.Subscribe(_session);
 
             BindButtons();
@@ -67,6 +71,8 @@ namespace CaseStudy.WheelSpin
                 _presenter.Deinitialize();
                 _presenter = null;
             }
+
+            _rewards = null;
 
             if (_session == null)
                 return;
@@ -105,8 +111,30 @@ namespace CaseStudy.WheelSpin
         {
             if (!CanAct()) return;
 
+            if (_rewards == null || _rewards.IsEmpty)
+                return;
+
             _session.CashOut();
             _presenter.Play();
+        }
+
+        private void HandleClaim() => StartNewRun();
+
+        private void HandleGiveUp()
+        {
+            if (_session == null)
+                return;
+
+            _session.GiveUp();
+            StartNewRun();
+        }
+
+        private void HandleRevive()
+        {
+            if (_session == null || !_session.TryRevive())
+                return;
+
+            _presenter.PlayRevive();
         }
 
         private bool CanAct()
@@ -146,6 +174,13 @@ namespace CaseStudy.WheelSpin
 
             if (cashOut != null)
                 cashOut.Click += CashOut;
+
+            if (_presenter == null)
+                return;
+
+            _presenter.ClaimClicked += HandleClaim;
+            _presenter.ReviveClicked += HandleRevive;
+            _presenter.GiveUpClicked += HandleGiveUp;
         }
 
         private void UnbindButtons()
@@ -159,6 +194,13 @@ namespace CaseStudy.WheelSpin
 
             if (cashOut != null)
                 cashOut.Click -= CashOut;
+
+            if (_presenter == null)
+                return;
+
+            _presenter.ClaimClicked -= HandleClaim;
+            _presenter.ReviveClicked -= HandleRevive;
+            _presenter.GiveUpClicked -= HandleGiveUp;
         }
 
         private ActionButtonView GetSpinButton()

@@ -6,22 +6,30 @@ namespace CaseStudy.WheelSpin
     {
         private readonly IZoneProvider _zoneProvider;
         private readonly WheelSpinner _spinner;
+        private readonly RewardLedger _rewards;
 
         public int ZoneIndex { get; private set; }
         public long Accumulated { get; private set; }
         public Zone CurrentZone { get; private set; }
         public bool IsRunActive { get; private set; }
 
+        /// <summary>Penalty geldi, oyuncu revive/give up karari verene kadar run askida.</summary>
+        public bool IsAwaitingRevive { get; private set; }
+
+        public RewardLedger Rewards => _rewards;
+
         public event Action<Zone> ZoneStarted;
+        public event Action<Zone> ZoneRefreshed;
         public event Action<SpinResult> SpinResolved;
         public event Action<int, long> RunFailed;
         public event Action<int, long> RunCashedOut;
         public event Action<int, long> RunCompleted;
 
-        public WheelSession(IZoneProvider zoneProvider, WheelSpinner spinner)
+        public WheelSession(IZoneProvider zoneProvider, WheelSpinner spinner, RewardLedger rewards)
         {
             _zoneProvider = zoneProvider ?? throw new ArgumentNullException(nameof(zoneProvider));
             _spinner = spinner ?? throw new ArgumentNullException(nameof(spinner));
+            _rewards = rewards ?? throw new ArgumentNullException(nameof(rewards));
         }
 
         public void StartRun()
@@ -30,6 +38,9 @@ namespace CaseStudy.WheelSpin
             Accumulated = 0;
             CurrentZone = null;
             IsRunActive = true;
+            IsAwaitingRevive = false;
+
+            _rewards.Clear();
 
             AdvanceZone();
         }
@@ -45,24 +56,54 @@ namespace CaseStudy.WheelSpin
 
             SpinResolved?.Invoke(result);
 
-            UnityEngine.Debug.Log($"Spin Logic Result Index: {result.SliceIndex}");
-
             if (result.IsPenalty)
             {
-                long lost = Accumulated;
-                int reached = ZoneIndex;
-
-                Accumulated = 0;
-                CurrentZone = null;
+                // Run'i yok etmiyoruz: revive kaldigi yerden devam edebilsin diye
+                // Accumulated, CurrentZone ve Rewards korunuyor.
                 IsRunActive = false;
+                IsAwaitingRevive = true;
 
-                RunFailed?.Invoke(reached, lost);
+                RunFailed?.Invoke(ZoneIndex, Accumulated);
                 return true;
             }
 
+            _rewards.Add(result.ItemId, result.Amount);
             Accumulated += result.Amount;
+
             AdvanceZone();
             return true;
+        }
+
+        /// <summary>Ayni zone'da, penalty agirligi 0'a dusurulmus halde devam eder.</summary>
+        public bool TryRevive()
+        {
+            if (!IsAwaitingRevive || CurrentZone == null)
+                return false;
+
+            Zone revived = _zoneProvider.GetZoneWithPenaltyDisabled(ZoneIndex);
+
+            if (revived == null)
+                return false;
+
+            CurrentZone = revived;
+            IsAwaitingRevive = false;
+            IsRunActive = true;
+
+            ZoneRefreshed?.Invoke(revived);
+            return true;
+        }
+
+        public void GiveUp()
+        {
+            if (!IsAwaitingRevive)
+                return;
+
+            IsAwaitingRevive = false;
+
+            Accumulated = 0;
+            CurrentZone = null;
+
+            _rewards.Clear();
         }
 
         public long CashOut()
@@ -71,19 +112,20 @@ namespace CaseStudy.WheelSpin
                 return 0;
 
             long banked = Accumulated;
-            int reached = ZoneIndex;
 
-            Accumulated = 0;
+            // Accumulated ve Rewards burada temizlenmiyor: popup bunlari okuyacak.
+            // Temizlik StartRun()'da yapiliyor.
             CurrentZone = null;
             IsRunActive = false;
 
-            RunCashedOut?.Invoke(reached, banked);
+            RunCashedOut?.Invoke(ZoneIndex, banked);
             return banked;
         }
 
         public void ClearListeners()
         {
             ZoneStarted = null;
+            ZoneRefreshed = null;
             SpinResolved = null;
             RunFailed = null;
             RunCashedOut = null;
@@ -101,7 +143,7 @@ namespace CaseStudy.WheelSpin
                 long banked = Accumulated;
                 int lastZone = ZoneIndex - 1;
 
-                Accumulated = 0;
+                ZoneIndex = lastZone;
                 CurrentZone = null;
                 IsRunActive = false;
 

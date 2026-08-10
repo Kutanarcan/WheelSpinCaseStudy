@@ -32,6 +32,10 @@ namespace CaseStudy.WheelSpin
         public ZoneSelectorView ZoneSelectorView;
         public RewardHolderView RewardHolderView;
 
+        [Header("Popups")]
+        public CashoutPopup CashoutPopup;
+        public RevivePopup RevivePopup;
+
         [Header("Penalty")]
         public Sprite PenaltySprite;
         public ItemViewSettings PenaltyViewSettings = ItemViewSettings.Default;
