@@ -45,5 +45,26 @@ namespace CaseStudy.WheelSpin
 
         [Header("Animation")]
         public WheelSpinSettings SpinSettings = new WheelSpinSettings();
+
+#if UNITY_EDITOR
+
+        private void OnValidate()
+        {
+            if (WheelView == null || WheelView.SliceViewArray == null || SpinSettings == null)
+                return;
+
+            int sliceCount = WheelView.SliceViewArray.Length;
+
+            if (sliceCount <= 0)
+                return;
+
+            if (SpinAliasing.Overshoots(SpinSettings.Ease))
+                return;
+
+            float maxTotal = 359f + 360f * SpinSettings.MaxTurns;
+            float peak = SpinAliasing.PeakDegreesPerSecond(maxTotal, SpinSettings.Duration, SpinSettings.Ease);
+            float limit = SpinAliasing.MaxSafeDegreesPerSecond(sliceCount, 60);
+        }
+#endif
     }
 }

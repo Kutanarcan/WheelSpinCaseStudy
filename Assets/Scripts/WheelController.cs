@@ -21,6 +21,8 @@ namespace CaseStudy.WheelSpin
 
         private void Awake()
         {
+            // vSync acikken targetFrameRate yok sayilir; spin hizinin deterministik olmasi icin kapatiyoruz.
+            QualitySettings.vSyncCount = 0;
             Application.targetFrameRate = 60;
             Initialize();
             StartNewRun();

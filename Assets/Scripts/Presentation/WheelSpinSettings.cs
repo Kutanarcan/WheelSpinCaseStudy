@@ -1,6 +1,7 @@
 using System;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace CaseStudy.WheelSpin
 {
@@ -9,9 +10,9 @@ namespace CaseStudy.WheelSpin
     {
         [Header("Spin")]
         [Min(0f)] public float Duration = 2.5f;
-        [Min(0)] public int MinTurns = 3;
-        [Min(0)] public int MaxTurns = 5;
-        public Ease Ease = Ease.OutQuart;
+        [Min(0)] public int MinTurns = 2;
+        [Min(0)] public int MaxTurns = 3;
+        public Ease Ease = Ease.OutQuad;
 
         [Header("Zone Strip")]
         [Min(0f)] public float SelectorStepDuration = 0.25f;
@@ -30,6 +31,11 @@ namespace CaseStudy.WheelSpin
 
         [Header("Layout")]
         public float IndicatorAngle = 0f;
-        public bool SlicesClockwise = true;
+
+        public bool SpinClockwise = true;
+        public bool SliceOrderClockwise = true;
+
+        [Header("Safety")]
+        public bool PreventStroboscopicAliasing = true;
     }
 }

@@ -10,8 +10,10 @@ namespace CaseStudy.WheelSpin
         private readonly WheelSpinSettings _settings;
         private readonly int _sliceCount;
         private readonly TweenCallback _onTweenComplete;
-        private float _currentAngle;    
+        private float _currentAngle;
         private float _fromAngle;
+        private float _direction = -1f;
+
         private Tween _tween;
         private Action _onComplete;
 
@@ -31,7 +33,7 @@ namespace CaseStudy.WheelSpin
         public float TargetAngle(int sliceIndex)
         {
             float step = 360f / _sliceCount;
-            float sign = _settings.SlicesClockwise ? 1f : -1f;
+            float sign = _settings.SliceOrderClockwise ? 1f : -1f;
             return Mathf.Repeat(_settings.IndicatorAngle + sign * step * sliceIndex, 360f);
         }
 
@@ -42,13 +44,26 @@ namespace CaseStudy.WheelSpin
             _fromAngle = _currentAngle;
             float to = TargetAngle(sliceIndex);
 
-            float delta = Mathf.Repeat(_fromAngle - to, 360f);
+            _direction = _settings.SpinClockwise ? -1f : 1f;
+
+            float delta = _settings.SpinClockwise
+                ? Mathf.Repeat(_fromAngle - to, 360f)
+                : Mathf.Repeat(to - _fromAngle, 360f);
+
             int turns = UnityEngine.Random.Range(_settings.MinTurns, _settings.MaxTurns + 1);
             float total = delta + 360f * turns;
 
+            float duration = _settings.Duration;
+
+            if (_settings.PreventStroboscopicAliasing)
+            {
+                duration = SpinAliasing.SafeDuration(
+                    duration, total, _settings.Ease, _sliceCount, SpinAliasing.CurrentFrameRate());
+            }
+
             _onComplete = onComplete;
 
-            _tween = DOTween.To(() => 0f, Step, total, _settings.Duration)
+            _tween = DOTween.To(() => 0f, Step, total, duration)
                 .SetEase(_settings.Ease)
                 .SetLink(_wheel.gameObject, LinkBehaviour.KillOnDestroy)
                 .OnComplete(_onTweenComplete);
@@ -69,7 +84,7 @@ namespace CaseStudy.WheelSpin
             _onComplete = null;
         }
 
-        private void Step(float travelled) => Apply(_fromAngle - travelled);
+        private void Step(float travelled) => Apply(_fromAngle + _direction * travelled);
 
         private void Apply(float angle)
         {

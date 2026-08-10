@@ -1204,9 +1204,9 @@ MonoBehaviour:
     Gold: {r: 1, g: 0.82, b: 0.25, a: 1}
   SpinSettings:
     Duration: 2.5
-    MinTurns: 3
-    MaxTurns: 5
-    Ease: 12
+    MinTurns: 2
+    MaxTurns: 3
+    Ease: 6
     SelectorStepDuration: 0.25
     SelectorStepEase: 27
     ScrollDuration: 0.35
@@ -1219,7 +1219,9 @@ MonoBehaviour:
     RiseEase: 27
     ResetAngleOnZoneChange: 1
     IndicatorAngle: 0
-    SlicesClockwise: 1
+    SpinClockwise: 1
+    SliceOrderClockwise: 1
+    PreventStroboscopicAliasing: 1
 --- !u!1 &432694762
 GameObject:
   m_ObjectHideFlags: 0
