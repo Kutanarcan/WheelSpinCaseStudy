@@ -100,8 +100,6 @@ namespace CaseStudy.WheelSpin
             PlaceSelectorOn(zoneNumber);
         }
 
-        // ---------------------------------------- Faz 1: selector adimi
-
         private void StepSelector(int zoneNumber)
         {
             RectTransform target = GetNumberRect(zoneNumber);
@@ -127,7 +125,6 @@ namespace CaseStudy.WheelSpin
             ScrollToTarget();
         }
 
-        // ------------------------------------------- Faz 2: serit kaymasi
 
         private void ScrollToTarget()
         {
@@ -150,7 +147,6 @@ namespace CaseStudy.WheelSpin
                 .OnComplete(_onScrollComplete);
         }
 
-        /// <summary>Her adimda selector'i hedef numaranin anlik konumuna oturtur.</summary>
         private void HandleScrollUpdate() => PlaceSelectorOn(_targetZoneNumber);
 
         private void HandleScrollComplete()
@@ -159,8 +155,6 @@ namespace CaseStudy.WheelSpin
             PlaceSelectorOn(_targetZoneNumber);
             CompletePending();
         }
-
-        // ------------------------------------------------------- Yardimci
 
         private void PlaceSelectorOn(int zoneNumber)
         {

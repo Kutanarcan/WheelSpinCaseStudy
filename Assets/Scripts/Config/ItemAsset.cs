@@ -17,7 +17,7 @@ namespace CaseStudy.WheelSpin
 
         public ItemViewSettings WheelSettings => _wheelSettings;
 
-        public ItemViewSettings RewardSettings => _wheelSettings;
+        public ItemViewSettings RewardSettings => _rewardSettings;
 
 
 #if UNITY_EDITOR
