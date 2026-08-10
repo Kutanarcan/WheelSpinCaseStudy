@@ -3,136 +3,135 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-/// <summary>
-/// ActionButton'a basılıp bırakılmasına göre hedef Graphic'in rengini DOTween ile değiştirir.
-/// </summary>
-[RequireComponent(typeof(ActionButtonView))]
-public class ActionButtonTintAnimationView : MonoBehaviour
+namespace CaseStudy.WheelSpin
 {
-    [SerializeField] private Graphic targetGraphic;
 
-    [Header("Colors")]
-    [SerializeField] private Color normalColor = Color.white;
-    [SerializeField] private Color pressedColor = new Color(0.75f, 0.75f, 0.75f, 1f);
-    [SerializeField] private Color disabledColor = new Color(0.6f, 0.6f, 0.6f, 0.5f);
-
-    [Header("Transition")]
-    [SerializeField, Min(0f)] private float duration = 0.1f;
-    [SerializeField] private Ease ease = Ease.OutQuad;
-
-    [Tooltip("Time.timeScale = 0 iken de çalışsın (pause menüleri için).")]
-    [SerializeField] private bool ignoreTimeScale = true;
-
-    private ActionButtonView button;
-    private Tween colorTween;
-    private Color currentTarget;
-    private bool isPressed;
-    private bool lastInteractable;
-
-    private void Reset()
+    [RequireComponent(typeof(ActionButtonView))]
+    public class ActionButtonTintAnimationView : MonoBehaviour
     {
-        targetGraphic = GetComponentInChildren<Graphic>();
-    }
+        [SerializeField] private Graphic targetGraphic;
 
-    private void Awake()
-    {
-        button = GetComponent<ActionButtonView>();
-    }
+        [Header("Colors")]
+        [SerializeField] private Color normalColor = Color.white;
+        [SerializeField] private Color pressedColor = new Color(0.75f, 0.75f, 0.75f, 1f);
+        [SerializeField] private Color disabledColor = new Color(0.6f, 0.6f, 0.6f, 0.5f);
 
-    private void OnEnable()
-    {
-        button.PointerDown += HandlePointerDown;
-        button.PointerUp += HandlePointerUp;
+        [Header("Transition")]
+        [SerializeField, Min(0f)] private float duration = 0.1f;
+        [SerializeField] private Ease ease = Ease.OutQuad;
 
-        // Obje kapalıyken basılı kalmış olabilir, temiz başla.
-        isPressed = false;
-        lastInteractable = button.Interactable;
+        [SerializeField] private bool ignoreTimeScale = true;
 
-        currentTarget = GetTargetColor();
-        KillTween();
-        if (targetGraphic != null) targetGraphic.color = currentTarget;
-    }
+        private ActionButtonView button;
+        private Tween colorTween;
+        private Color currentTarget;
+        private bool isPressed;
+        private bool lastInteractable;
 
-    private void OnDisable()
-    {
-        button.PointerDown -= HandlePointerDown;
-        button.PointerUp -= HandlePointerUp;
-
-        KillTween();
-    }
-
-    private void OnDestroy()
-    {
-        KillTween();
-    }
-
-    private void Update()
-    {
-        if (lastInteractable == button.Interactable) 
-            return;
-
-        lastInteractable = button.Interactable;
-
-        if (!lastInteractable)
-            isPressed = false;
-
-        Refresh();
-    }
-
-    public void Refresh()
-    {
-        if (targetGraphic == null)
-            return;
-
-        var next = GetTargetColor();
-
-        if (next == currentTarget)
-            return;
-
-        currentTarget = next;
-
-        KillTween();
-
-        if (duration <= 0f)
+        private void Reset()
         {
-            targetGraphic.color = next;
-            return;
+            targetGraphic = GetComponentInChildren<Graphic>();
         }
 
-        colorTween = targetGraphic
-            .DOColor(next, duration)
-            .SetEase(ease)
-            .SetUpdate(ignoreTimeScale)
-            .SetLink(gameObject, LinkBehaviour.KillOnDestroy)
-            .OnKill(() => colorTween = null);
-    }
+        private void Awake()
+        {
+            button = GetComponent<ActionButtonView>();
+        }
 
-    private Color GetTargetColor()
-    {
-        if (!button.Interactable) 
-            return disabledColor;
+        private void OnEnable()
+        {
+            button.PointerDown += HandlePointerDown;
+            button.PointerUp += HandlePointerUp;
 
-        if (isPressed) 
-            return pressedColor;
+            isPressed = false;
+            lastInteractable = button.Interactable;
 
-        return normalColor;
-    }
+            currentTarget = GetTargetColor();
+            KillTween();
+            if (targetGraphic != null) targetGraphic.color = currentTarget;
+        }
 
-    private void KillTween()
-    {
-        colorTween?.Kill();
-        colorTween = null;
-    }
+        private void OnDisable()
+        {
+            button.PointerDown -= HandlePointerDown;
+            button.PointerUp -= HandlePointerUp;
 
-    private void HandlePointerDown(PointerEventData eventData)
-    {
-        isPressed = true;
-        Refresh();
-    }
+            KillTween();
+        }
 
-    private void HandlePointerUp(PointerEventData eventData)
-    {
-        isPressed = false;
-        Refresh();
+        private void OnDestroy()
+        {
+            KillTween();
+        }
+
+        private void Update()
+        {
+            if (lastInteractable == button.Interactable)
+                return;
+
+            lastInteractable = button.Interactable;
+
+            if (!lastInteractable)
+                isPressed = false;
+
+            Refresh();
+        }
+
+        public void Refresh()
+        {
+            if (targetGraphic == null)
+                return;
+
+            var next = GetTargetColor();
+
+            if (next == currentTarget)
+                return;
+
+            currentTarget = next;
+
+            KillTween();
+
+            if (duration <= 0f)
+            {
+                targetGraphic.color = next;
+                return;
+            }
+
+            colorTween = targetGraphic
+                .DOColor(next, duration)
+                .SetEase(ease)
+                .SetUpdate(ignoreTimeScale)
+                .SetLink(gameObject, LinkBehaviour.KillOnDestroy)
+                .OnKill(() => colorTween = null);
+        }
+
+        private Color GetTargetColor()
+        {
+            if (!button.Interactable)
+                return disabledColor;
+
+            if (isPressed)
+                return pressedColor;
+
+            return normalColor;
+        }
+
+        private void KillTween()
+        {
+            colorTween?.Kill();
+            colorTween = null;
+        }
+
+        private void HandlePointerDown(PointerEventData eventData)
+        {
+            isPressed = true;
+            Refresh();
+        }
+
+        private void HandlePointerUp(PointerEventData eventData)
+        {
+            isPressed = false;
+            Refresh();
+        }
     }
 }
