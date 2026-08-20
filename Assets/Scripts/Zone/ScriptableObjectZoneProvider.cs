@@ -8,8 +8,6 @@ namespace CaseStudy.WheelSpin
         private readonly WheelTierRuleProvider _tierRules;
         private readonly float _penaltyChance;
 
-        private readonly Dictionary<int, Zone> _cache = new Dictionary<int, Zone>();
-
         public int ZoneCount => _assets != null ? _assets.Count : 0;
 
         public ScriptableObjectZoneProvider(
@@ -22,29 +20,12 @@ namespace CaseStudy.WheelSpin
             _penaltyChance = penaltyChance;
         }
 
-        public Zone GetZone(int index)
-        {
-            if (_cache.TryGetValue(index, out Zone cached))
-                return cached;
-
-            ZoneAsset asset = GetAsset(index);
-
-            if (asset == null)
-                return null;
-
-            Zone zone = asset.ToZone(index, _tierRules, _penaltyChance);
-
-            _cache[index] = zone;
-
-            return zone;
-        }
-
-        public Zone GetZoneWithPenaltyDisabled(int index)
+        public Zone GetZone(int index, bool penaltyDisabled = false)
         {
             ZoneAsset asset = GetAsset(index);
 
             return asset != null
-                ? asset.ToZone(index, _tierRules, _penaltyChance, penaltyDisabled: true)
+                ? asset.ToZone(index, _tierRules, _penaltyChance, penaltyDisabled)
                 : null;
         }
 
@@ -73,7 +54,32 @@ namespace CaseStudy.WheelSpin
                 }
             }
 
+            for (int i = 0; i < _assets.Count; i++)
+            {
+                int zoneIndex = i + 1;
+                Zone zone = GetZone(zoneIndex);
+
+                if (TotalWeight(zone) > 0)
+                    continue;
+
+                error = $"Zone index {zoneIndex} has no positive slice weight; the wheel could never resolve a slice.";
+                return false;
+            }
+
             return true;
+        }
+
+        private static int TotalWeight(Zone zone)
+        {
+            if (zone == null)
+                return 0;
+
+            int total = 0;
+
+            for (int i = 0; i < zone.Wheel.Length; i++)
+                total += zone.Wheel[i].Weight;
+
+            return total;
         }
 
         private ZoneAsset GetAsset(int index)

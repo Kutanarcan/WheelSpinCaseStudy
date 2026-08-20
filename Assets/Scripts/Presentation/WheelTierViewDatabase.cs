@@ -1,42 +1,45 @@
-﻿using UnityEngine;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace CaseStudy.WheelSpin
 {
-
     [CreateAssetMenu(menuName = "CaseStudy/WheelTierViewDatabase", fileName = "WheelTierViewDatabase")]
     public class WheelTierViewDatabase : ScriptableObject
     {
-        [SerializeField] private TierSpritePack _defaultSpritePack;
-        [SerializeField] private TierSpriteHolder[] _tierHolderArray;
+        [SerializeField, FormerlySerializedAs("_defaultSpritePack")]
+        private TierViewPack _defaultViewPack = new TierViewPack();
 
-        public TierSpritePack GetSprite(WheelTier tier)
+        [SerializeField] private TierViewHolder[] _tierHolderArray;
+
+        public TierViewPack GetPack(WheelTier tier)
         {
-
-            for (int i = 0; i < _tierHolderArray.Length; i++)
+            if (_tierHolderArray != null)
             {
-                var holder = _tierHolderArray[i];
+                for (int i = 0; i < _tierHolderArray.Length; i++)
+                {
+                    TierViewHolder holder = _tierHolderArray[i];
 
-                if (holder.Tier == tier)
-                    return holder.Pack;
+                    if (holder != null && holder.Tier == tier && holder.Pack != null)
+                        return holder.Pack;
+                }
             }
 
-            return _defaultSpritePack;
+            return _defaultViewPack;
         }
-
     }
 
     [System.Serializable]
-    public class TierSpritePack
+    public class TierViewPack
     {
         public Sprite Wheel;
         public Sprite WheelIndicator;
-
+        public Color ZoneNumberColor = Color.white;
     }
 
     [System.Serializable]
-    public class TierSpriteHolder
+    public class TierViewHolder
     {
         public WheelTier Tier;
-        public TierSpritePack Pack;
+        public TierViewPack Pack;
     }
 }

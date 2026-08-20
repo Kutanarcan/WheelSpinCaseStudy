@@ -1,4 +1,4 @@
-using UnityEngine;
+using System;
 
 namespace CaseStudy.WheelSpin
 {
@@ -8,12 +8,15 @@ namespace CaseStudy.WheelSpin
 
         public static int WeightFor(int otherWeightSum, float chance)
         {
-            chance = Mathf.Clamp(chance, 0f, MaxChance);
+            if (chance < 0f) chance = 0f;
+            else if (chance > MaxChance) chance = MaxChance;
 
             if (chance <= 0f || otherWeightSum <= 0)
                 return 0;
 
-            return Mathf.Max(1, Mathf.RoundToInt(otherWeightSum * chance / (1f - chance)));
+            int rounded = (int)Math.Round(otherWeightSum * chance / (1f - chance));
+
+            return Math.Max(1, rounded);
         }
 
         public static float ChanceFor(int otherWeightSum, int penaltyWeight)

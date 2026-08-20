@@ -1,0 +1,21 @@
+{
+    "name": "CaseStudy.WheelSpin.Editor",
+    "rootNamespace": "CaseStudy.WheelSpin.EditorTools",
+    "references": [
+        "CaseStudy.WheelSpin",
+        "CaseStudy.WheelSpin.Core",
+        "Unity.TextMeshPro",
+        "UnityEngine.UI"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

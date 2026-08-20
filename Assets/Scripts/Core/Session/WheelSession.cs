@@ -75,7 +75,7 @@ namespace CaseStudy.WheelSpin
             if (!IsAwaitingRevive || CurrentZone == null)
                 return false;
 
-            Zone revived = _zoneProvider.GetZoneWithPenaltyDisabled(ZoneIndex);
+            Zone revived = _zoneProvider.GetZone(ZoneIndex, penaltyDisabled: true);
 
             if (revived == null)
                 return false;

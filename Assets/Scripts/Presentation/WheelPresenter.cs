@@ -22,9 +22,23 @@ namespace CaseStudy.WheelSpin
         private bool _isBusy;
         public event Action<bool> BusyChanged;
 
-        public event Action ClaimClicked;
-        public event Action ReviveClicked;
-        public event Action GiveUpClicked;
+        public event Action ClaimClicked
+        {
+            add => _popupPresenter.ClaimClicked += value;
+            remove => _popupPresenter.ClaimClicked -= value;
+        }
+
+        public event Action ReviveClicked
+        {
+            add => _popupPresenter.ReviveClicked += value;
+            remove => _popupPresenter.ReviveClicked -= value;
+        }
+
+        public event Action GiveUpClicked
+        {
+            add => _popupPresenter.GiveUpClicked += value;
+            remove => _popupPresenter.GiveUpClicked -= value;
+        }
 
         public bool IsBusy => _isBusy;
 
@@ -41,14 +55,12 @@ namespace CaseStudy.WheelSpin
                 wheelTierViewDatabase);
 
             _zonePresenter = new ZonePresenter(
-                view.ZoneCountView, view.ZoneSelectorView, view.ZonePalette, view.SpinSettings, tierRules);
+                view.ZoneCountView, view.ZoneSelectorView, wheelTierViewDatabase, view.CurrentZoneColor,
+                view.SpinSettings, tierRules);
 
             _rewardPresenter = new RewardPresenter(view.RewardHolderView, registry);
 
             _popupPresenter = new PopupPresenter(view.CashoutPopup, view.RevivePopup, registry, rewards);
-            _popupPresenter.ClaimClicked += HandleClaimClicked;
-            _popupPresenter. ReviveClicked += HandleReviveClicked;
-            _popupPresenter.GiveUpClicked += HandleGiveUpClicked;
 
             _continueAfterSpin = ContinueAfterSpin;
             _onPartComplete = HandlePartComplete;
@@ -71,9 +83,6 @@ namespace CaseStudy.WheelSpin
             _zonePresenter.Deinitialize();
             _rewardPresenter.Deinitialize();
 
-            _popupPresenter.ClaimClicked -= HandleClaimClicked;
-            _popupPresenter.ReviveClicked -= HandleReviveClicked;
-            _popupPresenter.GiveUpClicked -= HandleGiveUpClicked;
             _popupPresenter.Deinitialize();
 
             ClearCaptured();
@@ -81,9 +90,6 @@ namespace CaseStudy.WheelSpin
             _isBusy = false;
 
             BusyChanged = null;
-            ClaimClicked = null;
-            ReviveClicked = null;
-            GiveUpClicked = null;
         }
 
         public void ResetForNewRun()
@@ -130,7 +136,6 @@ namespace CaseStudy.WheelSpin
 
         private void CaptureRunEnded(int zone, long banked) => _runEnded = true;
 
-        /// <summary>Revive sonrasi cark yeniden bind edilir; devre disi bomba solar.</summary>
         private void HandleZoneRefreshed(Zone zone) => _slicePresenter.Bind(zone);
 
         private void ClearCaptured()
@@ -168,7 +173,6 @@ namespace CaseStudy.WheelSpin
             ContinueAfterSpin();
         }
 
-        /// <summary>Revive'dan sonra normal akisa donus: popup kapanir, butonlar tekrar acilir.</summary>
         public void PlayRevive()
         {
             _popupPresenter.HideAll();
@@ -182,14 +186,12 @@ namespace CaseStudy.WheelSpin
             if (_hasResult && !_result.IsPenalty)
                 _rewardPresenter.Add(_result.ItemId, _result.Amount);
 
-            // Cark bombanin ustunde durdu; karar oyuncuda. Busy true kalir, butonlar kilitli.
             if (_runFailed)
             {
                 _popupPresenter.ShowRevive();
                 return;
             }
 
-            // CashOut ya da zone'lar bitti: her iki durumda da ayni popup.
             if (_runEnded)
             {
                 _popupPresenter.ShowCashout();
@@ -234,11 +236,5 @@ namespace CaseStudy.WheelSpin
             _isBusy = busy;
             BusyChanged?.Invoke(busy);
         }
-
-        private void HandleClaimClicked() => ClaimClicked?.Invoke();
-
-        private void HandleReviveClicked() => ReviveClicked?.Invoke();
-
-        private void HandleGiveUpClicked() => GiveUpClicked?.Invoke();
     }
 }

@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace CaseStudy.WheelSpin
 {
-    // AI Generated
     public static class SpinAliasing
     {
         public const float DefaultSafetyFactor = 0.9f;

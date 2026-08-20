@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace CaseStudy.WheelSpin
 {
     public readonly struct SpinResult

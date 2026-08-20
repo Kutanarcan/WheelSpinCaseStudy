@@ -88,10 +88,10 @@ namespace CaseStudy.WheelSpin
                 }
             }
 
-            var spritePack = _wheelTierViewDatabase.GetSprite(zone.Tier);
-            
-            _view.WheelImage.sprite = spritePack.Wheel;
-            _view.SpinIndicatorImage.sprite = spritePack.WheelIndicator;
+            TierViewPack viewPack = _wheelTierViewDatabase.GetPack(zone.Tier);
+
+            _view.WheelImage.sprite = viewPack.Wheel;
+            _view.SpinIndicatorImage.sprite = viewPack.WheelIndicator;
         }
 
         public void PlaySpin(int sliceIndex, Action onComplete) => _animator.Play(sliceIndex, onComplete);

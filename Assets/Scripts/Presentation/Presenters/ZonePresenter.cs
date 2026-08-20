@@ -9,7 +9,8 @@ namespace CaseStudy.WheelSpin
     {
         private readonly ZoneCountView _countView;
         private readonly RectTransform _selectorRect;
-        private readonly ZonePalette _palette;
+        private readonly WheelTierViewDatabase _tierViewDatabase;
+        private readonly Color _currentZoneColor;
         private readonly WheelSpinSettings _settings;
         private readonly WheelTierRuleProvider _tierRules;
 
@@ -31,12 +32,14 @@ namespace CaseStudy.WheelSpin
         public ZonePresenter(
             ZoneCountView countView,
             ZoneSelectorView selectorView,
-            ZonePalette palette,
+            WheelTierViewDatabase tierViewDatabase,
+            Color currentZoneColor,
             WheelSpinSettings settings,
             WheelTierRuleProvider tierRules)
         {
             _countView = countView;
-            _palette = palette;
+            _tierViewDatabase = tierViewDatabase;
+            _currentZoneColor = currentZoneColor;
             _settings = settings;
             _tierRules = tierRules;
 
@@ -63,7 +66,6 @@ namespace CaseStudy.WheelSpin
 
         public void ResetForNewRun() => KillTweens();
 
-        /// <summary>Renkleri gunceller, selector'i tasir, seridi ortalar.</summary>
         public void Show(int zoneNumber, bool instant, Action onComplete)
         {
             RefreshColors(zoneNumber);
@@ -89,9 +91,18 @@ namespace CaseStudy.WheelSpin
                 ZoneNumberView view = _countView.Get(zoneNumber);
                 if (view == null) continue;
 
-                WheelTier tier = _tierRules.TierFor(zoneNumber);
-                view.SetColor(_palette.For(tier, zoneNumber == currentZone));
+                view.SetColor(ColorFor(zoneNumber, currentZone));
             }
+        }
+
+        private Color ColorFor(int zoneNumber, int currentZone)
+        {
+            if (zoneNumber == currentZone)
+                return _currentZoneColor;
+
+            WheelTier tier = _tierRules.TierFor(zoneNumber);
+
+            return _tierViewDatabase.GetPack(tier).ZoneNumberColor;
         }
 
         private void Snap(int zoneNumber)

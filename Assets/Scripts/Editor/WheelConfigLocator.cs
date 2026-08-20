@@ -32,6 +32,13 @@ namespace CaseStudy.WheelSpin.EditorTools
             return config != null ? config.CreateTierRuleProvider() : new WheelTierRuleProvider();
         }
 
+        public static WheelTierViewDatabase TierViewDatabase()
+        {
+            WheelConfigAsset config = Find();
+
+            return config != null ? config.WheelTierViewDatabase : null;
+        }
+
         public static float GlobalPenaltyChance()
         {
             WheelConfigAsset config = Find();

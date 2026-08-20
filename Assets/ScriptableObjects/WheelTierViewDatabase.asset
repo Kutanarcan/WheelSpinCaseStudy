@@ -11,20 +11,24 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8a3a326a28084be4f8937324f80f69f4, type: 3}
   m_Name: WheelTierViewDatabase
-  m_EditorClassIdentifier: 
-  _defaultSpritePack:
+  m_EditorClassIdentifier:
+  _defaultViewPack:
     Wheel: {fileID: 21300000, guid: 9d37c50aed575c34db561d869bfc7ae7, type: 3}
     WheelIndicator: {fileID: 21300000, guid: a49c4d7e81ef2e04a947c837f5b8db79, type: 3}
+    ZoneNumberColor: {r: 1, g: 1, b: 1, a: 1}
   _tierHolderArray:
   - Tier: 0
     Pack:
       Wheel: {fileID: 21300000, guid: 9d37c50aed575c34db561d869bfc7ae7, type: 3}
       WheelIndicator: {fileID: 21300000, guid: a49c4d7e81ef2e04a947c837f5b8db79, type: 3}
+      ZoneNumberColor: {r: 1, g: 1, b: 1, a: 1}
   - Tier: 1
     Pack:
       Wheel: {fileID: 21300000, guid: 3a86bd11ad7cc4447b635c4540e109c1, type: 3}
       WheelIndicator: {fileID: 21300000, guid: d0d2abd9969854a45aea3d1ad550132b, type: 3}
+      ZoneNumberColor: {r: 0.35, g: 0.85, b: 0.45, a: 1}
   - Tier: 2
     Pack:
       Wheel: {fileID: 21300000, guid: dc6b27b4f0aca0a4f91f3b04d3d4f501, type: 3}
       WheelIndicator: {fileID: 21300000, guid: b545e82bd8f06fe48a70b73305c4a210, type: 3}
+      ZoneNumberColor: {r: 1, g: 0.82, b: 0.25, a: 1}

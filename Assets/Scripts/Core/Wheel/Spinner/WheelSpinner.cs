@@ -18,12 +18,7 @@ namespace CaseStudy.WheelSpin
             int index = _calculator.Calculate(wheel);
 
             if (index < 0 || index >= wheel.Length)
-            {
-                UnityEngine.Debug.LogError(
-                    $"[{nameof(WheelSpinner)}] Invalid slice index {index}; wheel weights may all be zero.");
-
                 index = 0;
-            }
 
             WheelSlice slice = wheel[index];
 

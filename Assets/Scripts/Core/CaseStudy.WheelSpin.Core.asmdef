@@ -1,0 +1,14 @@
+{
+    "name": "CaseStudy.WheelSpin.Core",
+    "rootNamespace": "CaseStudy.WheelSpin",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

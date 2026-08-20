@@ -86,12 +86,9 @@ namespace CaseStudy.WheelSpin.EditorTools
 
         private static Color TierColor(WheelTier tier)
         {
-            switch (tier)
-            {
-                case WheelTier.Gold: return new Color(1f, 0.82f, 0.3f);
-                case WheelTier.Silver: return new Color(0.75f, 0.78f, 0.85f);
-                default: return Color.white;
-            }
+            WheelTierViewDatabase database = WheelConfigLocator.TierViewDatabase();
+
+            return database != null ? database.GetPack(tier).ZoneNumberColor : Color.white;
         }
 
         private static float ResolvedChance(ZoneAsset asset)

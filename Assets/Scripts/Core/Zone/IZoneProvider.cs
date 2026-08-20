@@ -4,8 +4,6 @@ namespace CaseStudy.WheelSpin
     {
         int ZoneCount { get; }
 
-        Zone GetZone(int index);
-
-        Zone GetZoneWithPenaltyDisabled(int index);
+        Zone GetZone(int index, bool penaltyDisabled = false);
     }
 }
