@@ -96,6 +96,22 @@ namespace CaseStudy.WheelSpin
 
         public void PlaySpin(int sliceIndex, Action onComplete) => _animator.Play(sliceIndex, onComplete);
 
+        /// <summary>
+        /// Where the given slice currently sits on screen. Read after the spin settles, this is the
+        /// resting place of the winning slice under the indicator — not the wheel centre.
+        /// </summary>
+        public Vector3 SliceWorldPosition(int sliceIndex)
+        {
+            IReadOnlyList<WheelSliceView> views = _view.SliceViewArray;
+
+            if (sliceIndex < 0 || sliceIndex >= views.Count || views[sliceIndex] == null)
+                return _view.WheelRect.position;
+
+            WheelSliceView slice = views[sliceIndex];
+
+            return slice.IconRect != null ? slice.IconRect.position : slice.transform.position;
+        }
+
         public void PlayZoneChange(Zone nextZone, Action onComplete)
         {
             KillSequence();

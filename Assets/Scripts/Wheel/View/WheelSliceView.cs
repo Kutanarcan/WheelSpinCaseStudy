@@ -12,6 +12,9 @@ namespace CaseStudy.WheelSpin
 
         [SerializeField] private Color _disabledIconColor = new Color(1f, 1f, 1f, 0.35f);
 
+        /// Where the reward art actually sits on the wheel — the win effect spawns from here.
+        public RectTransform IconRect => _iconRect;
+
         private void OnValidate()
         {
             if (_icon == null)

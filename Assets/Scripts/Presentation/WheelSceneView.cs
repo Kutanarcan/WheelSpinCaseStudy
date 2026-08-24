@@ -24,6 +24,10 @@ namespace CaseStudy.WheelSpin
         [Header("Animation")]
         public WheelSpinSettings SpinSettings = new WheelSpinSettings();
 
+        [Header("Reward Flight")]
+        public RewardFlightView RewardFlightView;
+        public RewardFlightSettings FlightSettings = new RewardFlightSettings();
+
 #if UNITY_EDITOR
 
         private void OnValidate()

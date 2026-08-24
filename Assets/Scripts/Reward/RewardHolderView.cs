@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace CaseStudy.WheelSpin
 {
@@ -48,6 +49,14 @@ namespace CaseStudy.WheelSpin
         }
 
         public void ResetForNewRun() => DeactivateAll();
+
+        /// Forces the layout group to place a freshly activated slot now, so callers can read its
+        /// world position in the same frame instead of one frame late.
+        public void RebuildLayout()
+        {
+            if (_rewardContentParent is RectTransform content)
+                LayoutRebuilder.ForceRebuildLayoutImmediate(content);
+        }
 
         public RewardView Acquire()
         {

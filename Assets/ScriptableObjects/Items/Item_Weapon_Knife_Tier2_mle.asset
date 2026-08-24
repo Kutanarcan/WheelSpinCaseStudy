@@ -19,6 +19,7 @@ MonoBehaviour:
     Rotation: 0
     Offset: {x: 0, y: 0}
   _rewardSettings:
-    Size: {x: 100, y: 35}
+    Size: {x: 200, y: 70}
     Rotation: 0
     Offset: {x: 0, y: 0}
+  _flightScale: 1

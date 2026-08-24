@@ -18,7 +18,7 @@ namespace CaseStudy.WheelSpin
         private RectTransform _rect;
         private Tween _punchTween;
 
-        private RectTransform Rect => _rect != null ? _rect : _rect = transform as RectTransform;
+        public RectTransform Rect => _rect != null ? _rect : _rect = transform as RectTransform;
 
         private void OnValidate()
         {
@@ -50,7 +50,7 @@ namespace CaseStudy.WheelSpin
         public void SetAmount(int amount)
         {
             if (_amountText != null)
-                _amountText.text = ViewFormat.FormatSliceAmount(amount);
+                _amountText.SetText($"{amount}");
         }
 
         public void PlayStackFeedback()
