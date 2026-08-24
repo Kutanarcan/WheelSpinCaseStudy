@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SpriteAtlas_Wheel
+  m_Name: SpriteAtlas_Textures
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -20,13 +20,25 @@ SpriteAtlas:
       readable: 0
       crunchedCompression: 0
       sRGB: 1
-    platformSettings: []
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
     packingSettings:
       serializedVersion: 2
-      padding: 48
+      padding: 4
       blockOffset: 1
       allowAlphaSplitting: 0
-      enableRotation: 0
+      enableRotation: 1
       enableTightPacking: 1
       enableAlphaDilation: 0
     secondaryTextureSettings: {}
@@ -47,7 +59,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 8fd4b1a1ed612ba46a3a43827fc87d49, type: 3}
   - {fileID: 21300000, guid: ee5f9de14a87302419144f4ae6e79724, type: 3}
   - {fileID: 21300000, guid: 08cbc31258ec572478c4dbde293f4bed, type: 3}
-  - {fileID: 21300000, guid: bef166030e6eec1418ba9b082baeb4d8, type: 3}
   - {fileID: 21300000, guid: 9c29e91347a26c0429a0e9fe0fc172db, type: 3}
   - {fileID: 21300000, guid: 3d8547a3eccf6e147ac15f008bc03589, type: 3}
   - {fileID: 21300000, guid: a51112e3639ecdd478e263e84a647b5e, type: 3}
@@ -81,7 +92,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 3665cbd9d409e81468ae76a7ef8a9117, type: 3}
   - {fileID: 21300000, guid: d02f9cd90fcce0741b5799a4c8d23783, type: 3}
   - {fileID: 21300000, guid: 9d37c50aed575c34db561d869bfc7ae7, type: 3}
-  - {fileID: 21300000, guid: 1016d96ae7bdfa84d99c411b58d83394, type: 3}
   - {fileID: 21300000, guid: 6f9f151b12abefa419e8ca78f468d618, type: 3}
   - {fileID: 21300000, guid: b545e82bd8f06fe48a70b73305c4a210, type: 3}
   - {fileID: 21300000, guid: 2c03a4abd2bef194083269b6c8cc2a24, type: 3}
@@ -107,7 +117,6 @@ SpriteAtlas:
   - UI_icon_chest_silver_nolight
   - star_glow_alpha
   - UI_button_grey_standard
-  - Background
   - ui_icon_render_cons_healthshot_2_regenerator
   - ui_card_panel_zone_super
   - ui_icon_mle_bayonet_easter_time
@@ -141,7 +150,6 @@ SpriteAtlas:
   - ui_icon_render_cons_healthshot_2_neurostim
   - UI_icon_chest_gold_nolight
   - ui_spin_bronze_base
-  - star_flash_alpha
   - UI_icon_chest_Bronze_nolight
   - ui_spin_golden_indicator
   - UI_Icon_Renders_tier3_sniper
@@ -158,5 +166,5 @@ SpriteAtlas:
   - UI_Icons_Vest_Points
   - UI_icon_chest_super_nolight
   m_RenderDataMap: {}
-  m_Tag: SpriteAtlas_Wheel
+  m_Tag: SpriteAtlas_Textures
   m_IsVariant: 0
