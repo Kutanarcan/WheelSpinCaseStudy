@@ -25,6 +25,7 @@ namespace CaseStudy.WheelSpin
         {
             _entries.Clear();
             _view.Initialize();
+            SetCashOutActive(true);
         }
 
         public void Deinitialize()
@@ -37,7 +38,14 @@ namespace CaseStudy.WheelSpin
         {
             _entries.Clear();
             _view.ResetForNewRun();
+            SetCashOutActive(true);
         }
+
+        /// <summary>
+        /// Cashing out is only possible while a run is alive, so the button is taken off screen the
+        /// moment a bomb ends it and put back by a revive or a fresh run.
+        /// </summary>
+        public void SetCashOutActive(bool active) => _view.SetCashOutButtonRootActive(active);
 
         public void Clear() => ResetForNewRun();
 

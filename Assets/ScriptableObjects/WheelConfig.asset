@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _goldEvery: 30
   _silverEvery: 5
-  _penaltyChance: 0.9
+  _penaltyChance: 0.25
   _zoneSet: {fileID: 11400000, guid: f67f460e49193b940b8386a9152ee5c1, type: 2}
   _itemDatabase: {fileID: 11400000, guid: 16aa7a7ad9013674bbfd386f850b164b, type: 2}
   _wheelTierViewDatabase: {fileID: 11400000, guid: 4f4264495b1cbb2469f08bb75679dd30, type: 2}

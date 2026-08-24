@@ -156,6 +156,7 @@ namespace CaseStudy.WheelSpin
             _popupPresenter.HideAll();
             _flightPresenter.Kill();
             _penaltyPresenter.Kill();
+            _rewardPresenter.SetCashOutActive(true);
 
             Finish();
         }
@@ -200,6 +201,7 @@ namespace CaseStudy.WheelSpin
             }
             else if (_outcome.HasPenalty)
             {
+                _rewardPresenter.SetCashOutActive(false);
                 _penaltyPresenter.Play(_outcome.Result.SliceIndex, _gate.Track());
             }
             else

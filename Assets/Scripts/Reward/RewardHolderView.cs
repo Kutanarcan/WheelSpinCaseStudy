@@ -8,6 +8,7 @@ namespace CaseStudy.WheelSpin
     public class RewardHolderView : MonoBehaviour
     {
         public ActionButtonView CashOutButtonView;
+        public RectTransform CashOutButtonViewRoot;
 
         [SerializeField, Min(0)] public int _prewarmCount = 12;
         [SerializeField] private Transform _rewardContentParent;
@@ -49,6 +50,12 @@ namespace CaseStudy.WheelSpin
         }
 
         public void ResetForNewRun() => DeactivateAll();
+
+        public void SetCashOutButtonRootActive(bool active)
+        {
+            if (CashOutButtonViewRoot != null)
+                CashOutButtonViewRoot.gameObject.SetActive(active);
+        }
 
         /// Forces the layout group to place a freshly activated slot now, so callers can read its
         /// world position in the same frame instead of one frame late.
