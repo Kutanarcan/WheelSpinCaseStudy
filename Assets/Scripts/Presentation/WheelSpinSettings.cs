@@ -26,10 +26,11 @@ namespace CaseStudy.WheelSpin
         public Ease SettleEase = Ease.OutCubic;
 
         [Header("Zone Strip")]
-        [Min(0f)] public float SelectorStepDuration = 0.25f;
-        public Ease SelectorStepEase = Ease.OutBack;
+        [Tooltip("Shared duration: the strip scroll and the selector run on this one clock.")]
         [Min(0f)] public float ScrollDuration = 0.35f;
         public Ease ScrollEase = Ease.OutCubic;
+        [Tooltip("Ease of the selector along the same clock. An overshooting ease is allowed here.")]
+        public Ease SelectorStepEase = Ease.OutBack;
 
         [Header("Zone Change")]
         [Min(0f)] public float DropDistance = 900f;
