@@ -17,9 +17,9 @@ MonoBehaviour:
   _wheelSettings:
     Size: {x: 129.6, y: 72.9}
     Rotation: 0
-    Offset: {x: 0, y: 0}
+    Offset: {x: 0, y: 10}
   _rewardSettings:
-    Size: {x: 112.5, y: 63.28125}
+    Size: {x: 135, y: 75.9375}
     Rotation: 0
     Offset: {x: 0, y: 0}
-  _flightScale: 0.8
+  _flightScale: 1

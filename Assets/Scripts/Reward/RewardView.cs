@@ -14,7 +14,7 @@ namespace CaseStudy.WheelSpin
         [Header("Stack Feedback")]
         [SerializeField, Min(0f)] private float _punchScale = 0.18f;
         [SerializeField, Min(0f)] private float _punchDuration = 0.22f;
-        [Range(0f, 1f)] [SerializeField] private float _punchRiseRatio = 0.35f;
+        [Range(0f, 1f)][SerializeField] private float _punchRiseRatio = 0.35f;
         [SerializeField] private Ease _punchRiseEase = Ease.OutQuad;
         [SerializeField] private Ease _punchFallEase = Ease.OutBack;
 
@@ -104,8 +104,7 @@ namespace CaseStudy.WheelSpin
                 return;
 
             _iconRect.sizeDelta = settings.Size;
-            _iconRect.localEulerAngles = new Vector3(0f, 0f, settings.Rotation);
-            _iconRect.anchoredPosition = settings.Offset;
+            _iconRect.localEulerAngles = new Vector3(0f, settings.Rotation, 0f);
         }
     }
 }
