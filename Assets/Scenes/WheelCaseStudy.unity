@@ -1288,15 +1288,15 @@ MonoBehaviour:
     ScrollDuration: 0.25
     ScrollEase: 8
     SelectorStepEase: 8
-    DropDistance: 900
-    DropDuration: 0.55
-    DropEase: 7
-    DropTilt: -24
-    RiseDuration: 0.55
+    DropDistance: 1250
+    DropDuration: 0.75
+    DropEase: 17
+    DropTilt: 100
+    RiseDuration: 0.6
     RiseEase: 27
     ResetAngleOnZoneChange: 1
     IndicatorAngle: 0
-    SpinClockwise: 1
+    SpinClockwise: 0
     SliceOrderClockwise: 1
     PreventStroboscopicAliasing: 1
   RewardFlightView: {fileID: 474693880}
