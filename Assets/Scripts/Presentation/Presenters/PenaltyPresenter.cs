@@ -19,6 +19,7 @@ namespace CaseStudy.WheelSpin
 
         private Sequence _sequence;
         private Action _pendingComplete;
+        private WheelSliceView _bombView;
         private RectTransform _bombRect;
 
         public bool IsPlaying => _sequence != null;
@@ -65,7 +66,8 @@ namespace CaseStudy.WheelSpin
         {
             Kill();
 
-            _bombRect = ResolveBombRect(sliceIndex);
+            _bombView = ResolveBombView(sliceIndex);
+            _bombRect = _bombView != null ? _bombView.IconRect : null;
 
             if (!CanPlay || _bombRect == null)
             {
@@ -75,21 +77,54 @@ namespace CaseStudy.WheelSpin
 
             _pendingComplete = onComplete;
 
-            _sequence = DOTween.Sequence()
-                .Append(_bombRect.DOScale(_settings.GrowScale, _settings.GrowDuration)
-                    .SetEase(_settings.GrowEase))
-                .AppendCallback(_onDetonate)
-                .AppendInterval(_settings.ExplosionDuration)
+            Sequence sequence = DOTween.Sequence();
+
+            AppendSwell(sequence);
+
+            // The blast is inserted into the swell rather than queued after it, so the bomb is still
+            // growing when it goes off instead of sitting at full size waiting for its cue.
+            float detonateTime = _settings.GrowDuration * _settings.DetonateAt;
+
+            sequence.InsertCallback(detonateTime, _onDetonate);
+
+            float tail = detonateTime + _settings.ExplosionDuration - sequence.Duration();
+
+            if (tail > 0f)
+                sequence.AppendInterval(tail);
+
+            _sequence = sequence
                 .SetLink(_wheelView.gameObject, LinkBehaviour.KillOnDestroy)
                 .OnComplete(_onSequenceComplete);
+        }
+
+        /// The swell drives scale while the shake drives rotation, so the two run together on the
+        /// same rect without fighting over one property.
+        private void AppendSwell(Sequence sequence)
+        {
+            if (_settings.GrowDuration <= 0f)
+                return;
+
+            sequence.Append(_bombRect.DOScale(_settings.GrowScale, _settings.GrowDuration)
+                .SetEase(_settings.GrowEase));
+
+            if (_settings.ShakeRotation <= 0f)
+                return;
+
+            sequence.Join(_bombRect.DOPunchRotation(
+                new Vector3(0f, 0f, _settings.ShakeRotation),
+                _settings.GrowDuration,
+                _settings.ShakeVibrato,
+                _settings.ShakeElasticity));
         }
 
         private void HandleDetonate()
         {
             _explosion.PlayAt(_bombRect.position);
 
+            // Disabling the graphic rather than zeroing the scale: the swell tween is still running
+            // and would write the transform back on the next frame, flashing the bomb after the blast.
             if (_settings.HideBombOnExplode)
-                _bombRect.localScale = Vector3.zero;
+                _bombView.SetIconVisible(false);
         }
 
         private void HandleSequenceComplete()
@@ -105,23 +140,32 @@ namespace CaseStudy.WheelSpin
         }
 
         /// The slice views are reused across zones, so the swell has to be undone whatever path the
-        /// sequence leaves by — otherwise the next zone inherits a giant icon.
+        /// sequence leaves by — otherwise the next zone inherits a giant, tilted icon. Killing a
+        /// punch leaves the transform mid-tween, which makes resetting both properties mandatory
+        /// rather than merely tidy.
         private void RestoreBomb()
         {
             if (_bombRect != null)
+            {
                 _bombRect.localScale = Vector3.one;
+                _bombRect.localEulerAngles = Vector3.zero;
+            }
 
+            if (_bombView != null)
+                _bombView.SetIconVisible(true);
+
+            _bombView = null;
             _bombRect = null;
         }
 
-        private RectTransform ResolveBombRect(int sliceIndex)
+        private WheelSliceView ResolveBombView(int sliceIndex)
         {
             WheelSliceView[] views = _wheelView != null ? _wheelView.SliceViewArray : null;
 
-            if (views == null || sliceIndex < 0 || sliceIndex >= views.Length || views[sliceIndex] == null)
+            if (views == null || sliceIndex < 0 || sliceIndex >= views.Length)
                 return null;
 
-            return views[sliceIndex].IconRect;
+            return views[sliceIndex];
         }
     }
 }

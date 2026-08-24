@@ -15,6 +15,14 @@ namespace CaseStudy.WheelSpin
         /// Where the reward art actually sits on the wheel — the win effect spawns from here.
         public RectTransform IconRect => _iconRect;
 
+        /// Hides the art without touching the transform, so a scale tween still running on this
+        /// slice cannot draw it again on the next frame.
+        public void SetIconVisible(bool visible)
+        {
+            if (_icon != null)
+                _icon.enabled = visible;
+        }
+
         private void OnValidate()
         {
             if (_icon == null)

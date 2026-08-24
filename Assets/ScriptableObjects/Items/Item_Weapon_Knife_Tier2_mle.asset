@@ -22,4 +22,4 @@ MonoBehaviour:
     Size: {x: 135, y: 45}
     Rotation: 0
     Offset: {x: 0, y: 0}
-  _flightScale: 1
+  _flightScale: 1.25
