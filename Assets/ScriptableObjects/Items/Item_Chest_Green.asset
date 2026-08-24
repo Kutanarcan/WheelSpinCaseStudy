@@ -15,11 +15,11 @@ MonoBehaviour:
   _itemId: chest_green
   _icon: {fileID: 21300000, guid: f05ecd37194d92843a95d9899b77c5db, type: 3}
   _wheelSettings:
-    Size: {x: 170.66667, y: 75.666664}
+    Size: {x: 110.59209, y: 49.032}
     Rotation: 0
     Offset: {x: 0, y: 0}
   _rewardSettings:
     Size: {x: 128.00003, y: 56.749996}
     Rotation: 0
     Offset: {x: 0, y: 0}
-  _flightScale: 1
+  _flightScale: 0.8

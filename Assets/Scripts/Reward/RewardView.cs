@@ -14,9 +14,13 @@ namespace CaseStudy.WheelSpin
         [Header("Stack Feedback")]
         [SerializeField, Min(0f)] private float _punchScale = 0.18f;
         [SerializeField, Min(0f)] private float _punchDuration = 0.22f;
+        [Range(0f, 1f)] [SerializeField] private float _punchRiseRatio = 0.35f;
+        [SerializeField] private Ease _punchRiseEase = Ease.OutQuad;
+        [SerializeField] private Ease _punchFallEase = Ease.OutBack;
 
         private RectTransform _rect;
         private Tween _punchTween;
+        private TweenCallback _onPunchKill;
 
         public RectTransform Rect => _rect != null ? _rect : _rect = transform as RectTransform;
 
@@ -40,9 +44,6 @@ namespace CaseStudy.WheelSpin
         {
             KillPunch();
 
-            if (Rect != null)
-                Rect.localScale = Vector3.one;
-
             ApplyIcon(icon, settings);
             SetAmount(amount);
         }
@@ -53,25 +54,42 @@ namespace CaseStudy.WheelSpin
                 _amountText.SetText($"{amount}");
         }
 
+        /// <summary>
+        /// Grows the slot and brings it back to rest. Both halves are absolute scale tweens, so a
+        /// punch that is interrupted by the next one still ends at rest: the replacement drives the
+        /// scale to the same fixed values regardless of where the previous one was cut off.
+        /// </summary>
         public void PlayStackFeedback()
         {
             if (Rect == null || _punchScale <= 0f || _punchDuration <= 0f)
                 return;
 
             KillPunch();
-            Rect.localScale = Vector3.one;
 
-            _punchTween = Rect
-                .DOPunchScale(Vector3.one * _punchScale, _punchDuration, vibrato: 6, elasticity: 0.5f)
+            float riseDuration = _punchDuration * _punchRiseRatio;
+
+            _punchTween = DOTween.Sequence()
+                .Append(Rect.DOScale(1f + _punchScale, riseDuration).SetEase(_punchRiseEase))
+                .Append(Rect.DOScale(1f, _punchDuration - riseDuration).SetEase(_punchFallEase))
                 .SetLink(gameObject, LinkBehaviour.KillOnDestroy)
-                .OnKill(() => _punchTween = null);
+                .OnKill(_onPunchKill ??= HandlePunchKill);
         }
 
+        /// Killing a scale tween leaves the transform wherever the tween had reached, so the reset
+        /// belongs here rather than at the start of the next punch — that way a slot that is
+        /// deactivated or rebound mid-punch is also returned to rest.
         private void KillPunch()
         {
-            _punchTween?.Kill();
+            Tween tween = _punchTween;
             _punchTween = null;
+
+            tween?.Kill();
+
+            if (Rect != null)
+                Rect.localScale = Vector3.one;
         }
+
+        private void HandlePunchKill() => _punchTween = null;
 
         private void ApplyIcon(Sprite icon, ItemViewSettings settings)
         {

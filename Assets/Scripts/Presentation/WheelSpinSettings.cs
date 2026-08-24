@@ -14,6 +14,12 @@ namespace CaseStudy.WheelSpin
         [Min(0)] public int MaxTurns = 3;
         public Ease Ease = Ease.InOutQuad;
 
+        [Header("Windup")]
+        [Tooltip("Degrees the wheel is pulled back against the spin direction before it launches.")]
+        [Min(0f)] public float Windup = 12f;
+        [Min(0f)] public float WindupDuration = 0.25f;
+        public Ease WindupEase = Ease.OutQuad;
+
         [Header("Settle")]
         [Min(0f)] public float Overshoot = 8f;
         [Min(0f)] public float SettleDuration = 0.45f;

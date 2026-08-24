@@ -54,11 +54,22 @@ namespace CaseStudy.WheelSpin
             _onComplete = onComplete;
 
             float total = TravelDegrees(sliceIndex);
-            float overshoot = ResolveOvershoot();
+            float windup = ResolveBackswing(_settings.Windup, _settings.WindupDuration);
+            float overshoot = ResolveBackswing(_settings.Overshoot, _settings.SettleDuration);
 
-            Sequence sequence = DOTween.Sequence()
-                .Append(DOTween.To(_travelledGetter, _travelledSetter, total + overshoot, ResolveDuration(total + overshoot))
-                    .SetEase(_settings.Ease));
+            Sequence sequence = DOTween.Sequence();
+
+            // Negative travel is the same motion mirrored: the wheel is dragged against the spin
+            // direction, so the launch and the settle are two ends of one mechanism.
+            if (windup > 0f)
+            {
+                sequence.Append(DOTween.To(_travelledGetter, _travelledSetter, -windup, _settings.WindupDuration)
+                    .SetEase(_settings.WindupEase));
+            }
+
+            sequence.Append(DOTween
+                .To(_travelledGetter, _travelledSetter, total + overshoot, ResolveDuration(total + overshoot + windup))
+                .SetEase(_settings.Ease));
 
             if (overshoot > 0f)
             {
@@ -99,12 +110,13 @@ namespace CaseStudy.WheelSpin
             return delta + 360f * turns;
         }
 
-        private float ResolveOvershoot()
+        /// Capped at half a slice so neither end of the spin visibly reaches the neighbouring slice.
+        private float ResolveBackswing(float degrees, float duration)
         {
-            if (_settings.Overshoot <= 0f || _settings.SettleDuration <= 0f)
+            if (degrees <= 0f || duration <= 0f)
                 return 0f;
 
-            return Mathf.Min(_settings.Overshoot, 180f / _sliceCount);
+            return Mathf.Min(degrees, 180f / _sliceCount);
         }
 
         private float ResolveDuration(float totalDegrees)
