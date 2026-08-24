@@ -54,7 +54,7 @@ namespace CaseStudy.WheelSpin
 
             _zonePresenter = new ZonePresenter(
                 view.ZoneCountView, view.ZoneSelectorView, wheelTierViewDatabase, view.CurrentZoneColor,
-                view.SpinSettings, tierRules);
+                view.PastZoneAlpha / 255f, view.SpinSettings, tierRules);
 
             _rewardPresenter = new RewardPresenter(view.RewardHolderView, registry);
 

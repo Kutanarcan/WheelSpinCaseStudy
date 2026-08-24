@@ -21,6 +21,9 @@ namespace CaseStudy.WheelSpin
         [Header("Palette")]
         public Color CurrentZoneColor = Color.black;
 
+        [Tooltip("Alpha of zone numbers the player has already passed, out of 255.")]
+        [Range(0, 255)] public int PastZoneAlpha = 40;
+
         [Header("Animation")]
         public WheelSpinSettings SpinSettings = new WheelSpinSettings();
 
