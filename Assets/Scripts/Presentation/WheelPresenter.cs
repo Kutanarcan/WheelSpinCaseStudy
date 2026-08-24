@@ -20,7 +20,6 @@ namespace CaseStudy.WheelSpin
         private int _pendingParts;
 
         private bool _isBusy;
-        public event Action<bool> BusyChanged;
 
         public event Action ClaimClicked
         {
@@ -88,8 +87,6 @@ namespace CaseStudy.WheelSpin
             ClearCaptured();
             _pendingParts = 0;
             _isBusy = false;
-
-            BusyChanged = null;
         }
 
         public void ResetForNewRun()
@@ -229,12 +226,6 @@ namespace CaseStudy.WheelSpin
             SetBusy(false);
         }
 
-        private void SetBusy(bool busy)
-        {
-            if (_isBusy == busy) return;
-
-            _isBusy = busy;
-            BusyChanged?.Invoke(busy);
-        }
+        private void SetBusy(bool busy) => _isBusy = busy;
     }
 }

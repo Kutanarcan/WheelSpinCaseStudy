@@ -1199,10 +1199,13 @@ MonoBehaviour:
     Offset: {x: 0, y: 0}
   CurrentZoneColor: {r: 0, g: 0, b: 0, a: 1}
   SpinSettings:
-    Duration: 2.5
-    MinTurns: 2
-    MaxTurns: 3
-    Ease: 6
+    Duration: 4
+    MinTurns: 4
+    MaxTurns: 5
+    Ease: 7
+    Overshoot: 9
+    SettleDuration: 1.25
+    SettleEase: 9
     SelectorStepDuration: 0.25
     SelectorStepEase: 27
     ScrollDuration: 0.35

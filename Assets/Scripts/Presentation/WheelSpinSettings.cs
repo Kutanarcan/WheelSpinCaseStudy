@@ -12,7 +12,12 @@ namespace CaseStudy.WheelSpin
         [Min(0f)] public float Duration = 2.5f;
         [Min(0)] public int MinTurns = 2;
         [Min(0)] public int MaxTurns = 3;
-        public Ease Ease = Ease.OutQuad;
+        public Ease Ease = Ease.InOutQuad;
+
+        [Header("Settle")]
+        [Min(0f)] public float Overshoot = 8f;
+        [Min(0f)] public float SettleDuration = 0.45f;
+        public Ease SettleEase = Ease.OutCubic;
 
         [Header("Zone Strip")]
         [Min(0f)] public float SelectorStepDuration = 0.25f;

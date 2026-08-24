@@ -1,5 +1,6 @@
 using System;
 using DG.Tweening;
+using DG.Tweening.Core;
 using UnityEngine;
 
 namespace CaseStudy.WheelSpin
@@ -10,8 +11,12 @@ namespace CaseStudy.WheelSpin
         private readonly WheelSpinSettings _settings;
         private readonly int _sliceCount;
         private readonly TweenCallback _onTweenComplete;
+        private readonly DOGetter<float> _travelledGetter;
+        private readonly DOSetter<float> _travelledSetter;
+
         private float _currentAngle;
         private float _fromAngle;
+        private float _travelled;
         private float _direction = -1f;
 
         private Tween _tween;
@@ -25,6 +30,8 @@ namespace CaseStudy.WheelSpin
             _settings = settings;
             _sliceCount = Mathf.Max(1, sliceCount);
             _onTweenComplete = HandleTweenComplete;
+            _travelledGetter = GetTravelled;
+            _travelledSetter = SetTravelled;
 
             _currentAngle = 0f;
             Apply(0f);
@@ -42,29 +49,24 @@ namespace CaseStudy.WheelSpin
             Kill();
 
             _fromAngle = _currentAngle;
-            float to = TargetAngle(sliceIndex);
-
             _direction = _settings.SpinClockwise ? -1f : 1f;
-
-            float delta = _settings.SpinClockwise
-                ? Mathf.Repeat(_fromAngle - to, 360f)
-                : Mathf.Repeat(to - _fromAngle, 360f);
-
-            int turns = UnityEngine.Random.Range(_settings.MinTurns, _settings.MaxTurns + 1);
-            float total = delta + 360f * turns;
-
-            float duration = _settings.Duration;
-
-            if (_settings.PreventStroboscopicAliasing)
-            {
-                duration = SpinAliasing.SafeDuration(
-                    duration, total, _settings.Ease, _sliceCount, SpinAliasing.CurrentFrameRate());
-            }
-
+            _travelled = 0f;
             _onComplete = onComplete;
 
-            _tween = DOTween.To(() => 0f, Step, total, duration)
-                .SetEase(_settings.Ease)
+            float total = TravelDegrees(sliceIndex);
+            float overshoot = ResolveOvershoot();
+
+            Sequence sequence = DOTween.Sequence()
+                .Append(DOTween.To(_travelledGetter, _travelledSetter, total + overshoot, ResolveDuration(total + overshoot))
+                    .SetEase(_settings.Ease));
+
+            if (overshoot > 0f)
+            {
+                sequence.Append(DOTween.To(_travelledGetter, _travelledSetter, total, _settings.SettleDuration)
+                    .SetEase(_settings.SettleEase));
+            }
+
+            _tween = sequence
                 .SetLink(_wheel.gameObject, LinkBehaviour.KillOnDestroy)
                 .OnComplete(_onTweenComplete);
         }
@@ -84,7 +86,43 @@ namespace CaseStudy.WheelSpin
             _onComplete = null;
         }
 
-        private void Step(float travelled) => Apply(_fromAngle + _direction * travelled);
+        private float TravelDegrees(int sliceIndex)
+        {
+            float to = TargetAngle(sliceIndex);
+
+            float delta = _settings.SpinClockwise
+                ? Mathf.Repeat(_fromAngle - to, 360f)
+                : Mathf.Repeat(to - _fromAngle, 360f);
+
+            int turns = UnityEngine.Random.Range(_settings.MinTurns, _settings.MaxTurns + 1);
+
+            return delta + 360f * turns;
+        }
+
+        private float ResolveOvershoot()
+        {
+            if (_settings.Overshoot <= 0f || _settings.SettleDuration <= 0f)
+                return 0f;
+
+            return Mathf.Min(_settings.Overshoot, 180f / _sliceCount);
+        }
+
+        private float ResolveDuration(float totalDegrees)
+        {
+            if (!_settings.PreventStroboscopicAliasing)
+                return _settings.Duration;
+
+            return SpinAliasing.SafeDuration(
+                _settings.Duration, totalDegrees, _settings.Ease, _sliceCount, SpinAliasing.CurrentFrameRate());
+        }
+
+        private float GetTravelled() => _travelled;
+
+        private void SetTravelled(float travelled)
+        {
+            _travelled = travelled;
+            Apply(_fromAngle + _direction * travelled);
+        }
 
         private void Apply(float angle)
         {

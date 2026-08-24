@@ -15,13 +15,13 @@ namespace CaseStudy.WheelSpin
             switch (ease)
             {
                 case Ease.Linear: return 1f;
-                case Ease.OutSine: return Mathf.PI / 2f;
-                case Ease.OutQuad: return 2f;
-                case Ease.OutCubic: return 3f;
-                case Ease.OutQuart: return 4f;
-                case Ease.OutQuint: return 5f;
-                case Ease.OutExpo: return 6.931f;
-                case Ease.OutCirc: return float.PositiveInfinity;
+                case Ease.OutSine: case Ease.InOutSine: return Mathf.PI / 2f;
+                case Ease.OutQuad: case Ease.InOutQuad: return 2f;
+                case Ease.OutCubic: case Ease.InOutCubic: return 3f;
+                case Ease.OutQuart: case Ease.InOutQuart: return 4f;
+                case Ease.OutQuint: case Ease.InOutQuint: return 5f;
+                case Ease.OutExpo: case Ease.InOutExpo: return 6.931f;
+                case Ease.OutCirc: case Ease.InOutCirc: return float.PositiveInfinity;
                 default: return 4f;
             }
         }

@@ -50,7 +50,6 @@ namespace CaseStudy.WheelSpin
 
             _presenter = new WheelPresenter(
                 _sceneView, registry, tierRules, _config.WheelTierViewDatabase, _rewards);
-            _presenter.BusyChanged += HandleBusyChanged;
             _presenter.Initialize(zoneProvider.ZoneCount);
 
             _session = new WheelSession(zoneProvider, spinner, _rewards);
@@ -66,7 +65,6 @@ namespace CaseStudy.WheelSpin
             if (_presenter != null)
             {
                 if (_session != null) _presenter.Unsubscribe(_session);
-                _presenter.BusyChanged -= HandleBusyChanged;
                 _presenter.Deinitialize();
                 _presenter = null;
             }
@@ -142,24 +140,6 @@ namespace CaseStudy.WheelSpin
                     && _session.IsRunActive
                     && _presenter != null
                     && !_presenter.IsBusy;
-        }
-
-        private void HandleBusyChanged(bool busy)
-        {
-            SetButtonsInteractable(!busy);
-        }
-
-        private void SetButtonsInteractable(bool interactable)
-        {
-            ActionButtonView spin = GetSpinButton();
-
-            if (spin != null)
-                spin.Interactable = interactable;
-
-            ActionButtonView cashOut = GetCashOutButton();
-
-            if (cashOut != null)
-                cashOut.Interactable = interactable;
         }
 
         private void BindButtons()
