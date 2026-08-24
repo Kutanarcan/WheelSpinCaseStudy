@@ -25,7 +25,7 @@ namespace CaseStudy.WheelSpin
                 RewardView view = Acquire();
 
                 if (registry != null && registry.TryGet(entry.ItemId, out ItemAsset item))
-                    view.Bind(item.Icon, entry.Amount, item.RewardSettings);
+                    view.Bind(item.Icon, entry.Amount, item.CashRewardSettings);
                 else
                     view.Bind(null, entry.Amount, ItemViewSettings.Default);
             }

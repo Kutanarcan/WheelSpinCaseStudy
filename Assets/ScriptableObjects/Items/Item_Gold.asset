@@ -22,4 +22,8 @@ MonoBehaviour:
     Size: {x: 135, y: 75.9375}
     Rotation: 0
     Offset: {x: 0, y: 0}
+  _cashRewardSettings:
+    Size: {x: 202.5, y: 113.90625}
+    Rotation: 0
+    Offset: {x: 0, y: 0}
   _flightScale: 1
