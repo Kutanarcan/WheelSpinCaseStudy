@@ -15,11 +15,11 @@ MonoBehaviour:
   _itemId: weapon_shard_rifle
   _icon: {fileID: 21300000, guid: 9724f7e0821bda549bd58f5760e2074e, type: 3}
   _wheelSettings:
-    Size: {x: 50, y: 50}
+    Size: {x: 85.33334, y: 85.33334}
     Rotation: 0
     Offset: {x: 0, y: 0}
   _rewardSettings:
-    Size: {x: 100, y: 100}
+    Size: {x: 85.333336, y: 85.33334}
     Rotation: 30
     Offset: {x: 0, y: 0}
   _flightScale: 1

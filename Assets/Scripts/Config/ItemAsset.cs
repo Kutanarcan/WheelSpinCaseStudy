@@ -33,13 +33,7 @@ namespace CaseStudy.WheelSpin
         {
             if (string.IsNullOrWhiteSpace(_itemId))
                 _itemId = name;
-
-
-            if (_wheelSettings.Size.x <= 0f || _wheelSettings.Size.y <= 0f)
-                _wheelSettings.Size = ItemViewSettings.DefaultSize;
-
-            if (_rewardSettings.Size.x <= 0f || _rewardSettings.Size.y <= 0f)
-                _rewardSettings.Size = ItemViewSettings.DefaultSize;
+          
         }
 #endif
     }

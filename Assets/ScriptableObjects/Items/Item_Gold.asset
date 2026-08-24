@@ -15,11 +15,11 @@ MonoBehaviour:
   _itemId: item_gold
   _icon: {fileID: 21300000, guid: f1973be4b4ef17e44902145a0d560fce, type: 3}
   _wheelSettings:
-    Size: {x: 100, y: 50}
+    Size: {x: 200, y: 112.5}
     Rotation: 0
     Offset: {x: 0, y: 0}
   _rewardSettings:
-    Size: {x: 140, y: 70}
+    Size: {x: 112.5, y: 63.28125}
     Rotation: 0
     Offset: {x: 0, y: 0}
   _flightScale: 1

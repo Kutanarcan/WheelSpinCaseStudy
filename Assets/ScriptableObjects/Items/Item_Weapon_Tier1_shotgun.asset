@@ -15,11 +15,11 @@ MonoBehaviour:
   _itemId: weapon_tier1_shotgun
   _icon: {fileID: 21300000, guid: 63c075c9df22a8c45bee97517a5b995c, type: 3}
   _wheelSettings:
-    Size: {x: 100, y: 35}
+    Size: {x: 240, y: 80}
     Rotation: 0
     Offset: {x: 0, y: 0}
   _rewardSettings:
-    Size: {x: 200, y: 70}
+    Size: {x: 180, y: 60}
     Rotation: 0
     Offset: {x: 0, y: 0}
   _flightScale: 1
