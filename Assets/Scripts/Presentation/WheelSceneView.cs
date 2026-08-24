@@ -33,6 +33,11 @@ namespace CaseStudy.WheelSpin
 
         [Header("Penalty Effect")]
         public BombExplosionView BombExplosionView;
+
+        [Tooltip("Content root shaken by the blast. This canvas is Screen Space - Overlay, so Unity " +
+                 "rewrites the Canvas RectTransform every frame — point this at a child that holds " +
+                 "the UI, not at the Canvas itself.")]
+        public RectTransform ShakeRoot;
         public PenaltyEffectSettings PenaltySettings = new PenaltyEffectSettings();
 
 #if UNITY_EDITOR

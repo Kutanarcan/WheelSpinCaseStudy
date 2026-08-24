@@ -12,6 +12,7 @@ namespace CaseStudy.WheelSpin
     {
         private readonly WheelView _wheelView;
         private readonly BombExplosionView _explosion;
+        private readonly ScreenShaker _shaker;
         private readonly PenaltyEffectSettings _settings;
 
         private readonly TweenCallback _onDetonate;
@@ -29,10 +30,14 @@ namespace CaseStudy.WheelSpin
         public bool CanPlay => _explosion != null && _explosion.IsReady;
 
         public PenaltyPresenter(
-            WheelView wheelView, BombExplosionView explosion, PenaltyEffectSettings settings)
+            WheelView wheelView,
+            BombExplosionView explosion,
+            RectTransform shakeRoot,
+            PenaltyEffectSettings settings)
         {
             _wheelView = wheelView;
             _explosion = explosion;
+            _shaker = new ScreenShaker(shakeRoot);
             _settings = settings;
 
             _onDetonate = HandleDetonate;
@@ -65,6 +70,7 @@ namespace CaseStudy.WheelSpin
             if (_explosion != null)
                 _explosion.Hide();
 
+            _shaker.Stop();
             RestoreBomb();
         }
 
@@ -138,6 +144,13 @@ namespace CaseStudy.WheelSpin
             _cleanupTween = DOVirtual
                 .DelayedCall(_settings.ExplosionDuration, _onExplosionEnded)
                 .SetLink(_wheelView.gameObject, LinkBehaviour.KillOnDestroy);
+
+            // Off the main sequence on purpose: the shake may outlast the handover to the popup.
+            _shaker.Play(
+                _settings.ScreenShakeDuration,
+                _settings.ScreenShakeStrength,
+                _settings.ScreenShakeVibrato,
+                _settings.ScreenShakeRandomness);
         }
 
         private void HandleExplosionEnded()

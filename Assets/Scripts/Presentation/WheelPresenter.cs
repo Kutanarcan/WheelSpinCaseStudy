@@ -64,7 +64,7 @@ namespace CaseStudy.WheelSpin
                 view.RewardFlightView, _rewardPresenter, registry, view.FlightSettings);
 
             _penaltyPresenter = new PenaltyPresenter(
-                view.WheelView, view.BombExplosionView, view.PenaltySettings);
+                view.WheelView, view.BombExplosionView, view.ShakeRoot, view.PenaltySettings);
 
             _popupPresenter = new PopupPresenter(view.CashoutPopup, view.RevivePopup, registry, rewards);
 

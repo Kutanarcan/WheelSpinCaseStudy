@@ -1794,6 +1794,7 @@ MonoBehaviour:
     ArcHeight: 0.25
     ArcJitter: 0.35
   BombExplosionView: {fileID: 129093508}
+  ShakeRoot: {fileID: 539986597}
   PenaltySettings:
     GrowScale: 4.5
     GrowDuration: 0.75
@@ -1803,6 +1804,10 @@ MonoBehaviour:
     ShakeElasticity: 0.6
     DetonateAt: 0.9
     HideBombOnExplode: 1
+    ScreenShakeStrength: 34
+    ScreenShakeDuration: 0.45
+    ScreenShakeVibrato: 18
+    ScreenShakeRandomness: 90
     PopupDelay: 0.35
     ExplosionDuration: 0.45
 --- !u!1 &432694762

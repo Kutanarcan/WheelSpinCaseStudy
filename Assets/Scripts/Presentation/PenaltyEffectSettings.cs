@@ -26,6 +26,14 @@ namespace CaseStudy.WheelSpin
         [Tooltip("Hide the bomb icon the moment the explosion starts.")]
         public bool HideBombOnExplode = true;
 
+        [Header("Screen Shake")]
+        [Tooltip("Peak offset in canvas units. 0 = no shake.")]
+        [Min(0f)] public float ScreenShakeStrength = 34f;
+        [Min(0f)] public float ScreenShakeDuration = 0.45f;
+        [Min(0)] public int ScreenShakeVibrato = 18;
+        [Tooltip("0 keeps the shake on one axis, 90 spreads it in every direction.")]
+        [Range(0f, 180f)] public float ScreenShakeRandomness = 90f;
+
         [Header("Handover")]
         [Tooltip("Delay between the blast and the revive popup. The explosion keeps playing behind it.")]
         [Min(0f)] public float PopupDelay = 0.15f;
