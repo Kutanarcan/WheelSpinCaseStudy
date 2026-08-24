@@ -23,9 +23,14 @@ namespace CaseStudy.WheelSpin
         [Tooltip("Point in the swell where the bomb blows, as a fraction of Grow Duration. " +
                  "1 = at the very end, lower values cut the swell short mid-growth.")]
         [Range(0f, 1f)] public float DetonateAt = 0.9f;
-        [Tooltip("How long the explosion is given to play out before the revive popup opens.")]
-        [Min(0f)] public float ExplosionDuration = 1.2f;
         [Tooltip("Hide the bomb icon the moment the explosion starts.")]
         public bool HideBombOnExplode = true;
+
+        [Header("Handover")]
+        [Tooltip("Delay between the blast and the revive popup. The explosion keeps playing behind it.")]
+        [Min(0f)] public float PopupDelay = 0.15f;
+        [Tooltip("How long the explosion stays on screen before it is cleared. Set this to the " +
+                 "effect's own length — clearing it early cuts the particles off mid-flight.")]
+        [Min(0f)] public float ExplosionDuration = 2f;
     }
 }

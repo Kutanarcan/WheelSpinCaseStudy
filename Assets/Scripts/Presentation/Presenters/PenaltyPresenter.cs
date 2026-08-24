@@ -16,7 +16,9 @@ namespace CaseStudy.WheelSpin
 
         private readonly TweenCallback _onDetonate;
         private readonly TweenCallback _onSequenceComplete;
+        private readonly TweenCallback _onExplosionEnded;
 
+        private Tween _cleanupTween;
         private Sequence _sequence;
         private Action _pendingComplete;
         private WheelSliceView _bombView;
@@ -35,6 +37,7 @@ namespace CaseStudy.WheelSpin
 
             _onDetonate = HandleDetonate;
             _onSequenceComplete = HandleSequenceComplete;
+            _onExplosionEnded = HandleExplosionEnded;
         }
 
         public void Initialize()
@@ -45,19 +48,22 @@ namespace CaseStudy.WheelSpin
 
         public void Deinitialize() => ResetForNewRun();
 
-        public void ResetForNewRun()
-        {
-            Kill();
+        public void ResetForNewRun() => Kill();
 
-            if (_explosion != null)
-                _explosion.Hide();
-        }
-
+        /// Takes the explosion down as well: its clearing timer dies with everything else here, so
+        /// without this the particles would be left on screen with nothing left to remove them.
         public void Kill()
         {
             _sequence?.Kill();
             _sequence = null;
+
+            _cleanupTween?.Kill();
+            _cleanupTween = null;
+
             _pendingComplete = null;
+
+            if (_explosion != null)
+                _explosion.Hide();
 
             RestoreBomb();
         }
@@ -87,7 +93,9 @@ namespace CaseStudy.WheelSpin
 
             sequence.InsertCallback(detonateTime, _onDetonate);
 
-            float tail = detonateTime + _settings.ExplosionDuration - sequence.Duration();
+            // This sequence only owns the handover to the popup. The explosion outlives it on a
+            // timer of its own, so the popup no longer has to wait for the particles to finish.
+            float tail = detonateTime + _settings.PopupDelay - sequence.Duration();
 
             if (tail > 0f)
                 sequence.AppendInterval(tail);
@@ -125,13 +133,25 @@ namespace CaseStudy.WheelSpin
             // and would write the transform back on the next frame, flashing the bomb after the blast.
             if (_settings.HideBombOnExplode)
                 _bombView.SetIconVisible(false);
+
+            _cleanupTween?.Kill();
+            _cleanupTween = DOVirtual
+                .DelayedCall(_settings.ExplosionDuration, _onExplosionEnded)
+                .SetLink(_wheelView.gameObject, LinkBehaviour.KillOnDestroy);
         }
 
+        private void HandleExplosionEnded()
+        {
+            _cleanupTween = null;
+            _explosion.Hide();
+        }
+
+        /// Ends the bomb's part only. The explosion is deliberately left running — its own timer
+        /// clears it later.
         private void HandleSequenceComplete()
         {
             _sequence = null;
 
-            _explosion.Hide();
             RestoreBomb();
 
             Action callback = _pendingComplete;
