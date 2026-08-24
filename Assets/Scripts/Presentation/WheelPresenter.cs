@@ -14,6 +14,7 @@ namespace CaseStudy.WheelSpin
 
         private readonly Action _continueAfterSpin;
         private readonly Action _startZoneTransition;
+        private readonly Action<int> _onWheelAmountChanged;
         private readonly Action _onSequenceComplete;
 
         private SpinOutcome _outcome;
@@ -69,6 +70,7 @@ namespace CaseStudy.WheelSpin
 
             _continueAfterSpin = ContinueAfterSpin;
             _startZoneTransition = StartZoneTransition;
+            _onWheelAmountChanged = HandleWheelAmountChanged;
             _onSequenceComplete = HandleSequenceComplete;
         }
 
@@ -197,6 +199,7 @@ namespace CaseStudy.WheelSpin
                     _outcome.Result.Amount,
                     _slicePresenter.SliceWorldPosition(_outcome.Result.SliceIndex),
                     _startZoneTransition,
+                    _onWheelAmountChanged,
                     _gate.Track());
             }
             else if (_outcome.HasPenalty)
@@ -211,6 +214,11 @@ namespace CaseStudy.WheelSpin
 
             _gate.Seal();
         }
+
+        /// The winning slice index still lives in the buffered outcome, so the countdown needs no
+        /// per-spin closure — this one cached delegate serves every spin.
+        private void HandleWheelAmountChanged(int remaining)
+            => _slicePresenter.SetSliceAmount(_outcome.Result.SliceIndex, remaining);
 
         private void StartZoneTransition()
         {

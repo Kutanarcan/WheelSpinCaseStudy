@@ -17,6 +17,7 @@ namespace CaseStudy.WheelSpin
 
         private readonly TweenCallback _onFirstFlight;
         private readonly TweenCallback _onArrive;
+        private readonly TweenCallback _onIconSpawned;
         private readonly TweenCallback _onSequenceComplete;
 
         private int[] _shareArray = Array.Empty<int>();
@@ -27,6 +28,9 @@ namespace CaseStudy.WheelSpin
         private string _itemId;
         private int _shareCount;
         private int _arrivedCount;
+        private int _spawnedCount;
+        private int _wheelRemaining;
+        private Action<int> _pendingWheelAmount;
 
         public bool IsPlaying => _sequence != null;
 
@@ -44,6 +48,7 @@ namespace CaseStudy.WheelSpin
             _spawner = new RewardFlightSpawner(view, registry, settings);
 
             _onFirstFlight = HandleFirstFlight;
+            _onIconSpawned = HandleIconSpawned;
             _onArrive = HandleArrive;
             _onSequenceComplete = HandleSequenceComplete;
         }
@@ -76,11 +81,21 @@ namespace CaseStudy.WheelSpin
             _sequence = null;
             _pendingComplete = null;
             _pendingFirstFlight = null;
+            _pendingWheelAmount = null;
         }
 
         /// <param name="origin">World position the icons pop out of — the resting winning slice.</param>
         /// <param name="onFirstFlight">Raised the moment the first icon leaves the wheel.</param>
-        public void Play(string itemId, int amount, Vector3 origin, Action onFirstFlight, Action onComplete)
+        /// <param name="onWheelAmountChanged">
+        /// Raised with the amount still owed by the slice each time an icon pops out of it.
+        /// </param>
+        public void Play(
+            string itemId,
+            int amount,
+            Vector3 origin,
+            Action onFirstFlight,
+            Action<int> onWheelAmountChanged,
+            Action onComplete)
         {
             Kill();
 
@@ -89,6 +104,7 @@ namespace CaseStudy.WheelSpin
             if (!CanPlay || target == null || amount <= 0)
             {
                 _rewards.Tick(itemId, amount);
+                onWheelAmountChanged?.Invoke(0);
                 onFirstFlight?.Invoke();
                 onComplete?.Invoke();
                 return;
@@ -96,8 +112,11 @@ namespace CaseStudy.WheelSpin
 
             _itemId = itemId;
             _pendingFirstFlight = onFirstFlight;
+            _pendingWheelAmount = onWheelAmountChanged;
             _pendingComplete = onComplete;
             _arrivedCount = 0;
+            _spawnedCount = 0;
+            _wheelRemaining = amount;
             _shareCount = Mathf.Clamp(_settings.IconCount, 1, amount);
 
             if (_shareArray.Length < _shareCount)
@@ -133,6 +152,10 @@ namespace CaseStudy.WheelSpin
         /// Scale-up and glide run together: the icon grows while drifting out to its scatter slot.
         private void InsertSpawn(Sequence sequence, float at, RewardFlightIconView icon)
         {
+            // Drawn from the slice as the icon appears, not as it lands — the wheel is still on
+            // screen during the spawn phase, and has already dropped away by the time icons arrive.
+            sequence.InsertCallback(at, _onIconSpawned);
+
             sequence.Insert(at, icon.Rect.DOScale(1f, _settings.ScaleUpDuration)
                 .SetEase(_settings.ScaleUpEase));
 
@@ -160,6 +183,17 @@ namespace CaseStudy.WheelSpin
             Action callback = _pendingFirstFlight;
             _pendingFirstFlight = null;
             callback?.Invoke();
+        }
+
+        /// Counts the slice down by the share this icon carries, so the wheel drains to zero over
+        /// the spawn phase while the board fills up later, on arrival.
+        private void HandleIconSpawned()
+        {
+            if (_spawnedCount >= _shareCount)
+                return;
+
+            _wheelRemaining -= _shareArray[_spawnedCount++];
+            _pendingWheelAmount?.Invoke(_wheelRemaining);
         }
 
         /// Every flight has the same duration and a staggered start, so arrivals keep spawn order —

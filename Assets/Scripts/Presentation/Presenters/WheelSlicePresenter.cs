@@ -96,6 +96,16 @@ namespace CaseStudy.WheelSpin
 
         public void PlaySpin(int sliceIndex, Action onComplete) => _animator.Play(sliceIndex, onComplete);
 
+        public void SetSliceAmount(int sliceIndex, int amount)
+        {
+            IReadOnlyList<WheelSliceView> views = _view.SliceViewArray;
+
+            if (sliceIndex < 0 || sliceIndex >= views.Count || views[sliceIndex] == null)
+                return;
+
+            views[sliceIndex].SetAmount(amount);
+        }
+
         /// <summary>
         /// Where the given slice currently sits on screen. Read after the spin settles, this is the
         /// resting place of the winning slice under the indicator — not the wheel centre.

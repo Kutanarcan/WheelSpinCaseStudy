@@ -40,10 +40,16 @@ namespace CaseStudy.WheelSpin
             ApplyIcon(icon, settings);
 
             if (_amountText != null)
-            {
-                _amountText.text = ViewFormat.FormatSliceAmount(amount);
                 _amountText.enabled = true;
-            }
+
+            SetAmount(amount);
+        }
+
+        /// Rewrites just the number, so the win effect can count the slice down as it drains.
+        public void SetAmount(int amount)
+        {
+            if (_amountText != null)
+                _amountText.text = ViewFormat.FormatSliceAmount(amount);
         }
 
         public void BindPenalty(Sprite penaltyIcon, ItemViewSettings settings, bool disabled)
