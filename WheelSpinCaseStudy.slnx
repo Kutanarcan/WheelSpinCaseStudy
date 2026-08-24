@@ -17,6 +17,7 @@
   <Project Path="CaseStudy.WheelSpin.Core.csproj" />
   <Project Path="Unity.2D.Tilemap.Extras.csproj" />
   <Project Path="Unity.InternalAPIEngineBridge.001.csproj" />
+  <Project Path="Coffee.UIParticle.csproj" />
   <Project Path="Unity.PlasticSCM.Editor.csproj" />
   <Project Path="Unity.VisualScripting.Core.Editor.csproj" />
   <Project Path="Unity.VisualScripting.Flow.Editor.csproj" />
@@ -46,4 +47,5 @@
   <Project Path="CaseStudy.WheelSpin.Editor.csproj" />
   <Project Path="Unity.VisualScripting.Shared.Editor.csproj" />
   <Project Path="Unity.2D.Aseprite.Common.csproj" />
+  <Project Path="Coffee.UIParticle.Editor.csproj" />
 </Solution>

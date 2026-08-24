@@ -14,6 +14,8 @@ namespace CaseStudy.WheelSpin
 
         public bool HasReward => HasResult && !Result.IsPenalty && Result.Amount > 0;
 
+        public bool HasPenalty => HasResult && Result.IsPenalty;
+
         public bool HasZoneChange => !RunFailed && !RunEnded && NextZone != null;
     }
 }

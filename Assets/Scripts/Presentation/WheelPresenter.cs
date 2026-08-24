@@ -8,6 +8,7 @@ namespace CaseStudy.WheelSpin
         private readonly ZonePresenter _zonePresenter;
         private readonly RewardPresenter _rewardPresenter;
         private readonly RewardFlightPresenter _flightPresenter;
+        private readonly PenaltyPresenter _penaltyPresenter;
         private readonly PopupPresenter _popupPresenter;
         private readonly AnimationGate _gate = new AnimationGate();
 
@@ -61,6 +62,9 @@ namespace CaseStudy.WheelSpin
             _flightPresenter = new RewardFlightPresenter(
                 view.RewardFlightView, _rewardPresenter, registry, view.FlightSettings);
 
+            _penaltyPresenter = new PenaltyPresenter(
+                view.WheelView, view.BombExplosionView, view.PenaltySettings);
+
             _popupPresenter = new PopupPresenter(view.CashoutPopup, view.RevivePopup, registry, rewards);
 
             _continueAfterSpin = ContinueAfterSpin;
@@ -73,6 +77,7 @@ namespace CaseStudy.WheelSpin
             _zonePresenter.Initialize(zoneCount);
             _rewardPresenter.Initialize();
             _flightPresenter.Initialize();
+            _penaltyPresenter.Initialize();
             _popupPresenter.Initialize();
 
             Finish();
@@ -84,6 +89,7 @@ namespace CaseStudy.WheelSpin
             _zonePresenter.Deinitialize();
             _rewardPresenter.Deinitialize();
             _flightPresenter.Deinitialize();
+            _penaltyPresenter.Deinitialize();
             _popupPresenter.Deinitialize();
 
             Finish();
@@ -95,6 +101,7 @@ namespace CaseStudy.WheelSpin
             _zonePresenter.ResetForNewRun();
             _rewardPresenter.ResetForNewRun();
             _flightPresenter.ResetForNewRun();
+            _penaltyPresenter.ResetForNewRun();
             _popupPresenter.ResetForNewRun();
 
             Finish();
@@ -148,6 +155,7 @@ namespace CaseStudy.WheelSpin
         {
             _popupPresenter.HideAll();
             _flightPresenter.Kill();
+            _penaltyPresenter.Kill();
 
             Finish();
         }
@@ -189,6 +197,10 @@ namespace CaseStudy.WheelSpin
                     _slicePresenter.SliceWorldPosition(_outcome.Result.SliceIndex),
                     _startZoneTransition,
                     _gate.Track());
+            }
+            else if (_outcome.HasPenalty)
+            {
+                _penaltyPresenter.Play(_outcome.Result.SliceIndex, _gate.Track());
             }
             else
             {

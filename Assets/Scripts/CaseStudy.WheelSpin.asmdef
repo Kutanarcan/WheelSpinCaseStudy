@@ -5,7 +5,8 @@
         "CaseStudy.WheelSpin.Core",
         "DOTween.Modules",
         "Unity.TextMeshPro",
-        "UnityEngine.UI"
+        "UnityEngine.UI",
+        "Coffee.UIParticle"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

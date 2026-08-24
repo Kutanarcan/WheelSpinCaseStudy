@@ -31,6 +31,10 @@ namespace CaseStudy.WheelSpin
         public RewardFlightView RewardFlightView;
         public RewardFlightSettings FlightSettings = new RewardFlightSettings();
 
+        [Header("Penalty Effect")]
+        public BombExplosionView BombExplosionView;
+        public PenaltyEffectSettings PenaltySettings = new PenaltyEffectSettings();
+
 #if UNITY_EDITOR
 
         private void OnValidate()
