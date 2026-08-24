@@ -3,26 +3,14 @@ using UnityEngine;
 
 namespace CaseStudy.WheelSpin
 {
-    public class CashoutPopup : MonoBehaviour
+    public class CashoutPopup : PopupView
     {
         public RewardView RewardViewPrefab;
         public ActionButtonView ClaimButton;
         public Transform Content;
 
-        public Transform PanelRoot;
-
         private readonly List<RewardView> _rewardViewList = new List<RewardView>();
         private int _activeCount;
-
-        public void Show()
-        {
-            PanelRoot.gameObject.SetActive(true);
-        }
-
-        public void Hide()
-        {
-            PanelRoot.gameObject.SetActive(false);
-        }
 
         public void Bind(IReadOnlyList<RewardLedger.Entry> entries, ItemRegistry registry)
         {
