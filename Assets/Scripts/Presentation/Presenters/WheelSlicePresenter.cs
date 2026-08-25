@@ -14,6 +14,7 @@ namespace CaseStudy.WheelSpin
         private readonly WheelSpinSettings _settings;
         private readonly WheelSpinAnimator _animator;
         private readonly WheelTierViewDatabase _wheelTierViewDatabase;
+        private readonly AudioManager _audio;
         private readonly RectTransform _holder;  
         private readonly float _restAnchoredY;
 
@@ -33,7 +34,8 @@ namespace CaseStudy.WheelSpin
             Sprite penaltySprite,
             ItemViewSettings penaltySettings,
             WheelSpinSettings settings,
-            WheelTierViewDatabase wheelTierViewDatabase)
+            WheelTierViewDatabase wheelTierViewDatabase,
+            AudioManager audio)
         {
             _view = view;
             _registry = registry;
@@ -41,6 +43,7 @@ namespace CaseStudy.WheelSpin
             _penaltySettings = penaltySettings;
             _settings = settings;
             _wheelTierViewDatabase = wheelTierViewDatabase;
+            _audio = audio;
 
             _animator = new WheelSpinAnimator(view.WheelRect, settings, view.SliceViewArray.Length);
 
@@ -94,7 +97,13 @@ namespace CaseStudy.WheelSpin
             _view.SpinIndicatorImage.sprite = viewPack.WheelIndicator;
         }
 
-        public void PlaySpin(int sliceIndex, Action onComplete) => _animator.Play(sliceIndex, onComplete);
+        public void PlaySpin(int sliceIndex, Action onComplete)
+        {
+            if (_audio != null)
+                _audio.PlayWheelSpin();
+
+            _animator.Play(sliceIndex, onComplete);
+        }
 
         public void SetSliceAmount(int sliceIndex, int amount)
         {

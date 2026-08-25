@@ -13,6 +13,7 @@ namespace CaseStudy.WheelSpin
         private readonly RewardFlightView _view;
         private readonly RewardFlightSpawner _spawner;
         private readonly RewardPresenter _rewards;
+        private readonly AudioManager _audio;
         private readonly RewardFlightSettings _settings;
 
         private readonly TweenCallback _onFirstFlight;
@@ -40,10 +41,12 @@ namespace CaseStudy.WheelSpin
             RewardFlightView view,
             RewardPresenter rewards,
             ItemRegistry registry,
+            AudioManager audio,
             RewardFlightSettings settings)
         {
             _view = view;
             _rewards = rewards;
+            _audio = audio;
             _settings = settings;
             _spawner = new RewardFlightSpawner(view, registry, settings);
 
@@ -194,6 +197,9 @@ namespace CaseStudy.WheelSpin
 
             _wheelRemaining -= _shareArray[_spawnedCount++];
             _pendingWheelAmount?.Invoke(_wheelRemaining);
+
+            if (_audio != null)
+                _audio.PlayRewardAppear();
         }
 
         /// Every flight has the same duration and a staggered start, so arrivals keep spawn order —
@@ -207,6 +213,9 @@ namespace CaseStudy.WheelSpin
 
             _spawner.Release(index);
             _rewards.Tick(_itemId, _shareArray[index]);
+
+            if (_audio != null)
+                _audio.PlayRewardImpact();
         }
 
         private void HandleSequenceComplete()

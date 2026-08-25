@@ -142,17 +142,33 @@ namespace CaseStudy.WheelSpin
                     && !_presenter.IsBusy;
         }
 
+        /// Subscribed separately from the action itself: the click should be audible even when
+        /// CanAct rejects it, so the player hears that the press registered.
+        private void PlayButtonSound()
+        {
+            AudioManager audio = _sceneView != null ? _sceneView.AudioManager : null;
+
+            if (audio != null)
+                audio.PlayButton();
+        }
+
         private void BindButtons()
         {
             ActionButtonView spin = GetSpinButton();
 
             if (spin != null)
+            {
                 spin.Click += Spin;
+                spin.Click += PlayButtonSound;
+            }
 
             ActionButtonView cashOut = GetCashOutButton();
 
             if (cashOut != null)
+            {
                 cashOut.Click += CashOut;
+                cashOut.Click += PlayButtonSound;
+            }
 
             if (_presenter == null)
                 return;
@@ -167,12 +183,18 @@ namespace CaseStudy.WheelSpin
             ActionButtonView spin = GetSpinButton();
 
             if (spin != null)
+            {
                 spin.Click -= Spin;
+                spin.Click -= PlayButtonSound;
+            }
 
             ActionButtonView cashOut = GetCashOutButton();
 
             if (cashOut != null)
+            {
                 cashOut.Click -= CashOut;
+                cashOut.Click -= PlayButtonSound;
+            }
 
             if (_presenter == null)
                 return;

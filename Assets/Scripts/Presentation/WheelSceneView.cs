@@ -4,6 +4,9 @@ namespace CaseStudy.WheelSpin
 {
     public class WheelSceneView : MonoBehaviour
     {
+        [Header("Audio")]
+        public AudioManager AudioManager;
+
         [Header("Views")]
         public WheelView WheelView;
         public ZoneCountView ZoneCountView;

@@ -52,7 +52,8 @@ namespace CaseStudy.WheelSpin
             _slicePresenter = new WheelSlicePresenter(
                 view.WheelView, registry, view.PenaltySprite, view.PenaltyViewSettings,
                 view.SpinSettings,
-                wheelTierViewDatabase);
+                wheelTierViewDatabase,
+                view.AudioManager);
 
             _zonePresenter = new ZonePresenter(
                 view.ZoneCountView, view.ZoneSelectorView, wheelTierViewDatabase, view.CurrentZoneColor,
@@ -61,12 +62,14 @@ namespace CaseStudy.WheelSpin
             _rewardPresenter = new RewardPresenter(view.RewardHolderView, registry);
 
             _flightPresenter = new RewardFlightPresenter(
-                view.RewardFlightView, _rewardPresenter, registry, view.FlightSettings);
+                view.RewardFlightView, _rewardPresenter, registry, view.AudioManager, view.FlightSettings);
 
             _penaltyPresenter = new PenaltyPresenter(
-                view.WheelView, view.BombExplosionView, view.ShakeRoot, view.PenaltySettings);
+                view.WheelView, view.BombExplosionView, view.ShakeRoot, view.AudioManager,
+                view.PenaltySettings);
 
-            _popupPresenter = new PopupPresenter(view.CashoutPopup, view.RevivePopup, registry, rewards);
+            _popupPresenter = new PopupPresenter(
+                view.CashoutPopup, view.RevivePopup, registry, rewards, view.AudioManager);
 
             _continueAfterSpin = ContinueAfterSpin;
             _startZoneTransition = StartZoneTransition;

@@ -13,6 +13,7 @@ namespace CaseStudy.WheelSpin
         private readonly WheelView _wheelView;
         private readonly BombExplosionView _explosion;
         private readonly ScreenShaker _shaker;
+        private readonly AudioManager _audio;
         private readonly PenaltyEffectSettings _settings;
 
         private readonly TweenCallback _onDetonate;
@@ -33,11 +34,13 @@ namespace CaseStudy.WheelSpin
             WheelView wheelView,
             BombExplosionView explosion,
             RectTransform shakeRoot,
+            AudioManager audio,
             PenaltyEffectSettings settings)
         {
             _wheelView = wheelView;
             _explosion = explosion;
             _shaker = new ScreenShaker(shakeRoot);
+            _audio = audio;
             _settings = settings;
 
             _onDetonate = HandleDetonate;
@@ -134,6 +137,9 @@ namespace CaseStudy.WheelSpin
         private void HandleDetonate()
         {
             _explosion.PlayAt(_bombRect.position);
+
+            if (_audio != null)
+                _audio.PlayExplosion();
 
             // Disabling the graphic rather than zeroing the scale: the swell tween is still running
             // and would write the transform back on the next frame, flashing the bomb after the blast.

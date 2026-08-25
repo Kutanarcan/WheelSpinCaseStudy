@@ -8,6 +8,7 @@ namespace CaseStudy.WheelSpin
         private readonly RevivePopup _revivePopup;
         private readonly ItemRegistry _registry;
         private readonly RewardLedger _rewards;
+        private readonly AudioManager _audio;
 
         private bool _isBound;
 
@@ -19,12 +20,14 @@ namespace CaseStudy.WheelSpin
             CashoutPopup cashoutPopup,
             RevivePopup revivePopup,
             ItemRegistry registry,
-            RewardLedger rewards)
+            RewardLedger rewards,
+            AudioManager audio)
         {
             _cashoutPopup = cashoutPopup;
             _revivePopup = revivePopup;
             _registry = registry;
             _rewards = rewards;
+            _audio = audio;
         }
 
         public void Initialize()
@@ -118,11 +121,29 @@ namespace CaseStudy.WheelSpin
                 giveUp.Click -= HandleGiveUpClicked;
         }
 
-        private void HandleClaimClicked() => ClaimClicked?.Invoke();
+        private void HandleClaimClicked()
+        {
+            PlayButtonSound();
+            ClaimClicked?.Invoke();
+        }
 
-        private void HandleReviveClicked() => ReviveClicked?.Invoke();
+        private void HandleReviveClicked()
+        {
+            PlayButtonSound();
+            ReviveClicked?.Invoke();
+        }
 
-        private void HandleGiveUpClicked() => GiveUpClicked?.Invoke();
+        private void HandleGiveUpClicked()
+        {
+            PlayButtonSound();
+            GiveUpClicked?.Invoke();
+        }
+
+        private void PlayButtonSound()
+        {
+            if (_audio != null)
+                _audio.PlayButton();
+        }
 
         private ActionButtonView GetClaimButton()
             => _cashoutPopup != null ? _cashoutPopup.ClaimButton : null;
