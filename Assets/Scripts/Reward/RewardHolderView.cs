@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,10 +13,23 @@ namespace CaseStudy.WheelSpin
         [SerializeField] private Transform _rewardContentParent;
         [SerializeField] private RewardView _rewardViewPrefab;
 
+        [Header("Scroll")]
+        [SerializeField] private ScrollRect _scrollRect;
+        [SerializeField] private RectTransform _topAnchor;
+        [SerializeField] private RectTransform _bottomAnchor;
+        [SerializeField, Min(0f)] private float _scrollDuration = 0.2f;
+        [SerializeField] private Ease _scrollEase = Ease.OutCubic;
+
         private ViewPool<RewardView> _pool;
 
         private ViewPool<RewardView> Pool
             => _pool ??= new ViewPool<RewardView>(_rewardViewPrefab, _rewardContentParent);
+
+        private void OnValidate()
+        {
+            if (_scrollRect == null)
+                _scrollRect = GetComponentInChildren<ScrollRect>(true);
+        }
 
         public void Initialize() => Pool.Prewarm(_prewarmCount);
 
@@ -24,6 +38,9 @@ namespace CaseStudy.WheelSpin
         public void ResetForNewRun() => Pool.ReleaseAll();
 
         public RewardView Acquire() => Pool.Acquire();
+
+        public RewardScrollFocus CreateScrollFocus()
+            => new RewardScrollFocus(_scrollRect, _topAnchor, _bottomAnchor, _scrollDuration, _scrollEase);
 
         public void SetCashOutButtonRootActive(bool active)
         {

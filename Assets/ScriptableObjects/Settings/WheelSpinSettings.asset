@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: WheelSpinSettings
   m_EditorClassIdentifier: 
   Duration: 4
-  MinTurns: 4
-  MaxTurns: 5
+  MinTurns: 6
+  MaxTurns: 6
   Ease: 6
   Windup: 15
   WindupDuration: 0.35

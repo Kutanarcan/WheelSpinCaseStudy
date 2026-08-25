@@ -12,6 +12,7 @@ namespace CaseStudy.WheelSpin
         private readonly AudioManager _audio;
         private readonly RewardFlightSettings _settings;
 
+        private readonly TweenCallback _onFlightsReady;
         private readonly TweenCallback _onFirstFlight;
         private readonly TweenCallback _onArrive;
         private readonly TweenCallback _onIconSpawned;
@@ -28,6 +29,7 @@ namespace CaseStudy.WheelSpin
         private int _spawnedCount;
         private int _wheelRemaining;
         private Action<int> _pendingWheelAmount;
+        private RectTransform _target;
 
         public bool CanPlay => _view != null && _view.IsReady;
 
@@ -44,6 +46,7 @@ namespace CaseStudy.WheelSpin
             _settings = settings;
             _spawner = new RewardFlightSpawner(view, registry, settings);
 
+            _onFlightsReady = HandleFlightsReady;
             _onFirstFlight = HandleFirstFlight;
             _onIconSpawned = HandleIconSpawned;
             _onArrive = HandleArrive;
@@ -79,6 +82,7 @@ namespace CaseStudy.WheelSpin
             _pendingComplete = null;
             _pendingFirstFlight = null;
             _pendingWheelAmount = null;
+            _target = null;
         }
 
         public void Play(
@@ -122,6 +126,8 @@ namespace CaseStudy.WheelSpin
 
         private Sequence BuildSequence(int count, RectTransform target)
         {
+            _target = target;
+
             Sequence sequence = DOTween.Sequence();
 
             for (int i = 0; i < count; i++)
@@ -131,10 +137,11 @@ namespace CaseStudy.WheelSpin
                              + _settings.ScaleUpDuration
                              + _settings.HoldDuration;
 
+            sequence.InsertCallback(flyStart, _onFlightsReady);
             sequence.InsertCallback(flyStart, _onFirstFlight);
 
             for (int i = 0; i < count; i++)
-                InsertFlight(sequence, flyStart + i * _settings.FlightInterval, _spawner.Get(i), target.position);
+                InsertFlight(sequence, flyStart + i * _settings.FlightInterval, _spawner.Get(i));
 
             return sequence
                 .SetLink(_view.gameObject, LinkBehaviour.KillOnDestroy)
@@ -152,10 +159,8 @@ namespace CaseStudy.WheelSpin
                 .SetEase(_settings.SpawnDriftEase));
         }
 
-        private void InsertFlight(Sequence sequence, float at, RewardFlightIconView icon, Vector3 target)
+        private void InsertFlight(Sequence sequence, float at, RewardFlightIconView icon)
         {
-            icon.BeginFlight(target, ArcHeight());
-
             sequence.Insert(at, DOTween.To(icon.ProgressGetter, icon.ProgressSetter, 1f, _settings.FlightDuration)
                 .SetEase(_settings.FlightEase)
                 .OnComplete(_onArrive));
@@ -166,6 +171,15 @@ namespace CaseStudy.WheelSpin
 
         private float ArcHeight()
             => _settings.ArcHeight * UnityEngine.Random.Range(1f - _settings.ArcJitter, 1f + _settings.ArcJitter);
+
+        private void HandleFlightsReady()
+        {
+            if (_target == null)
+                return;
+
+            for (int i = 0; i < _shareCount; i++)
+                _spawner.Get(i)?.BeginFlight(_target.position, ArcHeight());
+        }
 
         private void HandleFirstFlight()
         {

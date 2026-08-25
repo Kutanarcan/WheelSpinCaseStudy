@@ -9,6 +9,8 @@ namespace CaseStudy.WheelSpin
         private readonly ItemRegistry _registry;
         private readonly Dictionary<string, Entry> _entries = new Dictionary<string, Entry>();
 
+        private RewardScrollFocus _scrollFocus;
+
         private struct Entry
         {
             public RewardView View;
@@ -31,12 +33,15 @@ namespace CaseStudy.WheelSpin
                 return;
 
             _view.Initialize();
+            _scrollFocus = _view.CreateScrollFocus();
             SetCashOutActive(true);
         }
 
         public void Deinitialize()
         {
             _entries.Clear();
+            _scrollFocus?.Kill();
+            _scrollFocus = null;
 
             if (HasView)
                 _view.Deinitialize();
@@ -50,6 +55,7 @@ namespace CaseStudy.WheelSpin
                 return;
 
             _view.ResetForNewRun();
+            _scrollFocus?.Reset();
             SetCashOutActive(true);
         }
 
@@ -65,7 +71,10 @@ namespace CaseStudy.WheelSpin
                 return null;
 
             if (_entries.TryGetValue(itemId, out Entry existing))
+            {
+                _scrollFocus?.Focus(existing.View.Rect);
                 return existing.View.Rect;
+            }
 
             RewardView view = _view.Acquire();
 
@@ -80,6 +89,7 @@ namespace CaseStudy.WheelSpin
             _entries[itemId] = new Entry { View = view, Amount = 0 };
 
             _view.RebuildLayout();
+            _scrollFocus?.Focus(view.Rect);
 
             return view.Rect;
         }
