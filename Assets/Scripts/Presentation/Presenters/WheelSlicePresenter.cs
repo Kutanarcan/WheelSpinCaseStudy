@@ -25,9 +25,6 @@ namespace CaseStudy.WheelSpin
         private Zone _pendingZone;
         private Action _pendingCallback;
 
-        public bool IsSpinning => _animator.IsPlaying;
-        public bool IsChangingZone => _sequence != null;
-
         public WheelSlicePresenter(
             WheelView view,
             ItemRegistry registry,

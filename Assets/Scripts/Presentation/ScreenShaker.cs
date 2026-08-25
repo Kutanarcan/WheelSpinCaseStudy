@@ -19,8 +19,6 @@ namespace CaseStudy.WheelSpin
         private Vector2 _rest;
         private bool _restCaptured;
 
-        public bool IsShaking => _tween != null;
-
         public bool CanShake => _root != null;
 
         public ScreenShaker(RectTransform root) => _root = root;

@@ -21,8 +21,6 @@ namespace CaseStudy.WheelSpin
         private Sequence _sequence;
         private bool _restCaptured;
 
-        public bool IsOpening => _sequence != null;
-
         public void Show()
         {
             EnsureRestCaptured();

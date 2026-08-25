@@ -21,9 +21,17 @@ namespace CaseStudy.WheelSpin
             _registry = registry;
         }
 
+        /// Unity's overloaded == reports a destroyed object as null, which is what makes this the
+        /// only reliable guard on the shutdown path — the reference itself is still non-null there.
+        private bool HasView => _view != null;
+
         public void Initialize()
         {
             _entries.Clear();
+
+            if (!HasView)
+                return;
+
             _view.Initialize();
             SetCashOutActive(true);
         }
@@ -31,12 +39,18 @@ namespace CaseStudy.WheelSpin
         public void Deinitialize()
         {
             _entries.Clear();
-            _view.Deinitialize();
+
+            if (HasView)
+                _view.Deinitialize();
         }
 
         public void ResetForNewRun()
         {
             _entries.Clear();
+
+            if (!HasView)
+                return;
+
             _view.ResetForNewRun();
             SetCashOutActive(true);
         }
@@ -45,9 +59,11 @@ namespace CaseStudy.WheelSpin
         /// Cashing out is only possible while a run is alive, so the button is taken off screen the
         /// moment a bomb ends it and put back by a revive or a fresh run.
         /// </summary>
-        public void SetCashOutActive(bool active) => _view.SetCashOutButtonRootActive(active);
-
-        public void Clear() => ResetForNewRun();
+        public void SetCashOutActive(bool active)
+        {
+            if (HasView)
+                _view.SetCashOutButtonRootActive(active);
+        }
 
         /// <summary>
         /// Makes sure the board has a slot for the item, opening it at zero on first win so the
@@ -55,13 +71,16 @@ namespace CaseStudy.WheelSpin
         /// </summary>
         public RectTransform BeginAdd(string itemId)
         {
-            if (string.IsNullOrWhiteSpace(itemId))
+            if (!HasView || string.IsNullOrWhiteSpace(itemId))
                 return null;
 
             if (_entries.TryGetValue(itemId, out Entry existing))
                 return existing.View.Rect;
 
             RewardView view = _view.Acquire();
+
+            if (view == null)
+                return null;
 
             if (_registry.TryGet(itemId, out ItemAsset item))
                 view.Bind(item.Icon, 0, item.RewardSettings);
@@ -92,18 +111,6 @@ namespace CaseStudy.WheelSpin
             entry.View.PlayStackFeedback();
 
             _entries[itemId] = entry;
-        }
-
-        public bool TryGetAmount(string itemId, out long amount)
-        {
-            if (!string.IsNullOrWhiteSpace(itemId) && _entries.TryGetValue(itemId, out Entry entry))
-            {
-                amount = entry.Amount;
-                return true;
-            }
-
-            amount = 0;
-            return false;
         }
     }
 }

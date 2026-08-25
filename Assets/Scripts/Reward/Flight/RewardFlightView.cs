@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace CaseStudy.WheelSpin
@@ -14,74 +13,22 @@ namespace CaseStudy.WheelSpin
         [SerializeField] private RectTransform _content;
         [SerializeField, Min(0)] private int _prewarmCount = 8;
 
-        private readonly List<RewardFlightIconView> _iconList = new List<RewardFlightIconView>();
-        private int _activeCount;
+        private ViewPool<RewardFlightIconView> _pool;
+
+        private ViewPool<RewardFlightIconView> Pool
+            => _pool ??= new ViewPool<RewardFlightIconView>(_iconPrefab, _content);
 
         public bool IsReady => _iconPrefab != null && _content != null;
 
-        public void Initialize()
-        {
-            if (!IsReady)
-                return;
+        public void Initialize() => Pool.Prewarm(_prewarmCount);
 
-            while (_iconList.Count < _prewarmCount)
-                _iconList.Add(Create());
+        public void Deinitialize() => Pool.DestroyCreated();
 
-            ReleaseAll();
-        }
+        public RewardFlightIconView Acquire() => Pool.Acquire();
 
-        public void Deinitialize()
-        {
-            for (int i = _iconList.Count - 1; i >= 0; i--)
-            {
-                if (_iconList[i] != null)
-                    Destroy(_iconList[i].gameObject);
-            }
+        public void Release(RewardFlightIconView icon) => Pool.Release(icon);
 
-            _iconList.Clear();
-            _activeCount = 0;
-        }
-
-        public RewardFlightIconView Acquire()
-        {
-            if (_activeCount == _iconList.Count)
-                _iconList.Add(Create());
-
-            RewardFlightIconView icon = _iconList[_activeCount];
-
-            _activeCount++;
-
-            icon.transform.SetAsLastSibling();
-            icon.gameObject.SetActive(true);
-
-            return icon;
-        }
-
-        public void Release(RewardFlightIconView icon)
-        {
-            if (icon != null)
-                icon.gameObject.SetActive(false);
-        }
-
-        public void ReleaseAll()
-        {
-            for (int i = 0; i < _iconList.Count; i++)
-            {
-                if (_iconList[i] != null)
-                    _iconList[i].gameObject.SetActive(false);
-            }
-
-            _activeCount = 0;
-        }
-
-        private RewardFlightIconView Create()
-        {
-            RewardFlightIconView icon = Instantiate(_iconPrefab, _content, false);
-
-            icon.gameObject.SetActive(false);
-
-            return icon;
-        }
+        public void ReleaseAll() => Pool.ReleaseAll();
 
         private void OnValidate()
         {

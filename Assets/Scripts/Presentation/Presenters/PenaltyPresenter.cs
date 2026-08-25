@@ -26,8 +26,6 @@ namespace CaseStudy.WheelSpin
         private WheelSliceView _bombView;
         private RectTransform _bombRect;
 
-        public bool IsPlaying => _sequence != null;
-
         public bool CanPlay => _explosion != null && _explosion.IsReady;
 
         public PenaltyPresenter(

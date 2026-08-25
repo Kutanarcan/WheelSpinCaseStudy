@@ -3,6 +3,10 @@ using Random = System.Random;
 
 namespace CaseStudy.WheelSpin
 {
+    /// <summary>
+    /// The composition root: builds the game once, keeps it alive for the scene's lifetime, and
+    /// turns button events into session calls. No service locator, no singleton.
+    /// </summary>
     [DisallowMultipleComponent]
     public class WheelController : MonoBehaviour
     {
@@ -13,11 +17,8 @@ namespace CaseStudy.WheelSpin
         [SerializeField] private bool _useFixedSeed;
         [SerializeField] private int _seed = 1337;
 
-        private WheelSession _session;
-        private WheelPresenter _presenter;
-        private RewardLedger _rewards;
-
-        public bool IsInitialized => _session != null;
+        private WheelGame _game;
+        private WheelInputBinder _binder;
 
         private void Awake()
         {
@@ -31,195 +32,95 @@ namespace CaseStudy.WheelSpin
         {
             Random random = _useFixedSeed ? new Random(_seed) : new Random();
 
-            WheelTierRuleProvider tierRules = _config.CreateTierRuleProvider();
-            ItemRegistry registry = _config.ItemDatabase.CreateRegistry();
-
-            var zoneProvider = new ScriptableObjectZoneProvider(
-                _config.ZoneSet.Zones, tierRules, _config.PenaltyChance);
-
-            if (!zoneProvider.TryValidate(out string error))
+            if (!WheelGame.TryCreate(_config, _sceneView, random, out _game, out string error))
             {
                 Debug.LogError($"[{nameof(WheelController)}] {error}", this);
                 return;
             }
 
-            var calculator = new RandomWeightedResultCalculator(random);
-            var spinner = new WheelSpinner(calculator, random);
-
-            _rewards = new RewardLedger();
-
-            _presenter = new WheelPresenter(
-                _sceneView, registry, tierRules, _config.WheelTierViewDatabase, _rewards);
-            _presenter.Initialize(zoneProvider.ZoneCount);
-
-            _session = new WheelSession(zoneProvider, spinner, _rewards);
-            _presenter.Subscribe(_session);
-
-            BindButtons();
+            BindInput();
         }
 
         public void Deinitialize()
         {
-            UnbindButtons();
+            UnbindInput();
 
-            if (_presenter != null)
-            {
-                if (_session != null) _presenter.Unsubscribe(_session);
-                _presenter.Deinitialize();
-                _presenter = null;
-            }
-
-            _rewards = null;
-
-            if (_session == null)
+            if (_game == null)
                 return;
 
-            _session.ClearListeners();
-            _session = null;
+            _game.Dispose();
+            _game = null;
         }
+
         public void StartNewRun()
         {
-            if (_session == null)
+            if (_game == null)
                 return;
 
-            _presenter.ResetForNewRun();
-            _session.StartRun();
-            _presenter.PlayInitial();
-        }
-        public void Reload()
-        {
-            Deinitialize();
-            Initialize();
-            StartNewRun();
+            _game.Presenter.ResetForNewRun();
+            _game.Session.StartRun();
+            _game.Presenter.PlayInitial();
         }
 
         public void Spin()
         {
-            if (!CanAct())
+            if (!CanAct() || !_game.Session.TrySpin(out _))
                 return;
 
-            if (!_session.TrySpin(out _))
-                return;
-
-            _presenter.Play();
+            _game.Presenter.Play();
         }
 
         public void CashOut()
         {
-            if (!CanAct()) return;
-
-            if (_rewards == null || _rewards.IsEmpty)
+            if (!CanAct() || _game.Rewards.IsEmpty)
                 return;
 
-            _session.CashOut();
-            _presenter.Play();
+            _game.Session.CashOut();
+            _game.Presenter.Play();
+        }
+
+        private void BindInput()
+        {
+            _binder = new WheelInputBinder(_sceneView);
+
+            _binder.SpinClicked += Spin;
+            _binder.CashOutClicked += CashOut;
+            _binder.ClaimClicked += HandleClaim;
+            _binder.ReviveClicked += HandleRevive;
+            _binder.GiveUpClicked += HandleGiveUp;
+
+            _binder.Bind(_game.Presenter.Popups);
+        }
+
+        private void UnbindInput()
+        {
+            if (_binder == null)
+                return;
+
+            _binder.Unbind();
+            _binder = null;
         }
 
         private void HandleClaim() => StartNewRun();
 
         private void HandleGiveUp()
         {
-            if (_session == null)
+            if (_game == null)
                 return;
 
-            _session.GiveUp();
+            _game.Session.GiveUp();
             StartNewRun();
         }
 
         private void HandleRevive()
         {
-            if (_session == null || !_session.TryRevive())
+            if (_game == null || !_game.Session.TryRevive())
                 return;
 
-            _presenter.PlayRevive();
+            _game.Presenter.PlayRevive();
         }
 
         private bool CanAct()
-        {
-            return _session != null
-                    && _session.IsRunActive
-                    && _presenter != null
-                    && !_presenter.IsBusy;
-        }
-
-        /// Subscribed separately from the action itself: the click should be audible even when
-        /// CanAct rejects it, so the player hears that the press registered.
-        private void PlayButtonSound()
-        {
-            AudioManager audio = _sceneView != null ? _sceneView.AudioManager : null;
-
-            if (audio != null)
-                audio.PlayButton();
-        }
-
-        private void BindButtons()
-        {
-            ActionButtonView spin = GetSpinButton();
-
-            if (spin != null)
-            {
-                spin.Click += Spin;
-                spin.Click += PlayButtonSound;
-            }
-
-            ActionButtonView cashOut = GetCashOutButton();
-
-            if (cashOut != null)
-            {
-                cashOut.Click += CashOut;
-                cashOut.Click += PlayButtonSound;
-            }
-
-            if (_presenter == null)
-                return;
-
-            _presenter.ClaimClicked += HandleClaim;
-            _presenter.ReviveClicked += HandleRevive;
-            _presenter.GiveUpClicked += HandleGiveUp;
-        }
-
-        private void UnbindButtons()
-        {
-            ActionButtonView spin = GetSpinButton();
-
-            if (spin != null)
-            {
-                spin.Click -= Spin;
-                spin.Click -= PlayButtonSound;
-            }
-
-            ActionButtonView cashOut = GetCashOutButton();
-
-            if (cashOut != null)
-            {
-                cashOut.Click -= CashOut;
-                cashOut.Click -= PlayButtonSound;
-            }
-
-            if (_presenter == null)
-                return;
-
-            _presenter.ClaimClicked -= HandleClaim;
-            _presenter.ReviveClicked -= HandleRevive;
-            _presenter.GiveUpClicked -= HandleGiveUp;
-        }
-
-        private ActionButtonView GetSpinButton()
-        {
-            if (_sceneView == null || _sceneView.WheelView == null)
-                return null;
-
-            SpinButtonView spinButton = _sceneView.WheelView.SpinButtonView;
-
-            return spinButton != null ? spinButton.ActionButton : null;
-        }
-
-        private ActionButtonView GetCashOutButton()
-        {
-            if (_sceneView == null || _sceneView.RewardHolderView == null)
-                return null;
-
-            return _sceneView.RewardHolderView.CashOutButtonView;
-        }
+            => _game != null && _game.Session.IsRunActive && !_game.Presenter.IsBusy;
     }
 }

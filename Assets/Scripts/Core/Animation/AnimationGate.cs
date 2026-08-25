@@ -18,10 +18,6 @@ namespace CaseStudy.WheelSpin
 
         public AnimationGate() => _partComplete = HandlePartComplete;
 
-        public bool IsRunning => _isOpen || _pending > 0;
-
-        public int Pending => _pending;
-
         public void Begin(Action onComplete)
         {
             _onComplete = onComplete;

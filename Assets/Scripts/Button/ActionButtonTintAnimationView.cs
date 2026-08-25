@@ -5,7 +5,10 @@ using UnityEngine.UI;
 
 namespace CaseStudy.WheelSpin
 {
-
+    /// <summary>
+    /// Tints a button's graphic for its pressed and disabled states. Purely reactive: every repaint
+    /// is driven by an event from <see cref="ActionButtonView"/>, so nothing runs per frame.
+    /// </summary>
     [RequireComponent(typeof(ActionButtonView))]
     public class ActionButtonTintAnimationView : MonoBehaviour
     {
@@ -24,9 +27,9 @@ namespace CaseStudy.WheelSpin
 
         private ActionButtonView button;
         private Tween colorTween;
+        private TweenCallback onColorTweenKill;
         private Color currentTarget;
         private bool isPressed;
-        private bool lastInteractable;
 
         private void Reset()
         {
@@ -42,19 +45,22 @@ namespace CaseStudy.WheelSpin
         {
             button.PointerDown += HandlePointerDown;
             button.PointerUp += HandlePointerUp;
+            button.InteractableChanged += HandleInteractableChanged;
 
             isPressed = false;
-            lastInteractable = button.Interactable;
 
             currentTarget = GetTargetColor();
             KillTween();
-            if (targetGraphic != null) targetGraphic.color = currentTarget;
+
+            if (targetGraphic != null)
+                targetGraphic.color = currentTarget;
         }
 
         private void OnDisable()
         {
             button.PointerDown -= HandlePointerDown;
             button.PointerUp -= HandlePointerUp;
+            button.InteractableChanged -= HandleInteractableChanged;
 
             KillTween();
         }
@@ -64,25 +70,12 @@ namespace CaseStudy.WheelSpin
             KillTween();
         }
 
-        private void Update()
-        {
-            if (lastInteractable == button.Interactable)
-                return;
-
-            lastInteractable = button.Interactable;
-
-            if (!lastInteractable)
-                isPressed = false;
-
-            Refresh();
-        }
-
         public void Refresh()
         {
             if (targetGraphic == null)
                 return;
 
-            var next = GetTargetColor();
+            Color next = GetTargetColor();
 
             if (next == currentTarget)
                 return;
@@ -102,7 +95,7 @@ namespace CaseStudy.WheelSpin
                 .SetEase(ease)
                 .SetUpdate(ignoreTimeScale)
                 .SetLink(gameObject, LinkBehaviour.KillOnDestroy)
-                .OnKill(() => colorTween = null);
+                .OnKill(onColorTweenKill ??= HandleColorTweenKill);
         }
 
         private Color GetTargetColor()
@@ -120,6 +113,18 @@ namespace CaseStudy.WheelSpin
         {
             colorTween?.Kill();
             colorTween = null;
+        }
+
+        private void HandleColorTweenKill() => colorTween = null;
+
+        /// A button that goes dark under the finger must not come back as "pressed" when it is
+        /// re-enabled, so the press is dropped along with interactivity.
+        private void HandleInteractableChanged(bool interactable)
+        {
+            if (!interactable)
+                isPressed = false;
+
+            Refresh();
         }
 
         private void HandlePointerDown(PointerEventData eventData)

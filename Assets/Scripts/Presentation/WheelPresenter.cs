@@ -2,45 +2,22 @@ using System;
 
 namespace CaseStudy.WheelSpin
 {
+    /// <summary>
+    /// The presentation layer's entry point: run lifecycle, and whether the game is currently
+    /// showing something. The sequence that plays after a spin belongs to <see cref="SpinTimeline"/>.
+    /// </summary>
     public class WheelPresenter
     {
-        private readonly WheelSlicePresenter _slicePresenter;
-        private readonly ZonePresenter _zonePresenter;
-        private readonly RewardPresenter _rewardPresenter;
-        private readonly RewardFlightPresenter _flightPresenter;
-        private readonly PenaltyPresenter _penaltyPresenter;
-        private readonly PopupPresenter _popupPresenter;
-        private readonly AnimationGate _gate = new AnimationGate();
+        private readonly WheelPresenterSet _presenters;
+        private readonly SpinOutcomeBuffer _buffer = new SpinOutcomeBuffer();
+        private readonly SpinTimeline _timeline;
+        private readonly Action _startTimeline;
 
-        private readonly Action _continueAfterSpin;
-        private readonly Action _startZoneTransition;
-        private readonly Action<int> _onWheelAmountChanged;
-        private readonly Action _onSequenceComplete;
-
-        private SpinOutcome _outcome;
-        private Action _zoneStripPart;
-        private Action _wheelChangePart;
         private bool _isBusy;
 
-        public event Action ClaimClicked
-        {
-            add => _popupPresenter.ClaimClicked += value;
-            remove => _popupPresenter.ClaimClicked -= value;
-        }
-
-        public event Action ReviveClicked
-        {
-            add => _popupPresenter.ReviveClicked += value;
-            remove => _popupPresenter.ReviveClicked -= value;
-        }
-
-        public event Action GiveUpClicked
-        {
-            add => _popupPresenter.GiveUpClicked += value;
-            remove => _popupPresenter.GiveUpClicked -= value;
-        }
-
         public bool IsBusy => _isBusy;
+
+        public PopupPresenter Popups => _presenters.Popup;
 
         public WheelPresenter(
             WheelSceneView view,
@@ -49,95 +26,55 @@ namespace CaseStudy.WheelSpin
             WheelTierViewDatabase wheelTierViewDatabase,
             RewardLedger rewards)
         {
-            _slicePresenter = new WheelSlicePresenter(
-                view.WheelView, registry, view.PenaltySprite, view.PenaltyViewSettings,
-                view.SpinSettings,
-                wheelTierViewDatabase,
-                view.AudioManager);
+            _presenters = new WheelPresenterSet(
+                view, registry, tierRules, wheelTierViewDatabase, rewards);
 
-            _zonePresenter = new ZonePresenter(
-                view.ZoneCountView, view.ZoneSelectorView, wheelTierViewDatabase, view.CurrentZoneColor,
-                view.PastZoneAlpha / 255f, view.SpinSettings, tierRules);
+            _timeline = new SpinTimeline(_presenters, _buffer);
+            _timeline.Completed += HandleTimelineComplete;
 
-            _rewardPresenter = new RewardPresenter(view.RewardHolderView, registry);
-
-            _flightPresenter = new RewardFlightPresenter(
-                view.RewardFlightView, _rewardPresenter, registry, view.AudioManager, view.FlightSettings);
-
-            _penaltyPresenter = new PenaltyPresenter(
-                view.WheelView, view.BombExplosionView, view.ShakeRoot, view.AudioManager,
-                view.PenaltySettings);
-
-            _popupPresenter = new PopupPresenter(
-                view.CashoutPopup, view.RevivePopup, registry, rewards, view.AudioManager);
-
-            _continueAfterSpin = ContinueAfterSpin;
-            _startZoneTransition = StartZoneTransition;
-            _onWheelAmountChanged = HandleWheelAmountChanged;
-            _onSequenceComplete = HandleSequenceComplete;
+            _startTimeline = _timeline.Start;
         }
 
         public void Initialize(int zoneCount)
         {
-            _zonePresenter.Initialize(zoneCount);
-            _rewardPresenter.Initialize();
-            _flightPresenter.Initialize();
-            _penaltyPresenter.Initialize();
-            _popupPresenter.Initialize();
-
+            _presenters.Initialize(zoneCount);
             Finish();
         }
 
         public void Deinitialize()
         {
-            _slicePresenter.Deinitialize();
-            _zonePresenter.Deinitialize();
-            _rewardPresenter.Deinitialize();
-            _flightPresenter.Deinitialize();
-            _penaltyPresenter.Deinitialize();
-            _popupPresenter.Deinitialize();
-
+            _presenters.Deinitialize();
             Finish();
         }
 
         public void ResetForNewRun()
         {
-            _slicePresenter.ResetForNewRun();
-            _zonePresenter.ResetForNewRun();
-            _rewardPresenter.ResetForNewRun();
-            _flightPresenter.ResetForNewRun();
-            _penaltyPresenter.ResetForNewRun();
-            _popupPresenter.ResetForNewRun();
-
+            _presenters.ResetForNewRun();
             Finish();
         }
 
+        /// ZoneRefreshed is handled straight away rather than buffered: a revive rebuilds the wheel
+        /// that is already on screen, so it cannot wait for a spin to end.
         public void Subscribe(WheelSession session)
         {
-            session.ZoneStarted += CaptureZoneStarted;
+            _buffer.Subscribe(session);
             session.ZoneRefreshed += HandleZoneRefreshed;
-            session.SpinResolved += CaptureSpinResolved;
-            session.RunFailed += CaptureRunFailed;
-            session.RunCashedOut += CaptureRunEnded;
-            session.RunCompleted += CaptureRunEnded;
         }
 
         public void Unsubscribe(WheelSession session)
         {
-            session.ZoneStarted -= CaptureZoneStarted;
+            _buffer.Unsubscribe(session);
             session.ZoneRefreshed -= HandleZoneRefreshed;
-            session.SpinResolved -= CaptureSpinResolved;
-            session.RunFailed -= CaptureRunFailed;
-            session.RunCashedOut -= CaptureRunEnded;
-            session.RunCompleted -= CaptureRunEnded;
         }
 
         public void PlayInitial()
         {
-            if (_outcome.NextZone != null)
+            Zone zone = _buffer.Outcome.NextZone;
+
+            if (zone != null)
             {
-                _slicePresenter.Bind(_outcome.NextZone);
-                _zonePresenter.Show(_outcome.NextZone.Index, instant: true, onComplete: null);
+                _presenters.Slice.Bind(zone);
+                _presenters.Zone.Show(zone.Index, instant: true, onComplete: null);
             }
 
             Finish();
@@ -145,119 +82,50 @@ namespace CaseStudy.WheelSpin
 
         public void Play()
         {
-            SetBusy(true);
+            _isBusy = true;
 
-            if (_outcome.HasResult)
+            SpinOutcome outcome = _buffer.Outcome;
+
+            if (outcome.HasResult)
             {
-                _slicePresenter.PlaySpin(_outcome.Result.SliceIndex, _continueAfterSpin);
+                _presenters.Slice.PlaySpin(outcome.Result.SliceIndex, _startTimeline);
                 return;
             }
 
-            ContinueAfterSpin();
+            _timeline.Start();
         }
 
         public void PlayRevive()
         {
-            _popupPresenter.HideAll();
-            _flightPresenter.Kill();
-            _penaltyPresenter.Kill();
-            _rewardPresenter.SetCashOutActive(true);
+            _presenters.Popup.HideAll();
+            _presenters.Flight.Kill();
+            _presenters.Penalty.Kill();
+            _presenters.Reward.SetCashOutActive(true);
 
             Finish();
         }
 
-        private void CaptureSpinResolved(SpinResult result)
+        private void HandleZoneRefreshed(Zone zone) => _presenters.Slice.Bind(zone);
+
+        /// Read before Finish clears the buffer, so the popup decision survives the reset.
+        private void HandleTimelineComplete()
         {
-            _outcome.Result = result;
-            _outcome.HasResult = true;
-        }
-
-        private void CaptureZoneStarted(Zone zone) => _outcome.NextZone = zone;
-
-        private void CaptureRunFailed(int zone, long lost) => _outcome.RunFailed = true;
-
-        private void CaptureRunEnded(int zone, long banked) => _outcome.RunEnded = true;
-
-        private void HandleZoneRefreshed(Zone zone) => _slicePresenter.Bind(zone);
-
-        /// <summary>
-        /// Builds the post-spin timeline. Parts are reserved on the gate before anything starts, so
-        /// the zone change can be handed its callback here and only launched later, when the first
-        /// reward icon leaves the wheel.
-        /// </summary>
-        private void ContinueAfterSpin()
-        {
-            _gate.Begin(_onSequenceComplete);
-
-            if (_outcome.HasZoneChange)
-            {
-                _zoneStripPart = _gate.Track();
-                _wheelChangePart = _gate.Track();
-            }
-
-            if (_outcome.HasReward)
-            {
-                _flightPresenter.Play(
-                    _outcome.Result.ItemId,
-                    _outcome.Result.Amount,
-                    _slicePresenter.SliceWorldPosition(_outcome.Result.SliceIndex),
-                    _startZoneTransition,
-                    _onWheelAmountChanged,
-                    _gate.Track());
-            }
-            else if (_outcome.HasPenalty)
-            {
-                _rewardPresenter.SetCashOutActive(false);
-                _penaltyPresenter.Play(_outcome.Result.SliceIndex, _gate.Track());
-            }
-            else
-            {
-                StartZoneTransition();
-            }
-
-            _gate.Seal();
-        }
-
-        /// The winning slice index still lives in the buffered outcome, so the countdown needs no
-        /// per-spin closure — this one cached delegate serves every spin.
-        private void HandleWheelAmountChanged(int remaining)
-            => _slicePresenter.SetSliceAmount(_outcome.Result.SliceIndex, remaining);
-
-        private void StartZoneTransition()
-        {
-            if (!_outcome.HasZoneChange)
-                return;
-
-            Zone next = _outcome.NextZone;
-
-            _zonePresenter.Show(next.Index, instant: false, _zoneStripPart);
-            _slicePresenter.PlayZoneChange(next, _wheelChangePart);
-        }
-
-        private void HandleSequenceComplete()
-        {
-            bool failed = _outcome.RunFailed;
-            bool ended = _outcome.RunEnded;
+            SpinOutcome outcome = _buffer.Outcome;
 
             Finish();
 
-            if (failed)
-                _popupPresenter.ShowRevive();
-            else if (ended)
-                _popupPresenter.ShowCashout();
+            if (outcome.RunFailed)
+                _presenters.Popup.ShowRevive();
+            else if (outcome.RunEnded)
+                _presenters.Popup.ShowCashout();
         }
 
         private void Finish()
         {
-            _gate.Cancel();
+            _timeline.Cancel();
+            _buffer.Clear();
 
-            _zoneStripPart = null;
-            _wheelChangePart = null;
-            _outcome = default;
-
-            SetBusy(false);
+            _isBusy = false;
         }
-
-        private void SetBusy(bool busy) => _isBusy = busy;
     }
 }

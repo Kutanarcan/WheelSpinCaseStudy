@@ -29,8 +29,6 @@ namespace CaseStudy.WheelSpin
         private float _toContentX;
         private Vector3 _selectorFromPosition;
 
-        public bool IsMoving => _tween != null;
-
         public ZonePresenter(
             ZoneCountView countView,
             ZoneSelectorView selectorView,
@@ -54,22 +52,36 @@ namespace CaseStudy.WheelSpin
             _onTransitionComplete = HandleTransitionComplete;
         }
 
+        /// Unity's overloaded == reports a destroyed object as null, which is what makes this the
+        /// only reliable guard on the shutdown path — the reference itself is still non-null there.
+        private bool HasCountView => _countView != null;
+
         public void Initialize(int zoneCount)
         {
             _zoneCount = zoneCount;
-            _countView.Initialize(zoneCount);
+
+            if (HasCountView)
+                _countView.Initialize(zoneCount);
         }
 
         public void Deinitialize()
         {
             KillTweens();
-            _countView.Deinitialize();
+
+            if (HasCountView)
+                _countView.Deinitialize();
         }
 
         public void ResetForNewRun() => KillTweens();
 
         public void Show(int zoneNumber, bool instant, Action onComplete)
         {
+            if (!HasCountView)
+            {
+                onComplete?.Invoke();
+                return;
+            }
+
             RefreshColors(zoneNumber);
             KillTweens();
 

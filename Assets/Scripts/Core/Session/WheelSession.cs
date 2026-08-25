@@ -14,8 +14,6 @@ namespace CaseStudy.WheelSpin
         public bool IsRunActive { get; private set; }
         public bool IsAwaitingRevive { get; private set; }
 
-        public RewardLedger Rewards => _rewards;
-
         public event Action<Zone> ZoneStarted;
         public event Action<Zone> ZoneRefreshed;
         public event Action<SpinResult> SpinResolved;

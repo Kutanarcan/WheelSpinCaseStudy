@@ -60,7 +60,16 @@ namespace CaseStudy.WheelSpin
 
             float maxTotal = 359f + 360f * SpinSettings.MaxTurns;
             float peak = SpinAliasing.PeakDegreesPerSecond(maxTotal, SpinSettings.Duration, SpinSettings.Ease);
-            float limit = SpinAliasing.MaxSafeDegreesPerSecond(sliceCount, 60);
+            float limit = SpinAliasing.MaxSafeDegreesPerSecond(sliceCount, DisplaySetup.TargetFrameRate);
+
+            if (peak <= limit)
+                return;
+
+            Debug.LogWarning(
+                $"[{nameof(WheelSceneView)}] Spin peaks at {peak:0} deg/s, above the {limit:0} deg/s " +
+                $"that {sliceCount} slices can show at {DisplaySetup.TargetFrameRate} fps — the wheel " +
+                "will look like it is turning backwards. Raise Duration or lower Max Turns. " +
+                "Prevent Stroboscopic Aliasing stretches the spin at runtime to cover this.", this);
         }
 #endif
     }

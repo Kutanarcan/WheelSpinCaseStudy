@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace CaseStudy.WheelSpin
@@ -12,55 +10,34 @@ namespace CaseStudy.WheelSpin
         [SerializeField] private RectTransform _viewport;
         [SerializeField] private ScrollRect _scrollRect;
 
-        private List<ZoneNumberView> _zoneNumberViewList = new List<ZoneNumberView>();
-        private int _createdFromIndex;
-        public int Count => _zoneNumberViewList.Count;
+        private ViewPool<ZoneNumberView> _pool;
+
+        private ViewPool<ZoneNumberView> Pool
+            => _pool ??= new ViewPool<ZoneNumberView>(_zoneNumberViewPrefab, _content);
 
         public void Initialize(int zoneCount)
         {
             NeutralizeScrollRect();
 
-            for (int i = _zoneNumberViewList.Count - 1; i >= 0; i--)
+            Pool.Prewarm(zoneCount);
+
+            for (int i = 0; i < zoneCount; i++)
             {
-                if (_zoneNumberViewList[i] == null) 
-                    _zoneNumberViewList.RemoveAt(i);
+                ZoneNumberView view = Pool.Acquire();
+
+                if (view == null)
+                    break;
+
+                view.SetNumber(i + 1);
             }
 
-            _createdFromIndex = _zoneNumberViewList.Count;
-
-            while (_zoneNumberViewList.Count < zoneCount)
-            {
-                _zoneNumberViewList.Add(Instantiate(_zoneNumberViewPrefab, _content));
-            }
-
-            for (int i = 0; i < _zoneNumberViewList.Count; i++)
-            {
-                bool used = i < zoneCount;
-                _zoneNumberViewList[i].gameObject.SetActive(used);
-
-                if (used) _zoneNumberViewList[i].SetNumber(i + 1);
-            }
-
-            if (_content != null) 
+            if (_content != null)
                 LayoutRebuilder.ForceRebuildLayoutImmediate(_content);
         }
 
-        public void Deinitialize()
-        {
-            for (int i = _zoneNumberViewList.Count - 1; i >= _createdFromIndex; i--)
-            {
-                if (_zoneNumberViewList[i] != null)
-                    Destroy(_zoneNumberViewList[i].gameObject);
+        public void Deinitialize() => Pool.DestroyCreated();
 
-                _zoneNumberViewList.RemoveAt(i);
-            }
-        }
-
-        public ZoneNumberView Get(int zoneNumber)
-        {
-            int i = zoneNumber - 1;
-            return i >= 0 && i < _zoneNumberViewList.Count ? _zoneNumberViewList[i] : null;
-        }
+        public ZoneNumberView Get(int zoneNumber) => Pool.Get(zoneNumber - 1);
 
         public float GetContentX() => _content != null ? _content.anchoredPosition.x : 0f;
 
@@ -76,12 +53,12 @@ namespace CaseStudy.WheelSpin
 
         public float GetCenteredContentX(int zoneNumber)
         {
-            if (_content == null || _viewport == null) 
+            if (_content == null || _viewport == null)
                 return GetContentX();
 
             ZoneNumberView view = Get(zoneNumber);
 
-            if (view == null || view.Rect == null) 
+            if (view == null || view.Rect == null)
                 return GetContentX();
 
             RectTransform item = view.Rect;
@@ -95,7 +72,7 @@ namespace CaseStudy.WheelSpin
 
         private void NeutralizeScrollRect()
         {
-            if (_scrollRect == null) 
+            if (_scrollRect == null)
                 return;
 
             _scrollRect.horizontal = false;

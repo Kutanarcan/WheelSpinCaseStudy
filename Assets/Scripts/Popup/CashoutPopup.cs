@@ -9,12 +9,14 @@ namespace CaseStudy.WheelSpin
         public ActionButtonView ClaimButton;
         public Transform Content;
 
-        private readonly List<RewardView> _rewardViewList = new List<RewardView>();
-        private int _activeCount;
+        private ViewPool<RewardView> _pool;
+
+        private ViewPool<RewardView> Pool
+            => _pool ??= new ViewPool<RewardView>(RewardViewPrefab, Content);
 
         public void Bind(IReadOnlyList<RewardLedger.Entry> entries, ItemRegistry registry)
         {
-            DeactivateAll();
+            Pool.ReleaseAll();
 
             if (entries == null)
                 return;
@@ -22,7 +24,10 @@ namespace CaseStudy.WheelSpin
             for (int i = 0; i < entries.Count; i++)
             {
                 RewardLedger.Entry entry = entries[i];
-                RewardView view = Acquire();
+                RewardView view = Pool.Acquire();
+
+                if (view == null)
+                    return;
 
                 if (registry != null && registry.TryGet(entry.ItemId, out ItemAsset item))
                     view.Bind(item.Icon, entry.Amount, item.CashRewardSettings);
@@ -31,46 +36,6 @@ namespace CaseStudy.WheelSpin
             }
         }
 
-        public void Clear() => DeactivateAll();
-
-        private RewardView Acquire()
-        {
-            if (_activeCount == _rewardViewList.Count)
-                _rewardViewList.Add(Create());
-
-            RewardView view = _rewardViewList[_activeCount];
-
-            _activeCount++;
-
-            view.transform.SetAsLastSibling();
-            view.gameObject.SetActive(true);
-
-            return view;
-        }
-
-        private void DeactivateAll()
-        {
-            for (int i = _rewardViewList.Count - 1; i >= 0; i--)
-            {
-                if (_rewardViewList[i] == null)
-                {
-                    _rewardViewList.RemoveAt(i);
-                    continue;
-                }
-
-                _rewardViewList[i].gameObject.SetActive(false);
-            }
-
-            _activeCount = 0;
-        }
-
-        private RewardView Create()
-        {
-            RewardView view = Instantiate(RewardViewPrefab, Content, false);
-
-            view.gameObject.SetActive(false);
-
-            return view;
-        }
+        public void Clear() => Pool.ReleaseAll();
     }
 }

@@ -33,8 +33,6 @@ namespace CaseStudy.WheelSpin
         private int _wheelRemaining;
         private Action<int> _pendingWheelAmount;
 
-        public bool IsPlaying => _sequence != null;
-
         public bool CanPlay => _view != null && _view.IsReady;
 
         public RewardFlightPresenter(

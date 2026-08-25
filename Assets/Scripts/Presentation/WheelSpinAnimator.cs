@@ -82,8 +82,6 @@ namespace CaseStudy.WheelSpin
                 .OnComplete(_onTweenComplete);
         }
 
-        public void Snap(int sliceIndex) { Kill(); Apply(TargetAngle(sliceIndex)); }
-
         public void ResetAngle()
         {
             Kill();
