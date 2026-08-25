@@ -10,8 +10,6 @@ namespace CaseStudy.WheelSpin
         private readonly ZoneCountView _countView;
         private readonly RectTransform _selectorRect;
         private readonly WheelTierViewDatabase _tierViewDatabase;
-        private readonly Color _currentZoneColor;
-        private readonly float _pastZoneAlpha;
         private readonly WheelSpinSettings _settings;
         private readonly WheelTierRuleProvider _tierRules;
 
@@ -33,15 +31,11 @@ namespace CaseStudy.WheelSpin
             ZoneCountView countView,
             ZoneSelectorView selectorView,
             WheelTierViewDatabase tierViewDatabase,
-            Color currentZoneColor,
-            float pastZoneAlpha,
             WheelSpinSettings settings,
             WheelTierRuleProvider tierRules)
         {
             _countView = countView;
             _tierViewDatabase = tierViewDatabase;
-            _currentZoneColor = currentZoneColor;
-            _pastZoneAlpha = pastZoneAlpha;
             _settings = settings;
             _tierRules = tierRules;
 
@@ -162,14 +156,14 @@ namespace CaseStudy.WheelSpin
         private Color ColorFor(int zoneNumber, int currentZone)
         {
             if (zoneNumber == currentZone)
-                return _currentZoneColor;
+                return _tierViewDatabase.CurrentZoneColor;
 
             WheelTier tier = _tierRules.TierFor(zoneNumber);
             Color color = _tierViewDatabase.GetPack(tier).ZoneNumberColor;
 
             // Zones already behind the player are faded so the strip reads forward.
             if (zoneNumber < currentZone)
-                color.a = _pastZoneAlpha;
+                color.a = _tierViewDatabase.PastZoneAlpha;
 
             return color;
         }

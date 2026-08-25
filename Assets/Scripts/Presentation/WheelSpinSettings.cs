@@ -1,11 +1,11 @@
-using System;
 using DG.Tweening;
 using UnityEngine;
 
 namespace CaseStudy.WheelSpin
 {
-    [Serializable]
-    public class WheelSpinSettings
+    /// <summary>How the wheel and the zone strip move. Authored once as an asset, shared by every scene.</summary>
+    [CreateAssetMenu(menuName = "CaseStudy/Settings/Wheel Spin", fileName = "WheelSpinSettings")]
+    public class WheelSpinSettings : ScriptableObject
     {
         [Header("Spin")]
         [Min(0f)] public float Duration = 2.5f;

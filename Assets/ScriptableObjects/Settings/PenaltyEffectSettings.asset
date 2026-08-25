@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e36c97cfc7024654290adf003174b6e8, type: 3}
+  m_Name: PenaltyEffectSettings
+  m_EditorClassIdentifier: 
+  Sprite: {fileID: 21300000, guid: 4fc928b46b63b024b8e1e4a4cdf46f38, type: 3}
+  SliceView:
+    Size: {x: 92.16, y: 92.16}
+    Rotation: 0
+    Offset: {x: 0, y: 0}
+  GrowScale: 4.5
+  GrowDuration: 0.75
+  GrowEase: 26
+  ShakeRotation: 14
+  ShakeVibrato: 10
+  ShakeElasticity: 0.6
+  DetonateAt: 0.9
+  HideBombOnExplode: 1
+  ScreenShakeStrength: 34
+  ScreenShakeDuration: 0.45
+  ScreenShakeVibrato: 18
+  ScreenShakeRandomness: 90
+  PopupDelay: 0.4
+  ExplosionDuration: 0.55

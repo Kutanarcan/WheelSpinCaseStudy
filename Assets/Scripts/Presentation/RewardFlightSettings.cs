@@ -1,11 +1,11 @@
-using System;
 using DG.Tweening;
 using UnityEngine;
 
 namespace CaseStudy.WheelSpin
 {
-    [Serializable]
-    public class RewardFlightSettings
+    /// <summary>Shape and timing of the win effect. Authored once as an asset.</summary>
+    [CreateAssetMenu(menuName = "CaseStudy/Settings/Reward Flight", fileName = "RewardFlightSettings")]
+    public class RewardFlightSettings : ScriptableObject
     {
         [Header("Icons")]
         [Min(1)] public int IconCount = 8;

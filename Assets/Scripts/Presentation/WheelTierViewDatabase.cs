@@ -11,6 +11,19 @@ namespace CaseStudy.WheelSpin
 
         [SerializeField] private TierViewHolder[] _tierHolderArray;
 
+        [Header("Zone Strip")]
+        [Tooltip("Colour of the zone the player is on. Every other number takes its tier colour.")]
+        [SerializeField] private Color _currentZoneColor = Color.black;
+
+        [Tooltip("Alpha of zone numbers the player has already passed, out of 255.")]
+        [SerializeField, Range(0, 255)] private int _pastZoneAlpha = 40;
+
+        public Color CurrentZoneColor => _currentZoneColor;
+
+        /// Authored out of 255 because that is how the colour picker shows it; handed out as the
+        /// 0..1 alpha the renderer actually wants.
+        public float PastZoneAlpha => _pastZoneAlpha / 255f;
+
         public TierViewPack GetPack(WheelTier tier)
         {
             if (_tierHolderArray != null)

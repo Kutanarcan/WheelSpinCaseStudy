@@ -1,12 +1,19 @@
-using System;
 using DG.Tweening;
 using UnityEngine;
 
 namespace CaseStudy.WheelSpin
 {
-    [Serializable]
-    public class PenaltyEffectSettings
+    /// <summary>Everything about the penalty slice: how it looks on the wheel, and how it blows up.</summary>
+    [CreateAssetMenu(menuName = "CaseStudy/Settings/Penalty Effect", fileName = "PenaltyEffectSettings")]
+    public class PenaltyEffectSettings : ScriptableObject
     {
+        [Header("Wheel Slice")]
+        [Tooltip("Icon drawn on the penalty slice, whichever zone it appears in.")]
+        public Sprite Sprite;
+
+        [Tooltip("Size, rotation and offset of that icon inside the slice.")]
+        public ItemViewSettings SliceView = ItemViewSettings.Default;
+
         [Header("Bomb Grow")]
         [Tooltip("Scale the bomb icon swells to. 1 = no growth.")]
         [Min(1f)] public float GrowScale = 1.6f;

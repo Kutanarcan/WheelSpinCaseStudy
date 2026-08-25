@@ -22,14 +22,14 @@ namespace CaseStudy.WheelSpin
             RewardLedger rewards)
         {
             Slice = new WheelSlicePresenter(
-                view.WheelView, registry, view.PenaltySprite, view.PenaltyViewSettings,
+                view.WheelView, registry, view.PenaltySettings.Sprite, view.PenaltySettings.SliceView,
                 view.SpinSettings,
                 wheelTierViewDatabase,
                 view.AudioManager);
 
             Zone = new ZonePresenter(
-                view.ZoneCountView, view.ZoneSelectorView, wheelTierViewDatabase, view.CurrentZoneColor,
-                view.PastZoneAlpha / 255f, view.SpinSettings, tierRules);
+                view.ZoneCountView, view.ZoneSelectorView, wheelTierViewDatabase,
+                view.SpinSettings, tierRules);
 
             Reward = new RewardPresenter(view.RewardHolderView, registry);
 

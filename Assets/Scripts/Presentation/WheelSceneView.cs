@@ -2,6 +2,11 @@ using UnityEngine;
 
 namespace CaseStudy.WheelSpin
 {
+    /// <summary>
+    /// The scene's wiring board: which objects the presenters drive, and which settings assets they
+    /// read. Holds references only — every tunable value lives in an asset, so the same numbers can
+    /// be reviewed and changed without opening the scene.
+    /// </summary>
     public class WheelSceneView : MonoBehaviour
     {
         [Header("Audio")]
@@ -12,36 +17,22 @@ namespace CaseStudy.WheelSpin
         public ZoneCountView ZoneCountView;
         public ZoneSelectorView ZoneSelectorView;
         public RewardHolderView RewardHolderView;
-
-        [Header("Popups")]
-        public CashoutPopup CashoutPopup;
-        public RevivePopup RevivePopup;
-
-        [Header("Penalty")]
-        public Sprite PenaltySprite;
-        public ItemViewSettings PenaltyViewSettings = ItemViewSettings.Default;
-
-        [Header("Palette")]
-        public Color CurrentZoneColor = Color.black;
-
-        [Tooltip("Alpha of zone numbers the player has already passed, out of 255.")]
-        [Range(0, 255)] public int PastZoneAlpha = 40;
-
-        [Header("Animation")]
-        public WheelSpinSettings SpinSettings = new WheelSpinSettings();
-
-        [Header("Reward Flight")]
         public RewardFlightView RewardFlightView;
-        public RewardFlightSettings FlightSettings = new RewardFlightSettings();
-
-        [Header("Penalty Effect")]
         public BombExplosionView BombExplosionView;
 
         [Tooltip("Content root shaken by the blast. This canvas is Screen Space - Overlay, so Unity " +
                  "rewrites the Canvas RectTransform every frame — point this at a child that holds " +
                  "the UI, not at the Canvas itself.")]
         public RectTransform ShakeRoot;
-        public PenaltyEffectSettings PenaltySettings = new PenaltyEffectSettings();
+
+        [Header("Popups")]
+        public CashoutPopup CashoutPopup;
+        public RevivePopup RevivePopup;
+
+        [Header("Settings")]
+        public WheelSpinSettings SpinSettings;
+        public RewardFlightSettings FlightSettings;
+        public PenaltyEffectSettings PenaltySettings;
 
 #if UNITY_EDITOR
 
