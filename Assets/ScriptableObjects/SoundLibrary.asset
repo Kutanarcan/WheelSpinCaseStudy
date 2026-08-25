@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ccc1dbaf05f51f45acf258f816b9c29, type: 3}
   m_Name: SoundLibrary
   m_EditorClassIdentifier: 
-  _wheelSpin: {fileID: 8300000, guid: 04c904cef4493884b82882284c3c8175, type: 3}
+  _wheelSpin: {fileID: 8300000, guid: 092e0da6ae7f9b949a43602870793738, type: 3}
   _explosions:
   - {fileID: 8300000, guid: f88398e8763cd7941a2390416e3f83a9, type: 3}
-  - {fileID: 8300000, guid: eafe0fb02042c804888885f24cfd6341, type: 3}
   _rewardAppear: {fileID: 8300000, guid: a68a67514028e2e4a90cbf38bf500b37, type: 3}
   _rewardImpact: {fileID: 8300000, guid: 0d29e9a58aa4bb543a0a03ee0f35a192, type: 3}
   _button: {fileID: 8300000, guid: abef33c1b6e8be943a838acf02853169, type: 3}
