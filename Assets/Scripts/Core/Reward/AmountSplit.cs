@@ -1,10 +1,5 @@
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// Splits a win into per-icon shares. Every share is equal except the last, which absorbs the
-    /// remainder, so the shares always sum back to the exact amount and the counter lands on the
-    /// real total instead of a rounded one.
-    /// </summary>
     public static class AmountSplit
     {
         public static void Fill(int[] buffer, int count, int amount)

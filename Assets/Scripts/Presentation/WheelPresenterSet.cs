@@ -1,10 +1,5 @@
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// The presenter graph and its lifecycle. Holds the wiring that used to sit in
-    /// <see cref="WheelPresenter"/>'s constructor, so that class is left with the one job of
-    /// deciding what plays when.
-    /// </summary>
     public sealed class WheelPresenterSet
     {
         public readonly WheelSlicePresenter Slice;

@@ -12,6 +12,5 @@ namespace CaseStudy.WheelSpin
         public IReadOnlyList<ItemAsset> Items => _items;
 
         public ItemRegistry CreateRegistry() => new ItemRegistry(_items);
-
     }
 }

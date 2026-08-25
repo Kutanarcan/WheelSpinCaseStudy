@@ -1,9 +1,5 @@
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// The buffered input of the next presentation step: what the session reported between
-    /// a spin request and the moment the presenter is allowed to animate it.
-    /// </summary>
     public struct SpinOutcome
     {
         public bool HasResult;

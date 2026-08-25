@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>Shape and timing of the win effect. Authored once as an asset.</summary>
     [CreateAssetMenu(menuName = "CaseStudy/Settings/Reward Flight", fileName = "RewardFlightSettings")]
     public class RewardFlightSettings : ScriptableObject
     {
@@ -18,7 +17,6 @@ namespace CaseStudy.WheelSpin
         [Min(0f)] public float ScaleUpDuration = 0.25f;
         public Ease ScaleUpEase = Ease.OutBack;
 
-        [Tooltip("How far back toward the origin an icon starts before gliding out. 0 = no glide.")]
         [Range(0f, 1f)] public float SpawnDrift = 0.35f;
         public Ease SpawnDriftEase = Ease.OutCubic;
 
@@ -29,7 +27,6 @@ namespace CaseStudy.WheelSpin
         public Ease FlightEase = Ease.InBack;
         [Min(0f)] public float ArriveScale = 0.6f;
 
-        [Tooltip("Arc bulge as a ratio of the flight distance. Flip the sign to bulge the other way.")]
         [Range(-1f, 1f)] public float ArcHeight = 0.25f;
         [Range(0f, 1f)] public float ArcJitter = 0.35f;
     }

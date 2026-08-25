@@ -4,11 +4,6 @@ using UnityEngine.UI;
 
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// Shared opening behaviour for popups: the dim fades in while the popup's own content animates
-    /// on top of it. Hiding is always instant and puts every animated part back at rest, so a popup
-    /// dismissed mid-animation cannot leave anything displaced for the next time it opens.
-    /// </summary>
     public abstract class PopupView : MonoBehaviour
     {
         public Transform PanelRoot;
@@ -34,8 +29,6 @@ namespace CaseStudy.WheelSpin
 
             _sequence = DOTween.Sequence();
 
-            // Content is added first so it starts at zero; the dim is inserted at zero afterwards
-            // and therefore runs alongside it rather than delaying it.
             AppendContent(_sequence);
             InsertDim(_sequence);
 
@@ -56,20 +49,14 @@ namespace CaseStudy.WheelSpin
                 PanelRoot.gameObject.SetActive(false);
         }
 
-        /// <summary>Records the authored transform values that the content animates back to.</summary>
         protected virtual void CaptureRest() { }
 
-        /// <summary>Puts the content where the opening animation begins.</summary>
         protected virtual void MoveToStart() { }
 
-        /// <summary>Puts the content back at its authored pose.</summary>
         protected virtual void MoveToRest() { }
 
-        /// <summary>Adds the popup's own tweens; the sequence already starts at zero.</summary>
         protected virtual void AppendContent(Sequence sequence) { }
 
-        /// Captured lazily rather than in Awake: the presenter hides every popup during its own
-        /// Awake, and Unity gives no ordering guarantee between the two.
         private void EnsureRestCaptured()
         {
             if (_restCaptured)

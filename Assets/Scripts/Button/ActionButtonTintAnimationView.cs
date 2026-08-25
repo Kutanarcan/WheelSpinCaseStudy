@@ -5,10 +5,6 @@ using UnityEngine.UI;
 
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// Tints a button's graphic for its pressed and disabled states. Purely reactive: every repaint
-    /// is driven by an event from <see cref="ActionButtonView"/>, so nothing runs per frame.
-    /// </summary>
     [RequireComponent(typeof(ActionButtonView))]
     public class ActionButtonTintAnimationView : MonoBehaviour
     {
@@ -117,8 +113,6 @@ namespace CaseStudy.WheelSpin
 
         private void HandleColorTweenKill() => colorTween = null;
 
-        /// A button that goes dark under the finger must not come back as "pressed" when it is
-        /// re-enabled, so the press is dropped along with interactivity.
         private void HandleInteractableChanged(bool interactable)
         {
             if (!interactable)

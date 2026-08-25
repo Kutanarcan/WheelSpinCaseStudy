@@ -59,8 +59,6 @@ namespace CaseStudy.WheelSpin
 
             Sequence sequence = DOTween.Sequence();
 
-            // Negative travel is the same motion mirrored: the wheel is dragged against the spin
-            // direction, so the launch and the settle are two ends of one mechanism.
             if (windup > 0f)
             {
                 sequence.Append(DOTween.To(_travelledGetter, _travelledSetter, -windup, _settings.WindupDuration)
@@ -108,7 +106,6 @@ namespace CaseStudy.WheelSpin
             return delta + 360f * turns;
         }
 
-        /// Capped at half a slice so neither end of the spin visibly reaches the neighbouring slice.
         private float ResolveBackswing(float degrees, float duration)
         {
             if (degrees <= 0f || duration <= 0f)

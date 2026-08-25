@@ -2,10 +2,6 @@ using Random = System.Random;
 
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// The wired-up game: the rules session, the presentation layer, and the ledger they share.
-    /// Built in one pass so the composition root is left with lifecycle and input only.
-    /// </summary>
     public sealed class WheelGame
     {
         public readonly WheelSession Session;
@@ -19,10 +15,6 @@ namespace CaseStudy.WheelSpin
             Rewards = rewards;
         }
 
-        /// <summary>
-        /// Validates the zone set before anything is built, so a misconfigured project fails with
-        /// one readable message instead of a null reference on the first spin.
-        /// </summary>
         public static bool TryCreate(
             WheelConfigAsset config,
             WheelSceneView view,

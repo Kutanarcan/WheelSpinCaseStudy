@@ -54,11 +54,6 @@ namespace CaseStudy.WheelSpin
                 _amountText.SetText($"{amount}");
         }
 
-        /// <summary>
-        /// Grows the slot and brings it back to rest. Both halves are absolute scale tweens, so a
-        /// punch that is interrupted by the next one still ends at rest: the replacement drives the
-        /// scale to the same fixed values regardless of where the previous one was cut off.
-        /// </summary>
         public void PlayStackFeedback()
         {
             if (Rect == null || _punchScale <= 0f || _punchDuration <= 0f)
@@ -75,9 +70,6 @@ namespace CaseStudy.WheelSpin
                 .OnKill(_onPunchKill ??= HandlePunchKill);
         }
 
-        /// Killing a scale tween leaves the transform wherever the tween had reached, so the reset
-        /// belongs here rather than at the start of the next punch — that way a slot that is
-        /// deactivated or rebound mid-punch is also returned to rest.
         private void KillPunch()
         {
             Tween tween = _punchTween;

@@ -21,8 +21,6 @@ namespace CaseStudy.WheelSpin
             _registry = registry;
         }
 
-        /// Unity's overloaded == reports a destroyed object as null, which is what makes this the
-        /// only reliable guard on the shutdown path — the reference itself is still non-null there.
         private bool HasView => _view != null;
 
         public void Initialize()
@@ -55,20 +53,12 @@ namespace CaseStudy.WheelSpin
             SetCashOutActive(true);
         }
 
-        /// <summary>
-        /// Cashing out is only possible while a run is alive, so the button is taken off screen the
-        /// moment a bomb ends it and put back by a revive or a fresh run.
-        /// </summary>
         public void SetCashOutActive(bool active)
         {
             if (HasView)
                 _view.SetCashOutButtonRootActive(active);
         }
 
-        /// <summary>
-        /// Makes sure the board has a slot for the item, opening it at zero on first win so the
-        /// count-up starts from x0. Returns the slot rect the flying icons should aim at.
-        /// </summary>
         public RectTransform BeginAdd(string itemId)
         {
             if (!HasView || string.IsNullOrWhiteSpace(itemId))
@@ -89,14 +79,11 @@ namespace CaseStudy.WheelSpin
 
             _entries[itemId] = new Entry { View = view, Amount = 0 };
 
-            // The slot was just activated; without this its rect is still at the old layout
-            // position and the icons would fly to the wrong place.
             _view.RebuildLayout();
 
             return view.Rect;
         }
 
-        /// <summary>Counts the slot up by one icon's share and replays the stack punch.</summary>
         public void Tick(string itemId, int amount)
         {
             if (string.IsNullOrWhiteSpace(itemId) || amount <= 0)

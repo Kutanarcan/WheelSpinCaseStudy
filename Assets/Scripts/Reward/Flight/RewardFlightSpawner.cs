@@ -2,11 +2,6 @@ using UnityEngine;
 
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// Decides where the win icons appear and how big they are: acquires them from the pool and
-    /// scatters them around the given origin. Owns placement only — the flight timeline belongs to
-    /// RewardFlightPresenter.
-    /// </summary>
     public class RewardFlightSpawner
     {
         private readonly RewardFlightView _view;
@@ -65,8 +60,6 @@ namespace CaseStudy.WheelSpin
                 _view.Release(icon);
         }
 
-        /// Even angular slots plus jitter: uniform random inside the circle would let icons overlap,
-        /// a fixed slot per icon keeps them apart while still reading as scattered.
         private Vector2 RandomOffset(float slotAngle, float jitter)
         {
             float angle = (slotAngle + Random.Range(-jitter, jitter)) * Mathf.Deg2Rad;

@@ -3,10 +3,6 @@ using UnityEngine;
 
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// Plays one-shot sound effects through a single shared AudioSource. Not a singleton — the
-    /// composition root hands it to whoever needs it.
-    /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(AudioSource))]
     public class AudioManager : MonoBehaviour
@@ -44,7 +40,6 @@ namespace CaseStudy.WheelSpin
             if (clip == null || _source == null)
                 return;
 
-            // PlayOneShot rather than Play: overlapping effects must not cut each other off.
             _source.PlayOneShot(clip, _volume);
         }
 

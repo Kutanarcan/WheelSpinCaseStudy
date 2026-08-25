@@ -2,11 +2,6 @@ using UnityEngine;
 
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// The scene's wiring board: which objects the presenters drive, and which settings assets they
-    /// read. Holds references only — every tunable value lives in an asset, so the same numbers can
-    /// be reviewed and changed without opening the scene.
-    /// </summary>
     public class WheelSceneView : MonoBehaviour
     {
         [Header("Audio")]
@@ -20,9 +15,6 @@ namespace CaseStudy.WheelSpin
         public RewardFlightView RewardFlightView;
         public BombExplosionView BombExplosionView;
 
-        [Tooltip("Content root shaken by the blast. This canvas is Screen Space - Overlay, so Unity " +
-                 "rewrites the Canvas RectTransform every frame — point this at a child that holds " +
-                 "the UI, not at the Canvas itself.")]
         public RectTransform ShakeRoot;
 
         [Header("Popups")]

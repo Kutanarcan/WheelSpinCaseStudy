@@ -112,10 +112,6 @@ namespace CaseStudy.WheelSpin
             views[sliceIndex].SetAmount(amount);
         }
 
-        /// <summary>
-        /// Where the given slice currently sits on screen. Read after the spin settles, this is the
-        /// resting place of the winning slice under the indicator — not the wheel centre.
-        /// </summary>
         public Vector3 SliceWorldPosition(int sliceIndex)
         {
             IReadOnlyList<WheelSliceView> views = _view.SliceViewArray;

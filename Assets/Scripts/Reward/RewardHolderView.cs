@@ -31,8 +31,6 @@ namespace CaseStudy.WheelSpin
                 CashOutButtonViewRoot.gameObject.SetActive(active);
         }
 
-        /// Forces the layout group to place a freshly activated slot now, so callers can read its
-        /// world position in the same frame instead of one frame late.
         public void RebuildLayout()
         {
             if (_rewardContentParent is RectTransform content)

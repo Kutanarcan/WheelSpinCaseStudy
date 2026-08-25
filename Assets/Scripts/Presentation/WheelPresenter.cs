@@ -2,10 +2,6 @@ using System;
 
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// The presentation layer's entry point: run lifecycle, and whether the game is currently
-    /// showing something. The sequence that plays after a spin belongs to <see cref="SpinTimeline"/>.
-    /// </summary>
     public class WheelPresenter
     {
         private readonly WheelPresenterSet _presenters;
@@ -53,8 +49,6 @@ namespace CaseStudy.WheelSpin
             Finish();
         }
 
-        /// ZoneRefreshed is handled straight away rather than buffered: a revive rebuilds the wheel
-        /// that is already on screen, so it cannot wait for a spin to end.
         public void Subscribe(WheelSession session)
         {
             _buffer.Subscribe(session);
@@ -107,7 +101,6 @@ namespace CaseStudy.WheelSpin
 
         private void HandleZoneRefreshed(Zone zone) => _presenters.Slice.Bind(zone);
 
-        /// Read before Finish clears the buffer, so the popup decision survives the reset.
         private void HandleTimelineComplete()
         {
             SpinOutcome outcome = _buffer.Outcome;

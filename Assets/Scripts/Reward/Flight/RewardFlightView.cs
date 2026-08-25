@@ -2,11 +2,6 @@ using UnityEngine;
 
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// Pool and spawn surface for the reward icons that fly from the wheel to the reward board.
-    /// Icons are acquired for one flight and released together when that flight ends, so the pool
-    /// settles at the largest icon count a single win ever used.
-    /// </summary>
     public class RewardFlightView : MonoBehaviour
     {
         [SerializeField] private RewardFlightIconView _iconPrefab;

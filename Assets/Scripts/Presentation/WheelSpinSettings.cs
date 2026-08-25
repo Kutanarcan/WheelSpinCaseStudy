@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>How the wheel and the zone strip move. Authored once as an asset, shared by every scene.</summary>
     [CreateAssetMenu(menuName = "CaseStudy/Settings/Wheel Spin", fileName = "WheelSpinSettings")]
     public class WheelSpinSettings : ScriptableObject
     {
@@ -14,7 +13,6 @@ namespace CaseStudy.WheelSpin
         public Ease Ease = Ease.InOutQuad;
 
         [Header("Windup")]
-        [Tooltip("Degrees the wheel is pulled back against the spin direction before it launches.")]
         [Min(0f)] public float Windup = 12f;
         [Min(0f)] public float WindupDuration = 0.25f;
         public Ease WindupEase = Ease.OutQuad;
@@ -25,10 +23,8 @@ namespace CaseStudy.WheelSpin
         public Ease SettleEase = Ease.OutCubic;
 
         [Header("Zone Strip")]
-        [Tooltip("Shared duration: the strip scroll and the selector run on this one clock.")]
         [Min(0f)] public float ScrollDuration = 0.35f;
         public Ease ScrollEase = Ease.OutCubic;
-        [Tooltip("Ease of the selector along the same clock. An overshooting ease is allowed here.")]
         public Ease SelectorStepEase = Ease.OutBack;
 
         [Header("Zone Change")]

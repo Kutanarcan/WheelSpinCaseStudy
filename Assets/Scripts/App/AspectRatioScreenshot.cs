@@ -4,15 +4,6 @@ using UnityEngine.Serialization;
 
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// Capture helper for store shots at several aspect ratios. Nothing happens on its own — the
-    /// shots are taken from the component's context menu, so this never costs anything at runtime.
-    /// </summary>
-    /// <remarks>
-    /// The component stays in the runtime assembly rather than moving under Editor/ only because it
-    /// is attached to a scene object; a MonoBehaviour in an editor-only assembly would come back as
-    /// a missing script.
-    /// </remarks>
     public class AspectRatioScreenshot : MonoBehaviour
     {
         [FormerlySerializedAs("targetCamera")]
@@ -51,7 +42,6 @@ namespace CaseStudy.WheelSpin
             string path = Path.Combine(Application.persistentDataPath, fileName + ".png");
             File.WriteAllBytes(path, shot.EncodeToPNG());
 
-            // The context menu also runs outside play mode, where Destroy never actually collects.
             DestroyTemporary(renderTexture);
             DestroyTemporary(shot);
 

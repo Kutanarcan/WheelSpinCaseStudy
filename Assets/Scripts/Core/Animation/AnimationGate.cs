@@ -2,12 +2,6 @@ using System;
 
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// Joins several animations that start and finish at different times into one completion callback.
-    /// Every part is reserved with <see cref="Track"/> before it starts; <see cref="Seal"/> declares
-    /// that no further parts will be added. While the gate is open it never completes early, so a part
-    /// that finishes synchronously cannot fire the callback before the rest are registered.
-    /// </summary>
     public sealed class AnimationGate
     {
         private readonly Action _partComplete;

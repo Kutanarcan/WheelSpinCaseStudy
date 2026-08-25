@@ -1,10 +1,5 @@
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// Collects what the session reports during a spin and holds it until the presentation layer is
-    /// ready to play it. The rules resolve the moment a spin is requested, but the wheel is still
-    /// turning then — nothing may be shown until it stops, so the report has to wait somewhere.
-    /// </summary>
     public sealed class SpinOutcomeBuffer
     {
         private SpinOutcome _outcome;

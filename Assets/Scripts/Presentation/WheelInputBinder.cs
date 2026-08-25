@@ -2,13 +2,6 @@ using System;
 
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// Wires every button in the game in one place and republishes the clicks as plain events.
-    /// </summary>
-    /// <remarks>
-    /// The shared button sound is played here, before the event is raised, so a press is audible
-    /// even when the game later refuses to act on it — the player hears that the press registered.
-    /// </remarks>
     public sealed class WheelInputBinder
     {
         private readonly WheelSceneView _view;

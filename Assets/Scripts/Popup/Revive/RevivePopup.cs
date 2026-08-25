@@ -10,16 +10,13 @@ namespace CaseStudy.WheelSpin
 
         [Header("Dead Card")]
         [SerializeField] private RectTransform _deadCardRoot;
-        [Tooltip("How far below its resting place the card starts.")]
         [SerializeField, Min(0f)] private float _cardRiseDistance = 700f;
-        [Tooltip("Z rotation the card starts tilted at, straightening as it rises.")]
         [SerializeField] private float _cardStartRotation = 5f;
         [SerializeField, Min(0f)] private float _cardDuration = 0.35f;
         [SerializeField] private Ease _cardEase = Ease.OutBack;
 
         [Header("Title")]
         [SerializeField] private RectTransform _titleRoot;
-        [Tooltip("How far above its resting place the title starts.")]
         [SerializeField, Min(0f)] private float _titleDropDistance = 350f;
         [SerializeField, Min(0f)] private float _titleDuration = 0.3f;
         [SerializeField] private Ease _titleEase = Ease.OutBack;
@@ -60,7 +57,6 @@ namespace CaseStudy.WheelSpin
                 _titleRoot.anchoredPosition = _titleRest;
         }
 
-        /// The title is appended rather than joined, so it only starts once the card has landed.
         protected override void AppendContent(Sequence sequence)
         {
             if (_deadCardRoot != null && _cardDuration > 0f)

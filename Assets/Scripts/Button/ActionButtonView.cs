@@ -18,10 +18,6 @@ namespace CaseStudy.WheelSpin
         public event Action<PointerEventData> PointerUp;
         public event Action Click;
 
-        /// <summary>
-        /// Raised only when the value actually changes, so views that tint themselves can react to
-        /// it instead of polling this property every frame.
-        /// </summary>
         public event Action<bool> InteractableChanged;
 
         public bool Interactable
@@ -63,8 +59,6 @@ namespace CaseStudy.WheelSpin
 
 #if UNITY_EDITOR
 
-        /// Inspector edits write the field directly and skip the property setter, so the change is
-        /// re-announced here — otherwise a value toggled during play would never repaint.
         private void OnValidate()
         {
             if (Application.isPlaying)

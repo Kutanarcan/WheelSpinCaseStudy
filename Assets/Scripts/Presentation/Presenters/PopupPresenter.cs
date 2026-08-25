@@ -1,9 +1,5 @@
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// Shows and hides the two popups and fills the cashout list. Button wiring lives in
-    /// <see cref="WheelInputBinder"/> — this class only exposes which buttons exist.
-    /// </summary>
     public class PopupPresenter
     {
         private readonly CashoutPopup _cashoutPopup;

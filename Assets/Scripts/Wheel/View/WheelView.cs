@@ -13,7 +13,6 @@ namespace CaseStudy.WheelSpin
         public Image SpinIndicatorImage;
         public Image WheelImage;
 
-
         private void OnValidate()
         {
             if (WheelRect == null) WheelRect = transform as RectTransform;

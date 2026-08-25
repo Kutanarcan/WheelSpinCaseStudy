@@ -46,8 +46,6 @@ namespace CaseStudy.WheelSpin
             _onTransitionComplete = HandleTransitionComplete;
         }
 
-        /// Unity's overloaded == reports a destroyed object as null, which is what makes this the
-        /// only reliable guard on the shutdown path — the reference itself is still non-null there.
         private bool HasCountView => _countView != null;
 
         public void Initialize(int zoneCount)
@@ -92,11 +90,6 @@ namespace CaseStudy.WheelSpin
             PlayTransition();
         }
 
-        /// <summary>
-        /// Scrolls the strip and walks the selector over it on one clock. The selector cannot use a
-        /// tween of its own: its destination is a number that the scroll is moving at the same time,
-        /// so both are driven from a single progress value, each through its own ease.
-        /// </summary>
         private void PlayTransition()
         {
             _fromContentX = _countView.GetContentX();
@@ -120,8 +113,6 @@ namespace CaseStudy.WheelSpin
             float scrollT = DOVirtual.EasedValue(0f, 1f, progress, _settings.ScrollEase);
             _countView.SetContentX(Mathf.LerpUnclamped(_fromContentX, _toContentX, scrollT));
 
-            // Read the number's position only after the strip has moved this frame, so the selector
-            // chases where the number actually is rather than where it started.
             RectTransform target = GetNumberRect(_targetZoneNumber);
 
             if (_selectorRect == null || target == null)
@@ -129,8 +120,6 @@ namespace CaseStudy.WheelSpin
 
             float selectorT = DOVirtual.EasedValue(0f, 1f, progress, _settings.SelectorStepEase);
 
-            // Unclamped so an overshooting ease (OutBack) can carry the selector past the number
-            // and back instead of being flattened at the ends.
             _selectorRect.position = Vector3.LerpUnclamped(_selectorFromPosition, target.position, selectorT);
         }
 
@@ -161,7 +150,6 @@ namespace CaseStudy.WheelSpin
             WheelTier tier = _tierRules.TierFor(zoneNumber);
             Color color = _tierViewDatabase.GetPack(tier).ZoneNumberColor;
 
-            // Zones already behind the player are faded so the strip reads forward.
             if (zoneNumber < currentZone)
                 color.a = _tierViewDatabase.PastZoneAlpha;
 

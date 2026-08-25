@@ -3,10 +3,6 @@ using Random = System.Random;
 
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// The composition root: builds the game once, keeps it alive for the scene's lifetime, and
-    /// turns button events into session calls. No service locator, no singleton.
-    /// </summary>
     [DisallowMultipleComponent]
     public class WheelController : MonoBehaviour
     {

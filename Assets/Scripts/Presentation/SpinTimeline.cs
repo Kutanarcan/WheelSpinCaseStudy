@@ -2,10 +2,6 @@ using System;
 
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// Everything that happens between the wheel stopping and the game accepting input again:
-    /// which animations run, which of them overlap, and when the last one is done.
-    /// </summary>
     public sealed class SpinTimeline
     {
         private readonly WheelPresenterSet _presenters;
@@ -19,7 +15,6 @@ namespace CaseStudy.WheelSpin
         private Action _zoneStripPart;
         private Action _wheelChangePart;
 
-        /// <summary>Raised once every part of the sequence has finished.</summary>
         public event Action Completed;
 
         public SpinTimeline(WheelPresenterSet presenters, SpinOutcomeBuffer buffer)
@@ -32,11 +27,6 @@ namespace CaseStudy.WheelSpin
             _onGateComplete = HandleGateComplete;
         }
 
-        /// <summary>
-        /// Builds the sequence. Parts are reserved on the gate before anything starts, so the zone
-        /// change can be handed its callback here and only launched later, when the first reward
-        /// icon leaves the wheel.
-        /// </summary>
         public void Start()
         {
             SpinOutcome outcome = _buffer.Outcome;
@@ -95,8 +85,6 @@ namespace CaseStudy.WheelSpin
             _presenters.Slice.PlayZoneChange(outcome.NextZone, _wheelChangePart);
         }
 
-        /// The winning slice index still lives in the buffered outcome, so the countdown needs no
-        /// per-spin closure — this one cached delegate serves every spin.
         private void HandleWheelAmountChanged(int remaining)
             => _presenters.Slice.SetSliceAmount(_buffer.Outcome.Result.SliceIndex, remaining);
 

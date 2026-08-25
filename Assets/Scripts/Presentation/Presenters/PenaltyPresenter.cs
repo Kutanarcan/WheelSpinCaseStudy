@@ -4,10 +4,6 @@ using UnityEngine;
 
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// Plays the loss effect: the bomb that came up swells on the wheel, then detonates through the
-    /// one explosion instance kept under the wheel. Runs to completion before the revive popup opens.
-    /// </summary>
     public class PenaltyPresenter
     {
         private readonly WheelView _wheelView;
@@ -56,8 +52,6 @@ namespace CaseStudy.WheelSpin
 
         public void ResetForNewRun() => Kill();
 
-        /// Takes the explosion down as well: its clearing timer dies with everything else here, so
-        /// without this the particles would be left on screen with nothing left to remove them.
         public void Kill()
         {
             _sequence?.Kill();
@@ -94,14 +88,10 @@ namespace CaseStudy.WheelSpin
 
             AppendSwell(sequence);
 
-            // The blast is inserted into the swell rather than queued after it, so the bomb is still
-            // growing when it goes off instead of sitting at full size waiting for its cue.
             float detonateTime = _settings.GrowDuration * _settings.DetonateAt;
 
             sequence.InsertCallback(detonateTime, _onDetonate);
 
-            // This sequence only owns the handover to the popup. The explosion outlives it on a
-            // timer of its own, so the popup no longer has to wait for the particles to finish.
             float tail = detonateTime + _settings.PopupDelay - sequence.Duration();
 
             if (tail > 0f)
@@ -112,8 +102,6 @@ namespace CaseStudy.WheelSpin
                 .OnComplete(_onSequenceComplete);
         }
 
-        /// The swell drives scale while the shake drives rotation, so the two run together on the
-        /// same rect without fighting over one property.
         private void AppendSwell(Sequence sequence)
         {
             if (_settings.GrowDuration <= 0f)
@@ -139,8 +127,6 @@ namespace CaseStudy.WheelSpin
             if (_audio != null)
                 _audio.PlayExplosion();
 
-            // Disabling the graphic rather than zeroing the scale: the swell tween is still running
-            // and would write the transform back on the next frame, flashing the bomb after the blast.
             if (_settings.HideBombOnExplode)
                 _bombView.SetIconVisible(false);
 
@@ -149,7 +135,6 @@ namespace CaseStudy.WheelSpin
                 .DelayedCall(_settings.ExplosionDuration, _onExplosionEnded)
                 .SetLink(_wheelView.gameObject, LinkBehaviour.KillOnDestroy);
 
-            // Off the main sequence on purpose: the shake may outlast the handover to the popup.
             _shaker.Play(
                 _settings.ScreenShakeDuration,
                 _settings.ScreenShakeStrength,
@@ -163,8 +148,6 @@ namespace CaseStudy.WheelSpin
             _explosion.Hide();
         }
 
-        /// Ends the bomb's part only. The explosion is deliberately left running — its own timer
-        /// clears it later.
         private void HandleSequenceComplete()
         {
             _sequence = null;
@@ -176,10 +159,6 @@ namespace CaseStudy.WheelSpin
             callback?.Invoke();
         }
 
-        /// The slice views are reused across zones, so the swell has to be undone whatever path the
-        /// sequence leaves by — otherwise the next zone inherits a giant, tilted icon. Killing a
-        /// punch leaves the transform mid-tween, which makes resetting both properties mandatory
-        /// rather than merely tidy.
         private void RestoreBomb()
         {
             if (_bombRect != null)

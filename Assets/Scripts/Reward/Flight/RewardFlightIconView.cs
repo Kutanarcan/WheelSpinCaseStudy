@@ -4,11 +4,6 @@ using UnityEngine.UI;
 
 namespace CaseStudy.WheelSpin
 {
-    /// <summary>
-    /// A pooled win icon. Carries its own flight geometry: the spawn drift target and the quadratic
-    /// bezier it follows to the board, driven by a single 0..1 progress value so the ease shapes the
-    /// travel along the curve instead of along a straight line.
-    /// </summary>
     public class RewardFlightIconView : MonoBehaviour
     {
         [SerializeField] private Image _icon;
@@ -25,7 +20,6 @@ namespace CaseStudy.WheelSpin
 
         public RectTransform Rect => _rect != null ? _rect : _rect = transform as RectTransform;
 
-        /// Where the icon settles after the spawn drift — the DOAnchorPos target of the scale-up.
         public Vector2 RestAnchored => _restAnchored;
 
         public DOGetter<float> ProgressGetter => _progressGetter ??= GetProgress;
@@ -52,11 +46,6 @@ namespace CaseStudy.WheelSpin
             Rect.localEulerAngles = Vector3.zero;
         }
 
-        /// <summary>
-        /// Seats the icon at <paramref name="endOffset"/> to record its resting place, then pulls it
-        /// back to <paramref name="startOffset"/> so the scale-up can glide it out. Recording the rest
-        /// pose by actually visiting it avoids converting between canvas spaces by hand.
-        /// </summary>
         public void Place(Vector3 worldOrigin, Vector2 startOffset, Vector2 endOffset)
         {
             Rect.position = worldOrigin;
@@ -76,9 +65,6 @@ namespace CaseStudy.WheelSpin
             _progress = 0f;
         }
 
-        /// Control point sits beside the midpoint, offset along the perpendicular of the straight
-        /// line. The offset is a ratio of the flight distance, so the arc keeps its shape whatever
-        /// the canvas scale is.
         private static Vector3 ArcControl(Vector3 from, Vector3 to, float heightRatio)
         {
             Vector3 direction = to - from;
